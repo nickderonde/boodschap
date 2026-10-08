@@ -15,11 +15,12 @@ Geen eigen of geheime algoritmen; de volledige broncode is openbaar (MIT).
 
 ## App Store Connect
 
-- `ios.config.usesNonExemptEncryption: true` in `app.json` (zet `ITSAppUsesNonExemptEncryption` in Info.plist). Let op: de eis noemde `ITSAppUseEncryption`; de echte sleutel heet `ITSAppUsesNonExemptEncryption` (D-38).
+- **Geen encryptiesleutel in `app.json` (D-49, 2026-10-08).** Build 1 met `ITSAppUsesNonExemptEncryption = true` en zonder `ITSEncryptionExportComplianceCode` werd door Apple afgewezen: *ITMS-90592: Invalid Export Compliance Code – the export compliance key value [] in the app's Info.plist doesn't match the key value of the app's export compliance documentation.* Daarom staat de sleutel nu helemaal niet in de Info.plist. App Store Connect stelt de exportvragen dan **per build**; Nick beantwoordt ze naar waarheid (zie hieronder en `docs/STORE_INVULLEN.md`, A5). (De eis noemde `ITSAppUseEncryption`; de echte sleutel heet `ITSAppUsesNonExemptEncryption`, D-38.)
+- Antwoorden per build in App Store Connect: (1) de app gebruikt versleuteling: **Yes**; (2) soort: **standard encryption algorithms** naast die van het besturingssysteem (geen proprietary/non-standard); (3) beschikbaar in Frankrijk: **No**; uitkomst: **geen documentatie nodig**.
 - Antwoord op de vragen: de app gebruikt versleuteling **naast** die van het besturingssysteem, met **industriestandaard-algoritmen** (geen proprietary/non-standard).
 - Volgens Apple (developer.apple.com/help/app-store-connect/reference/app-information/export-compliance-documentation-for-encryption, gecontroleerd 2026-10-07): industriestandaard-algoritmen buiten het OS → **alleen een Franse encryptieverklaring als de app in Frankrijk wordt aangeboden**; proprietary/non-standard → ook een CCATS. Hier dus geen CCATS.
 - Frankrijk: kies bij de eerste indiening of de app in Frankrijk beschikbaar komt. Zonder Franse verklaring: Frankrijk uitsluiten in "Pricing and Availability". Met verklaring: het ANSSI-formulier indienen (de declaratie voor een cryptomiddel dat alleen authenticatie en vertrouwelijkheid biedt). Advies: start zonder Frankrijk, voeg later toe.
-- Na goedkeuring van de documentatie geeft Apple een code; zet die als `ios.infoPlist.ITSEncryptionExportComplianceCode` in `app.json`, zodat niet elke build opnieuw vraagt.
+- Alleen als Apple later een **compliance code** geeft (bijv. na een Franse verklaring): zet dan `ITSAppUsesNonExemptEncryption` én `ITSEncryptionExportComplianceCode` samen in `ios.infoPlist`, nooit de eerste zonder de tweede (dat gaf ITMS-90592).
 
 ## VS (EAR) — waarom geen melding nodig lijkt
 

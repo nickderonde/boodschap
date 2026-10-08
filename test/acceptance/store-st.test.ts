@@ -130,7 +130,8 @@ describe('ST-05 / ST-12 / ST-22: permissies, configuratie en de gegenereerde man
     expect(cam.cameraPermission).toMatch(/QR/);
     expect(appJson.ios.supportsTablet).toBe(false);
     expect(appJson.android.allowBackup).toBe(false);
-    expect(typeof appJson.ios.config.usesNonExemptEncryption).toBe('boolean');
+    // D-49 (afwijzing ITMS-90592): de encryptiesleutel staat bewust NIET in app.json; App Store Connect stelt de exportvragen per build.
+    expect(appJson.ios.config?.usesNonExemptEncryption).toBeUndefined();
     expect(JSON.stringify(appJson)).not.toMatch(/NSMicrophone|NSUserTracking|NSLocation|NSContacts|NSPhotoLibrary/);
   });
 
@@ -149,7 +150,7 @@ describe('ST-05 / ST-12 / ST-22: permissies, configuratie en de gegenereerde man
     expect(plist).toMatch(/<key>NSCameraUsageDescription<\/key>\s*<string>[^<]*QR-code[^<]*<\/string>/);
     expect(plist).not.toMatch(/NSMicrophoneUsageDescription|NSUserTrackingUsageDescription|NSLocation|NSPhotoLibrary|NSContactsUsageDescription/);
     expect(plist).toMatch(/<key>NSAllowsArbitraryLoads<\/key>\s*<false\/>/);
-    expect(plist).toMatch(/<key>ITSAppUsesNonExemptEncryption<\/key>\s*<(true|false)\/>/); // ST-12
+    expect(plist).not.toMatch(/ITSAppUsesNonExemptEncryption|ITSEncryptionExportComplianceCode/); // ST-12, D-49: per build in App Store Connect
     expect(plist).toMatch(/<key>CFBundleDevelopmentRegion<\/key>\s*<string>nl<\/string>/); // ST-22
     expect(plist).toMatch(/<key>CFBundleLocalizations<\/key>\s*<array>\s*<string>nl<\/string>\s*<string>en<\/string>/);
     expect(plist).toMatch(/<string>boodschap<\/string>/);
@@ -398,7 +399,9 @@ describe('ST-12 / ST-13 / ST-17 / ST-19: documenten', () => {
     const md = read('docs/store/export-compliance.md');
     for (const a of [/XChaCha20-Poly1305/, /HKDF/, /secp256k1|Schnorr/, /TLS/]) expect(md).toMatch(a);
     expect(md).toMatch(/geen juridisch advies/i);
-    expect(typeof appJson.ios.config.usesNonExemptEncryption).toBe('boolean');
+    // D-49: geen sleutel in app.json; de antwoorden per build staan in export-compliance.md en STORE_INVULLEN.md.
+    expect(appJson.ios.config?.usesNonExemptEncryption).toBeUndefined();
+    expect(md).toMatch(/D-49/);
   });
 
   it('ET-ST13-1: leeftijdsclassificatie vastgelegd (verwacht 4+ en PEGI 3 / Everyone, niet gericht op kinderen)', () => {

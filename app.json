@@ -24,9 +24,6 @@
         "dark": "./assets/images/icon-ios-dark.png",
         "tinted": "./assets/images/icon-ios-tinted.png"
       },
-      "config": {
-        "usesNonExemptEncryption": true
-      },
       "infoPlist": {
         "CFBundleDevelopmentRegion": "nl",
         "CFBundleLocalizations": [

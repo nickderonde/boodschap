@@ -147,9 +147,16 @@ describe('ST-05 / ST-12 / ST-18 / ST-22: permissies en storeconfiguratie', () =>
     expect(require(path.join(ROOT, 'plugins/withOptionalCamera')).FEATURES).toContain('android.hardware.camera');
   });
 
-  it('ST-12: ITSAppUsesNonExemptEncryption expliciet gezet (eigen standaardcryptografie) en onderbouwd', () => {
-    expect(app.ios.config.usesNonExemptEncryption).toBe(true);
-    expect(read('docs/store/export-compliance.md')).toMatch(/ITSAppUsesNonExemptEncryption/);
+  it('ST-12 / D-49: geen encryptiesleutel in app.json (afwijzing ITMS-90592); de exportvragen per build staan beschreven', () => {
+    expect(app.ios.config?.usesNonExemptEncryption).toBeUndefined();
+    expect(JSON.stringify(app)).not.toMatch(/ITSAppUsesNonExemptEncryption|ITSEncryptionExportComplianceCode/);
+    const md = read('docs/store/export-compliance.md');
+    expect(md).toMatch(/D-49/);
+    expect(md).toMatch(/ITMS-90592/);
+    const gids = read('docs/STORE_INVULLEN.md');
+    expect(gids).toMatch(/per build/i);
+    expect(gids).toMatch(/standard encryption algorithms/i);
+    expect(gids).toMatch(/France[\s\S]{0,80}No/);
   });
 
   it('ST-18 / NF-06: geen expo-updates en geen analytics-, crash- of advertentie-SDK', () => {

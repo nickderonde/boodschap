@@ -78,14 +78,14 @@ Eén keer (niet per taal):
   - **Notes**: plak `store/en/review-notes.txt` (Engels; beoordelaars werken in het Engels).
 - **Version Release**: **Automatically release this version** (na goedkeuring meteen live).
 
-### A5. Exportverklaring (versleuteling)
+### A5. Exportverklaring (versleuteling) — per build
 
-Apple vraagt dit bij de build (of via **App Information → App Encryption Documentation → +**):
-1. "Does your app use encryption?" → **Yes**.
-2. Kies de optie voor **standard encryption algorithms** (versleuteling naast die van iOS, met erkende standaardalgoritmen; geen eigen of geheime algoritmen).
-3. "Will your app be available on the App Store in France?" → **No** (Frankrijk staat uit, A2).
-4. Er hoeft dan geen document te worden geüpload. Krijg je later een **compliance code**, geef die door: die komt als `ITSEncryptionExportComplianceCode` in `app.json`, zodat de vraag niet bij elke build terugkomt.
-Achtergrond: `docs/store/export-compliance.md`.
+De app zet zelf geen encryptiesleutel in de build (D-49; build 1 werd daarop afgewezen met ITMS-90592). App Store Connect stelt daarom **per build** de exportvragen. Je ziet ze bij **TestFlight** (geel driehoekje "Missing Compliance" naast de build → **Manage**) of als je de build kiest op de versiepagina (A4). Antwoord zo:
+1. "What type of encryption algorithms does your app implement?" / "Does your app use encryption?" → kies dat de app versleuteling gebruikt (**Yes**).
+2. Kies **Standard encryption algorithms instead of, or in addition to, using or accessing the encryption within Apple's operating system** (erkende standaardalgoritmen naast die van iOS; geen eigen of geheime algoritmen).
+3. "Is your app going to be available on the App Store in France?" → **No** (Frankrijk staat uit, A2).
+4. Uitkomst: **geen documentatie nodig** → **Save**. De build is daarna klaar voor TestFlight en de beoordeling.
+Doe dit bij elke nieuwe build. Achtergrond: `docs/store/export-compliance.md`.
 
 ### A6. Handelaar (DSA)
 
