@@ -1,4 +1,4 @@
-# Bootschap — Architectuur (v1.1)
+# Bootschap — Architectuur (v1.1.1)
 
 Auteur: Architect. **Status: v1.1: v1.0.2 plus store-publicatie (CR-03, §19).** Bevat alle goedgekeurde afwijkingen D-01..D-35, D-37 en D-38..D-43. Zie `docs/APPROVALS.md` voor de goedkeuringen.
 Bron van waarheid voor de eisen: `docs/REQUIREMENTS.md` v0.3.1. Eis-ID's tussen haakjes verwijzen daarnaar. Bij een verschil tussen dit document en de code geldt de code, en is dit document aan herziening toe.
@@ -1274,6 +1274,7 @@ Alle afwijkingen uit `docs/DEVIATIONS.md` (D-01..D-35) zijn door de Architect be
 | D-ET-08 | Expo-patchversies via `npx expo install --fix` | §4.1 |
 | D-37 | Swipe-rijen met `ReanimatedSwipeable` (UX-15/UX-16), `SwipeGroup`, accessibility action, `GestureHandlerRootView`, UI-mocks. Goedgekeurd met voorwaarde S-1 (`docs/reviews/review-architect-CR01-02.md`) | §4.1, §12 |
 | D-38..D-43 | Store-publicatie: feitencorrecties, rechten, splash/system-ui, licentiescherm, EAS-profielen, schema `boodschap://` (review CR-03) | §19 |
+| D-44..D-46, D-50 | Toestelherstel: `install_id` device-only (D-44), uitgever/KvK (D-45), R-1/K-6 (D-46), merkteken in de cache (D-50) | §19 |
 
 **Fixes uit de code-reviews die het ontwerp aanscherpen (normatief vanaf v1.0):**
 - **Terugrollen trekt het event in.** `rollbackFloor` zet `last_event_*` op NULL/0. Zo kan een ingetrokken event nooit later alsnog worden opgeslagen (§6.8).
@@ -1331,6 +1332,12 @@ Alle afwijkingen uit `docs/DEVIATIONS.md` (D-01..D-35) zijn door de Architect be
   - Er komt een nieuwe `device_id` (HLC-node), gevolgd door `rotateIdentity` voor elke gedeelde lijst en een nieuwe `install_id`.
   - Lijsten en lijstgeheimen blijven bewaard, en het toestel synchroniseert verder als nieuw lid.
 - Deze regel is een aanvulling op §5.1 (de apparaat-ID is uniek per installatie) en §6.1 (de Nostr-sleutel per installatie per lijst).
+- **KeyStore faalt structureel (K-6, D-46).** Dan krijgt de database de markering `install_id_unsaved`, en roteert de app niet bij elke start.
+- **Device-only merkteken (R-2, D-50).** In dat geval staat de install_id ook in een bestand in `Paths.cache` (`expo-file-system`; iOS `Library/Caches` zit niet in back-ups).
+  - Merkteken gelijk → origineel, niet roteren.
+  - Merkteken ontbreekt → kopie (of opgeruimde cache) → één veilige rotatie.
+  - Merkteken niet lees- of schrijfbaar → K-6-gedrag, nooit roteren. Er is dus geen rotatielus.
+- **Android.** `allowBackup: false`. Aandachtspunt A-1 (review CR-03 §8): zorg met `dataExtractionRules`/`fullBackupContent` (config-plugin) dat ook een overdracht van toestel naar toestel niets meeneemt, en controleer dat in de gebouwde manifest.
 
 **Licenties (ST-07, D-41).** `npm run gen:licenses` genereert `src/ui/licenses.generated.ts` uit dezelfde bron als `check:licenses`. Het bestand bevat alle productiepakketten met SPDX en copyrightregels, plus één volledige tekst per licentiesoort (en de NOTICE-inhoud van Apache-pakketten, K-3). Een test faalt als het bestand verouderd is.
 
@@ -1349,3 +1356,4 @@ Alle afwijkingen uit `docs/DEVIATIONS.md` (D-01..D-35) zijn door de Architect be
 | 1.0.1 | 2026-10-06 | Redactioneel, na de review van de Engineer op v1.0: `expo-keep-awake` uit §4.1 (niet geïnstalleerd, UX-14 niet gebouwd), `ListState`/`Regs` als `Readonly`/`ReadonlyMap` in §5.4 en §10. Daarnaast D-33..D-35 en D-ET-08 (Expo-patchversies) verwerkt in §4.1, §5.5, §6.6 en §18. |
 | 1.0.2 | 2026-10-07 | CR-01/CR-02 (REQUIREMENTS v0.5, UX-15/UX-16): swipe-rijen (D-37) verwerkt in §4.1, §12 en §18. Goedgekeurd met de voorwaarde S-1 uit de review: de volledige swipe meten op de sleepafstand van de vinger. |
 | 1.1 | 2026-10-07 | CR-03 store-publicatie: nieuw §19 (identiteit, `app.json`/`eas.json`, rechten, export compliance, deellinks, normatieve regel voor toestelherstel `install_id`, licenties, publicatie van de repository). D-38..D-43 goedgekeurd (review CR-03). |
+| 1.1.1 | 2026-10-08 | §19 aangevuld met K-6/`install_id_unsaved` (D-46) en het device-only merkteken in `Paths.cache` (D-50); Android-aandachtspunt A-1 (`dataExtractionRules` voor overdracht tussen toestellen). D-44..D-46 en D-50 verwijzen naar §19. |

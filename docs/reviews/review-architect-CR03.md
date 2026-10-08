@@ -191,3 +191,42 @@ Gecontroleerd in de code: `BootschapApp.checkInstallation`/`newInstallId`/`write
 **Restpunt (klein, R-2, geen blokkade):** `install_id_unsaved` staat in `meta` en gaat dus mee in een iOS-back-up. Faalde op het origineel het schrijven naar de KeyStore (zeldzaam), dan herkent een kopie uit die back-up zichzelf niet als herstel, en delen beide even de identiteit, tot het origineel zijn id wel kan opslaan. De kans is erg klein, want het vraagt een structurele Keychain-fout plus een herstel. Advies voor later: herken het herstel bij `install_id_unsaved` ook aan een tweede device-only merkteken, of roteer de identiteit van het origineel zodra het schrijven alsnog slaagt.
 
 **Eindoordeel CR-03: AKKOORD.** Alle belangrijke bevindingen (C-1..C-4, R-1) en de kleine bevindingen (K-1 bij de Projectleider, K-2..K-6) zijn afgehandeld. D-38..D-46 zijn goedgekeurd. ARCHITECTURE §19 beschrijft het gedrag. Wat nog openstaat ligt buiten de Architect: de handmatige release-rooktest (ST-16), de beslissing en acties van Nick (indiening, formulieren, juridische bevestiging van export en uitgever), het eindakkoord van de Projectleider, en de update van ET-F14-1 en ET-F13-2 door de Eindtester.
+
+---
+
+## 8. Hercontrole R-2 (D-50) en `ascAppId` (commit `f4b666a`, 2026-10-08)
+
+**Oordeel: AKKOORD.** Eén aandachtspunt voor Android (A-1), vóór de Android-release.
+
+**Klopt de aanname over back-ups?**
+- **Ja, voor iCloud- en computerback-ups.** `Library/Caches` (`Paths.cache`) zit niet in iCloud-back-ups en niet in back-ups via Finder of iTunes; dat is het gedocumenteerde iOS-gedrag.
+- **Directe overdracht via "Snel starten"** volgt naar verwachting dezelfde regels, maar dat is niet te testen zonder twee toestellen. Neem het op als handmatige controle bij ST-16, wanneer Nick van toestel wisselt; het is geen blokkade.
+- **Opruimen door iOS.** iOS kan Caches bij weinig opslag leegmaken terwijl de app niet draait. Dat geeft hooguit één extra rotatie per opruiming. Een rotatie is altijd veilig: een nieuwe sleutel en device-ID, en de data blijft (§19).
+
+**Kan een vals "hersteld" tot een rotatielus leiden?**
+**Nee.** Er zijn drie gevallen, telkens na een rotatie:
+- het merkteken is geschreven → de volgende start ziet een gelijk merkteken en roteert niet;
+- het merkteken kan niet worden geschreven → `install_marker_failed` → K-6-gedrag, geen rotatie;
+- het merkteken kan niet worden gelezen → `undefined` → K-6-gedrag.
+
+Een lus kan alleen ontstaan als iOS de cache vóór élke start opruimt; dat is geen realistisch scenario. Het merkteken speelt bovendien alleen mee in het K-6-pad (de KeyStore faalt structureel). In het normale pad wordt het niet eens gelezen.
+
+**Android (A-1, aandachtspunt).** `allowBackup: false` zet alleen `android:allowBackup="false"`. Expo genereert **geen** `android:dataExtractionRules`. Volgens de Android-documentatie geldt voor apps met targetSdk ≥ 31 dat `allowBackup="false"` cloud-back-ups uitzet, maar dat de overdracht van toestel naar toestel (bij het instellen van een nieuwe telefoon) apart via `dataExtractionRules` wordt geregeld.
+- **Het risico.** Een D2D-overdracht kan de SQLite-database en de versleutelde SharedPreferences van `expo-secure-store` meenemen, maar nooit de hardwaresleutels van de Android Keystore.
+- **Gevolg op de kopie.** Op de kopie gooien de reads van de KeyStore dan een fout (ontsleutelen lukt niet). `checkInstallation` slaat de controle bij een fout over, dus de kopie roteert niet en houdt de device-ID van het origineel. De lijstgeheimen zijn daar ook niet meer leesbaar.
+
+**Advies, vóór de Android-release (het blokkeert de iOS-indiening niet):**
+- (a) een config-plugin met `android:dataExtractionRules`/`fullBackupContent` die alle domeinen uitsluit, voor zowel `cloud-backup` als `device-transfer`. Dan neemt de kopie niets mee en is het een schone installatie;
+- (b) controleer in de gebouwde manifest (`expo prebuild` in een tijdelijke map) dat de regel erin staat;
+- (c) optioneel: behandel op Android een **leesfout** van `install_id` als herstel. Een app zonder Direct Boot start op Android nooit vóór de ontgrendeling, dus daar betekent een leesfout geen vergrendeld toestel.
+
+**Bewijzen de tests het?**
+**Ja, voor de beslislogica.** In `restore.test.ts`:
+- **R-2:** het origineel met een falende KeyStore plus merkteken blijft zichzelf; de kopie met een leeg merkteken roteert (`install.restored-unsaved`); alle drie convergeren.
+- **D-50:** cache opgeruimd → één rotatie, daarna stabiel, zonder dataverlies; merkteken niet schrijfbaar → één rotatie, daarna nooit meer.
+- **Grens:** de tests gebruiken een `MemoryDeviceMarker`. Dat iOS Caches echt buiten de back-up houdt, is platformgedrag en niet in Jest te bewijzen; dat valt onder de handmatige controle hierboven.
+- **`ExpoCacheMarker`** gebruikt de nieuwe `File`/`Paths`-API van `expo-file-system` (SDK 57, in Expo Go). `exists`, `create`, `write` en `text` zijn correct gebruikt.
+
+**`ascAppId` `6820509019`:** goed. Het is een publiek App Store Connect-ID en geen geheim. De test eist het exacte nummer. D-47(c) vervalt hiermee.
+
+**D-50 goedgekeurd.** ARCHITECTURE v1.1.1 §19 is bijgewerkt.
