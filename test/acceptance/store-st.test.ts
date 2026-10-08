@@ -344,10 +344,27 @@ describe('ST-09: schermafbeeldingen en feature graphic', () => {
     }
   }, 180_000);
 
-  it('ET-ST09-3: demolijst en schermafbeeldingen-instructies aanwezig (de ruwe beelden maakt Nick)', () => {
+  it('ET-ST09-3: demolijst aanwezig; de echte schermafbeeldingen staan in de eindformaten, zonder alfakanaal (Apple 1320x2868 en 1179x2556; Google 1080x1920)', () => {
     expect(fs.readFileSync(R('docs/store/demo-data.md'), 'utf8').length).toBeGreaterThan(200);
-    expect(fs.existsSync(R('store/screenshots/out'))).toBe(false); // nog niet gemaakt: openstaand voor Nick
+    const sets: [string, number, number, number][] = [
+      ['store/screenshots/out/apple-6.9/alle', 1320, 2868, 1],
+      ['store/screenshots/out/apple-6.3/alle', 1179, 2556, 1],
+      ['store/screenshots/out-android/google/alle', 1080, 1920, 2],
+    ];
+    for (const [dir, w, h, min] of sets) {
+      const files = fs.readdirSync(R(dir)).filter((f) => f.endsWith('.png'));
+      expect([dir, files.length >= min && files.length <= 10]).toEqual([dir, true]);
+      for (const f of files) {
+        const i = pngInfo(R(dir, f));
+        expect([dir, f, i.width, i.height, i.hasAlpha]).toEqual([dir, f, w, h, false]);
+      }
+    }
+    // Google: zijden 320..3840, lange zijde hooguit 2x de korte zijde (1080x1920 voldoet)
+    expect(1920 / 1080).toBeLessThanOrEqual(2);
+    // geen persoonlijke gegevens in de bestandsnamen; de ruwe beelden staan er ook
+    expect(fs.readdirSync(R('store/screenshots/raw')).filter((f) => f.endsWith('.png')).length).toBeGreaterThanOrEqual(1);
   });
+
 });
 
 describe('ST-11 / ST-18: geen verzamelende componenten', () => {

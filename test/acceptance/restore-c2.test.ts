@@ -8,6 +8,8 @@ import { createTestDevice, type TestDevice } from '../sim/device';
 import { FAST, makeWsWorld, names, SwitchableWsFactory, waitFor, wsShareAndJoin, type WsWorld } from '../sim/ws';
 import { realTimers } from '../support/VirtualScheduler';
 import { MemoryKeyStore } from '../support/MemoryKeyStore';
+import { MemoryDeviceMarker } from '../support/MemoryDeviceMarker';
+import { keyNames } from '../../src/storage/KeyStore';
 import { tmpDbFile } from '../support/single';
 import { canonicalOf } from './helpers';
 
@@ -16,7 +18,20 @@ afterEach(async () => {
   await w?.stop();
 });
 
-async function wsDevice(name: string, o: { dbFile?: string; keys?: MemoryKeyStore } = {}): Promise<TestDevice> {
+/** Een Keychain die de install_id niet kan opslaan (de storing waar R-2 / D-50 voor bedoeld is). */
+class KeychainWithoutInstallId extends MemoryKeyStore {
+  override async set(key: string, value: string, opts?: Parameters<MemoryKeyStore['set']>[2]): Promise<void> {
+    if (key === keyNames.installId) throw new Error('Keychain niet beschikbaar');
+    return super.set(key, value, opts);
+  }
+  override restoredCopy(): KeychainWithoutInstallId {
+    const k = new KeychainWithoutInstallId();
+    for (const [key, v] of this.data) if (!this.deviceOnly.has(key)) k.data.set(key, v);
+    return k;
+  }
+}
+
+async function wsDevice(name: string, o: { dbFile?: string; keys?: MemoryKeyStore; deviceMarker?: MemoryDeviceMarker } = {}): Promise<TestDevice> {
   const net = new SwitchableWsFactory();
   const d = await createTestDevice({
     name,
@@ -24,6 +39,7 @@ async function wsDevice(name: string, o: { dbFile?: string; keys?: MemoryKeyStor
     timers: realTimers,
     dbFile: o.dbFile,
     keys: o.keys,
+    deviceMarker: o.deviceMarker,
     config: { ...FAST },
     transportFactory: ({ clock, timers, relays, config }) =>
       Object.assign(
@@ -133,4 +149,43 @@ describe('C-2 / R-1: herstel uit een back-up', () => {
     await a2.restart();
     expect(a2.app.sharedLists()[0].identity.id).toBe(pk2);
   }, 60_000);
+
+  it('ET-C2-3 (R-2 / D-50): faalde het schrijven naar de KeyStore op het origineel, dan roteert een kopie uit de back-up toch (device-only merkteken ontbreekt), met geldige pubkey en werkende sync; het origineel roteert nooit, ook niet na herstarts', async () => {
+    w = await makeWsWorld(2);
+    const fileA = tmpDbFile('a');
+    const keysA = new KeychainWithoutInstallId();
+    const markerA = new MemoryDeviceMarker();
+    const a = await wsDevice('A', { dbFile: fileA, keys: keysA, deviceMarker: markerA });
+    const b = await wsDevice('B');
+    const ids = await wsShareAndJoin(a, [b]);
+    const [la, lb] = [ids.get(a)!, ids.get(b)!];
+    a.app.addItem(la, { text: 'melk' });
+    await waitFor(() => names(b, lb).includes('Melk'), 20_000);
+    const pk = a.app.sharedLists()[0].identity.id;
+    const dev = a.app.deviceId;
+    expect(markerA.value).toBeTruthy(); // het merkteken is geschreven
+    expect(await keysA.get(keyNames.installId)).toBeNull(); // en de KeyStore heeft de install_id niet
+    // Kopie uit de back-up: database en Keychain mee, de cache (merkteken) niet
+    const a2 = await wsDevice('A-hersteld', { dbFile: backupDb(fileA), keys: keysA.restoredCopy(), deviceMarker: new MemoryDeviceMarker() });
+    const pk2 = a2.app.sharedLists()[0].identity.id;
+    expect(pk2).toMatch(/^[0-9a-f]{64}$/);
+    expect(pk2).not.toBe(pk);
+    expect(a2.app.deviceId).not.toBe(dev);
+    expect(names(a2, la)).toEqual(['Melk']);
+    // Het origineel blijft wie het was, ook na twee herstarts
+    for (let i = 0; i < 2; i++) {
+      await a.restart();
+      expect(a.app.deviceId).toBe(dev);
+      expect(a.app.sharedLists()[0].identity.id).toBe(pk);
+    }
+    // Alle drie ontvangen en versturen wijzigingen via de strikte relay
+    a.app.addItem(la, { text: 'kaas' });
+    a2.app.addItem(la, { text: 'brood' });
+    b.app.addItem(lb, { text: 'eieren' });
+    const all = ['Brood', 'Eieren', 'Kaas', 'Melk'];
+    await waitFor(() => [[a, la], [a2, la], [b, lb]].every(([d, l]) => names(d as TestDevice, l as string).join() === all.join()), 30_000);
+    await waitFor(() => [a, a2].every((d) => d.app.syncStatus(la).pending === 0) && b.app.syncStatus(lb).pending === 0, 20_000);
+    expect(canonicalOf(a2, la)).toBe(canonicalOf(b, lb));
+    expect(canonicalOf(a, la)).toBe(canonicalOf(b, lb));
+  }, 90_000);
 });

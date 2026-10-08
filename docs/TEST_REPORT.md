@@ -488,3 +488,51 @@ De tests van ST-12/ST-05 zijn door de Engineer bijgewerkt voor D-49 (geen encryp
 
 Geen nieuwe defecten. UX-17 is aantoonbaar gehaald; het gedrag van de Engineer komt overeen met de eis, ook bij de randgevallen.
 Het advies voor ST-15 en de store-indiening uit addendum CR-03 blijft gelden, met de kanttekening dat de publieke historie (`main`) schoon is zolang alleen `main` wordt gepusht; de lokale branches mogen niet worden gepusht.
+
+---
+
+# Addendum "Na lancering" (2026-10-08): R-2 / D-50 en `ascAppId`
+
+Basis: commit `f4b666a` (device-only merkteken bij herstelherkenning, D-50; `submit.production.ios.ascAppId` in `eas.json`) en de echte schermafbeeldingen (commits `964b50e`, `cc9431c`).
+
+## 1. Schermafbeeldingen (ST-09)
+
+ET-ST09-3 verwachtte dat de eindbeelden nog niet bestonden; dat klopte tot Nick ze maakte. De test is bijgewerkt en controleert nu de echte bestanden:
+
+| Set | Bestanden | Formaat | Alfakanaal | Oordeel |
+|---|---|---|---|---|
+| `store/screenshots/out/apple-6.9/alle` | 4 | 1320x2868 | geen | **PASS** |
+| `store/screenshots/out/apple-6.3/alle` | 4 | 1179x2556 | geen | **PASS** |
+| `store/screenshots/out-android/google/alle` | 4 | 1080x1920 (verhouding 16:9, Google-regels) | geen | **PASS** |
+
+De ruwe beelden (iPhone en Android) staan ook in de repo. ST-09 is daarmee voor het `[auto]`-deel volledig aangetoond; de beoordeling van het uiterlijk ligt bij de Projectleider en Nick.
+
+## 2. R-2 / D-50 (KeyStore faalt bij het opslaan van de `install_id`)
+
+Nieuwe acceptatietest `ET-C2-3` (in `test/acceptance/restore-c2.test.ts`, echte NostrTransport en een relay die lege `authors` weigert):
+
+| Criterium | Oordeel |
+|---|---|
+| Faalt het schrijven naar de KeyStore op het origineel, dan schrijft de app het device-only merkteken (cache); de KeyStore heeft de `install_id` niet | **PASS** |
+| Een kopie uit de back-up (database en Keychain mee, cache met het merkteken niet) herkent zich en **roteert**: nieuwe device-ID en een nieuwe, geldige pubkey (64 hex), lijst en items blijven | **PASS** |
+| Het origineel roteert **niet**: zelfde device-ID en pubkey, ook na twee herstarts | **PASS** |
+| Origineel, kopie en partner ontvangen en versturen wijzigingen via de strikte relay en convergeren naar dezelfde staat | **PASS** |
+
+Het eerdere gedrag (ET-C2-1 en ET-C2-2: gewoon herstel via `install_id`; een tweede start roteert niet opnieuw) blijft groen.
+
+## 3. `ascAppId`
+
+`eas.json` bevat `submit.production.ios.ascAppId` (numeriek); de configtests van ST-03/ST-17 (profielen `preview` en `production`, `appVersionSource: remote`, `autoIncrement`) blijven groen. Of dit App Store Connect-ID bij de juiste app hoort, kan ik zonder account niet toetsen (Nick/Engineer: gecontroleerd met `eas config`).
+
+## 4. Regressie
+
+| Controle | Resultaat |
+|---|---|
+| `npm test` | 82 suites geslaagd, 1 overgeslagen (live-rooktest); **594 tests geslaagd, 0 gefaald** |
+| `npm run typecheck` | 0 fouten |
+| `npm run test:handles` | schoon (594 geslaagd, geen open handles) |
+| `npx expo-doctor` / `check:deps` / `check:licenses` | 21/21 / "Dependencies are up to date" / 829 pakketten toegestaan |
+| `expo export` ios en android | geslaagd |
+| `npm run check:secrets` | werkmap **schoon**; historie-treffers zitten alleen in de lokale, niet gepushte branches (`master`, `lokale-historie`), niet in `main` |
+
+Geen nieuwe defecten. R-2 is opgelost en aantoonbaar; de eerdere adviezen (addenda CR-03 en CR-04) blijven gelden, met als enige wijziging dat de schermafbeeldingen (ST-09) nu aanwezig en correct zijn.
