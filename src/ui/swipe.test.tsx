@@ -110,9 +110,9 @@ describe('UX-15 (CR-01): item verwijderen door naar links te swipen', () => {
   async function setup() {
     const d = await singleDevice({ seed: 151 });
     const listId = d.app.lists()[0].id;
-    for (const n of ['melk', 'brood', 'kaas']) d.app.addItem(listId, { text: n });
+    for (const n of ['Melk', 'Brood', 'Kaas']) d.app.addItem(listId, { text: n });
     const store = makeStore(d.app);
-    store.actions.toggle(listId, itemIdByName(d.app, listId, 'kaas')!);
+    store.actions.toggle(listId, itemIdByName(d.app, listId, 'Kaas')!);
     mockH.params = { id: listId };
     render(<ListScreen />);
     return { d, listId };
@@ -121,19 +121,19 @@ describe('UX-15 (CR-01): item verwijderen door naar links te swipen', () => {
   it('UX-15: swipe toont de rode actie "Verwijderen"; tik erop verwijdert via de facade, zonder dialoog, met snackbar "Ongedaan maken"', async () => {
     const { d, listId } = await setup();
     // Dicht: de actie is niet bereikbaar.
-    expect(screen.queryByRole('button', { name: strings.swipeDeleteItem('melk') })).toBeNull();
-    await swipeOpen('melk');
-    const action = screen.getByRole('button', { name: strings.swipeDeleteItem('melk') });
+    expect(screen.queryByRole('button', { name: strings.swipeDeleteItem('Melk') })).toBeNull();
+    await swipeOpen('Melk');
+    const action = screen.getByRole('button', { name: strings.swipeDeleteItem('Melk') });
     expect(within(action).getByText(strings.swipeDelete)).toBeTruthy();
     await press(action);
-    expect(itemIdByName(d.app, listId, 'melk')).toBeUndefined();
-    expect(screen.queryByText('melk')).toBeNull();
+    expect(itemIdByName(d.app, listId, 'Melk')).toBeUndefined();
+    expect(screen.queryByText('Melk')).toBeNull();
     expect(mockH.alerts).toHaveLength(0);
-    expect(screen.getByText(strings.itemDeleted('melk'))).toBeTruthy();
+    expect(screen.getByText(strings.itemDeleted('Melk'))).toBeTruthy();
     // Ongedaan maken zet het item terug.
     await press(screen.getByRole('button', { name: strings.undo }));
-    expect(itemIdByName(d.app, listId, 'melk')).toBeDefined();
-    expect(screen.getByText('melk')).toBeTruthy();
+    expect(itemIdByName(d.app, listId, 'Melk')).toBeDefined();
+    expect(screen.getByText('Melk')).toBeTruthy();
   });
 
   it('UX-15: een volledige swipe verwijdert direct (ook een afgevinkt item), met undo', async () => {
@@ -141,44 +141,44 @@ describe('UX-15 (CR-01): item verwijderen door naar links te swipen', () => {
     expect(isFullSwipe(-400, 390)).toBe(true);
     expect(isFullSwipe(-96, 390)).toBe(false);
     expect(isFullSwipe(-(FULL_SWIPE_MIN - 1), 0)).toBe(false);
-    await swipeFull('kaas'); // afgevinkt
-    expect(itemIdByName(d.app, listId, 'kaas')).toBeUndefined();
+    await swipeFull('Kaas'); // afgevinkt
+    expect(itemIdByName(d.app, listId, 'Kaas')).toBeUndefined();
     expect(mockH.alerts).toHaveLength(0);
-    expect(screen.getByText(strings.itemDeleted('kaas'))).toBeTruthy();
+    expect(screen.getByText(strings.itemDeleted('Kaas'))).toBeTruthy();
     await press(screen.getByRole('button', { name: strings.undo }));
-    const back = d.app.view(listId).sections.flatMap((s) => s.items).find((i) => i.name === 'kaas');
+    const back = d.app.view(listId).sections.flatMap((s) => s.items).find((i) => i.name === 'Kaas');
     expect(back?.checked).toBe(true);
   });
 
   it('UX-15: er staat maximaal één rij open; een tweede swipe of een tik elders sluit de eerste, en de tik vinkt nog steeds af', async () => {
     const { d, listId } = await setup();
-    await swipeOpen('melk');
-    expect(screen.getByRole('button', { name: strings.swipeDeleteItem('melk') })).toBeTruthy();
-    await swipeOpen('brood');
-    expect(screen.queryByRole('button', { name: strings.swipeDeleteItem('melk') })).toBeNull();
-    expect(screen.getByRole('button', { name: strings.swipeDeleteItem('brood') })).toBeTruthy();
+    await swipeOpen('Melk');
+    expect(screen.getByRole('button', { name: strings.swipeDeleteItem('Melk') })).toBeTruthy();
+    await swipeOpen('Brood');
+    expect(screen.queryByRole('button', { name: strings.swipeDeleteItem('Melk') })).toBeNull();
+    expect(screen.getByRole('button', { name: strings.swipeDeleteItem('Brood') })).toBeTruthy();
     // Tik op een andere rij: open rij gaat dicht en het item wordt afgevinkt.
-    await press(screen.getByRole('checkbox', { name: strings.checkItem('melk') }));
-    expect(screen.queryByRole('button', { name: strings.swipeDeleteItem('brood') })).toBeNull();
-    expect(d.app.view(listId).sections.flatMap((s) => s.items).find((i) => i.name === 'melk')?.checked).toBe(true);
-    expect(itemIdByName(d.app, listId, 'brood')).toBeDefined();
+    await press(screen.getByRole('checkbox', { name: strings.checkItem('Melk') }));
+    expect(screen.queryByRole('button', { name: strings.swipeDeleteItem('Brood') })).toBeNull();
+    expect(d.app.view(listId).sections.flatMap((s) => s.items).find((i) => i.name === 'Melk')?.checked).toBe(true);
+    expect(itemIdByName(d.app, listId, 'Brood')).toBeDefined();
   });
 
   it('UX-15: elke itemrij heeft de accessibility action "Verwijderen" met dezelfde uitwerking', async () => {
     const { d, listId } = await setup();
-    const row = screen.getByRole('checkbox', { name: strings.checkItem('brood') });
+    const row = screen.getByRole('checkbox', { name: strings.checkItem('Brood') });
     expect(row.props.accessibilityActions).toEqual([{ name: 'delete', label: strings.swipeDelete }]);
     await act(async () => {
       fireEvent(row, 'accessibilityAction', { nativeEvent: { actionName: 'delete' } });
     });
-    expect(itemIdByName(d.app, listId, 'brood')).toBeUndefined();
+    expect(itemIdByName(d.app, listId, 'Brood')).toBeUndefined();
     expect(mockH.alerts).toHaveLength(0);
-    expect(screen.getByText(strings.itemDeleted('brood'))).toBeTruthy();
+    expect(screen.getByText(strings.itemDeleted('Brood'))).toBeTruthy();
     // Andere acties doen niets.
     await act(async () => {
-      fireEvent(screen.getByRole('checkbox', { name: strings.checkItem('melk') }), 'accessibilityAction', { nativeEvent: { actionName: 'activate' } });
+      fireEvent(screen.getByRole('checkbox', { name: strings.checkItem('Melk') }), 'accessibilityAction', { nativeEvent: { actionName: 'activate' } });
     });
-    expect(itemIdByName(d.app, listId, 'melk')).toBeDefined();
+    expect(itemIdByName(d.app, listId, 'Melk')).toBeDefined();
   });
 
   it('UX-15: de verwijdering en het herstel via "Ongedaan maken" syncen naar het tweede apparaat', async () => {
@@ -193,21 +193,21 @@ describe('UX-15 (CR-01): item verwijderen door naar links te swipen', () => {
     await act(async () => {
       await w.settle(10_000);
     });
-    expect(names(b, lb)).toEqual(expect.arrayContaining(['eieren', 'appels']));
+    expect(names(b, lb)).toEqual(expect.arrayContaining(['Eieren', 'Appels']));
     makeStore(a.app);
     mockH.params = { id: la };
     render(<ListScreen />);
-    await swipeOpen('eieren');
-    await press(screen.getByRole('button', { name: strings.swipeDeleteItem('eieren') }));
+    await swipeOpen('Eieren');
+    await press(screen.getByRole('button', { name: strings.swipeDeleteItem('Eieren') }));
     await act(async () => {
       await w.settle(10_000);
     });
-    expect(names(b, lb)).not.toContain('eieren');
+    expect(names(b, lb)).not.toContain('Eieren');
     await press(screen.getByRole('button', { name: strings.undo }));
     await act(async () => {
       await w.settle(10_000);
     });
-    expect(names(b, lb)).toContain('eieren');
+    expect(names(b, lb)).toContain('Eieren');
   });
 
   it('UX-15 / review K-2: met swipe-rijen hertekent afvinken in een lijst van 1000 items precies één rij', () => {
@@ -251,11 +251,11 @@ describe('UX-15 / review S-1: volledige swipe op een echt toestel (iPhone 16, ri
   async function setup() {
     const d = await singleDevice({ seed: 152 });
     const listId = d.app.lists()[0].id;
-    for (const n of ['melk', 'brood']) d.app.addItem(listId, { text: n });
+    for (const n of ['Melk', 'Brood']) d.app.addItem(listId, { text: n });
     makeStore(d.app);
     mockH.params = { id: listId };
     render(<ListScreen />);
-    const id = itemIdByName(d.app, listId, 'melk')!;
+    const id = itemIdByName(d.app, listId, 'Melk')!;
     // Echte rijbreedte zoals op het toestel.
     await act(async () => {
       fireEvent(screen.getByTestId(`item-${id}`), 'layout', { nativeEvent: { layout: { x: 0, y: 0, width: W, height: 56 } } });
@@ -287,26 +287,26 @@ describe('UX-15 / review S-1: volledige swipe op een echt toestel (iPhone 16, ri
     await drag(id, [-40, -120, -0.6 * W]);
     // ReanimatedSwipeable veert daarna terug naar de actie en meldt pas dan willOpen; dat mag niets dubbel doen.
     await act(async () => {
-      fireEvent(screen.getByText('brood'), 'swipeableWillOpen', 'left'); // andere rij: geen invloed
+      fireEvent(screen.getByText('Brood'), 'swipeableWillOpen', 'left'); // andere rij: geen invloed
     });
-    expect(itemIdByName(d.app, listId, 'melk')).toBeUndefined();
+    expect(itemIdByName(d.app, listId, 'Melk')).toBeUndefined();
     expect(spy).toHaveBeenCalledTimes(1);
-    expect(screen.getByText(strings.itemDeleted('melk'))).toBeTruthy();
+    expect(screen.getByText(strings.itemDeleted('Melk'))).toBeTruthy();
   });
 
   it('S-1: 40% slepen opent alleen de actie; ver slepen en weer terug vóór loslaten verwijdert niet', async () => {
     const { d, listId, id } = await setup();
     await drag(id, [-40, -0.4 * W]);
-    expect(itemIdByName(d.app, listId, 'melk')).toBeDefined();
+    expect(itemIdByName(d.app, listId, 'Melk')).toBeDefined();
     await drag(id, [-60, -0.7 * W, -100]);
-    expect(itemIdByName(d.app, listId, 'melk')).toBeDefined();
+    expect(itemIdByName(d.app, listId, 'Melk')).toBeDefined();
     expect(mockH.alerts).toHaveLength(0);
   });
 
   it('S-1: de rij is bij willOpen al teruggeveerd naar de actie (-96): de volledige swipe telt toch, en maar één keer', async () => {
     const { d, listId, id } = await setup();
     const spy = jest.spyOn(d.app, 'deleteItem');
-    const s = swipeableOf('melk');
+    const s = swipeableOf('Melk');
     const willOpen = s.props.onSwipeableWillOpen as (dir: string) => void;
     const opened = s.props.onSwipeableOpen as ((dir: string) => void) | undefined;
     await drag(id, [-50, -0.55 * W]);
@@ -315,7 +315,7 @@ describe('UX-15 / review S-1: volledige swipe op een echt toestel (iPhone 16, ri
       willOpen('left');
       opened?.('left');
     });
-    expect(itemIdByName(d.app, listId, 'melk')).toBeUndefined();
+    expect(itemIdByName(d.app, listId, 'Melk')).toBeUndefined();
     expect(spy).toHaveBeenCalledTimes(1);
   });
 });

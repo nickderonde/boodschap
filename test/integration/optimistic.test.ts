@@ -54,7 +54,7 @@ describe('UX-05 / I-1: optimistische UI in de facade', () => {
       regs: {},
       items: new Map<string, ItemState>([
         [x.itemId, { id: x.itemId, regs: { o: ['van de partner', h] }, del: null }],
-        ['YYYYYYYYYYYYYYYY', { id: 'YYYYYYYYYYYYYYYY', regs: { n: ['kaas', h], k: ['vleeswaren-kaas', h], x: [false, h], a: [1, h] }, del: null }],
+        ['YYYYYYYYYYYYYYYY', { id: 'YYYYYYYYYYYYYYYY', regs: { n: ['Kaas', h], k: ['vleeswaren-kaas', h], x: [false, h], a: [1, h] }, del: null }],
       ]),
     });
     await local.committed;
@@ -63,8 +63,8 @@ describe('UX-05 / I-1: optimistische UI in de facade', () => {
     d = await d.restart();
     expect(canonicalList(d.app.stateOf(listId))).toBe(cache); // cache = database
     const items = d.app.view(listId).sections.flatMap((s) => s.items);
-    expect(items.find((i) => i.name === 'brood')).toMatchObject({ quantity: 2, note: 'van de partner' });
-    expect(items.find((i) => i.name === 'kaas')).toBeTruthy();
+    expect(items.find((i) => i.name === 'Brood')).toMatchObject({ quantity: 2, note: 'van de partner' });
+    expect(items.find((i) => i.name === 'Kaas')).toBeTruthy();
   });
 
   it('I-1: een mislukte lokale taak laat de remote merge intact; cache wordt gelijk aan de database', async () => {

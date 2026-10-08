@@ -56,7 +56,7 @@ describe('Review M1–M3b: belangrijke bevindingen', () => {
     for (const id of withdrawn) expect(relay.received > 0 && stored.some((m) => m.id === id)).toBe(false);
     const last = (await a.app.readShards(listA))!.shards.get(0)!.lastEventId;
     expect(stored.map((m) => m.id)).toContain(last);
-    expect(names(b, ids.get(b)!)).toEqual(['na klokfout']);
+    expect(names(b, ids.get(b)!)).toEqual(['Na klokfout']);
   });
 
   it('bevinding 2: een vervalste kopie met hetzelfde event-ID van relay A onderdrukt het echte event van relay B niet', async () => {
@@ -77,7 +77,7 @@ describe('Review M1–M3b: belangrijke bevindingen', () => {
     good.faults.latencyMs = 300;
     b.net.online(true);
     await w.settle(10_000);
-    expect(names(b, ids.get(b)!)).toEqual(['echt']);
+    expect(names(b, ids.get(b)!)).toEqual(['Echt']);
   });
 
   it('bevinding 3: kick() tijdens het verbinden opent geen tweede socket', async () => {
@@ -168,9 +168,9 @@ describe('Review M1–M3b: bevinding 4 (relay-hints en F-14)', () => {
     const r = await b.app.join(info.text);
     if (r.kind !== 'joined') throw new Error();
     expect(await b.app.relays()).toContain(custom.url);
-    await waitFor(() => wsNames(b, r.listId).includes('via hint'), 10_000);
+    await waitFor(() => wsNames(b, r.listId).includes('Via hint'), 10_000);
     b.app.addItem(r.listId, { text: 'van B' });
-    await waitFor(() => wsNames(a, listA).includes('van B'), 10_000);
+    await waitFor(() => wsNames(a, listA).includes('Van B'), 10_000);
   });
 
   it('bevinding 4: setRelays bereikt de transport zonder herstart', async () => {

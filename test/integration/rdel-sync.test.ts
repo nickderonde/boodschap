@@ -37,7 +37,7 @@ describe('S-07 / H-05: R-DEL op twee apparaten (hub), beide leveringsvolgordes',
     });
     it(`S-07b: A verwijdert, B bewerkt later → terug met B's wijziging (eerst ${order} online)`, async () => {
       const r = await scenario(order, [({ a, la, id }) => void a.app.deleteItem(la, id), ({ adv }) => adv(2_000), ({ b, lb, id }) => void b.app.updateItem(lb, id, { name: 'oude kaas' })]);
-      expect(r.a).toEqual(['oude kaas']);
+      expect(r.a).toEqual(['Oude kaas']);
     });
     it(`S-07c: beide verwijderen → weg (eerst ${order} online)`, async () => {
       const r = await scenario(order, [({ a, la, id }) => void a.app.deleteItem(la, id), ({ b, lb, id }) => void b.app.deleteItem(lb, id)]);
@@ -45,7 +45,7 @@ describe('S-07 / H-05: R-DEL op twee apparaten (hub), beide leveringsvolgordes',
     });
     it(`S-07d: verwijderen + opnieuw toevoegen met dezelfde naam → nieuw item blijft (eerst ${order} online)`, async () => {
       const r = await scenario(order, [({ a, la, id }) => void a.app.deleteItem(la, id), ({ b, lb }) => void b.app.addItem(lb, { text: 'kaas' }, { force: true })]);
-      expect(r.a).toEqual(['kaas']);
+      expect(r.a).toEqual(['Kaas']);
     });
     it(`S-07e: A wist afgevinkte, B vinkte eerder af → weg (eerst ${order} online)`, async () => {
       const r = await scenario(order, [
@@ -64,8 +64,8 @@ describe('S-07 / H-05: R-DEL op twee apparaten (hub), beide leveringsvolgordes',
           a.app.undo(result);
         },
       ]);
-      expect(r.a).toEqual(['kaas']);
-      expect(r.b).toEqual(['kaas']);
+      expect(r.a).toEqual(['Kaas']);
+      expect(r.b).toEqual(['Kaas']);
     });
   }
 });

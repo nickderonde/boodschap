@@ -16,7 +16,7 @@ describe('Items (F-02..F-06, F-09, F-17, UX-10)', () => {
     await r.committed;
     d = await d.restart();
     const it = d.app.view(listId).sections[0].items[0];
-    expect(it).toMatchObject({ name: 'kaas', quantity: 500, unit: 'g', note: 'jong belegen', category: 'vleeswaren-kaas', checked: false });
+    expect(it).toMatchObject({ name: 'Kaas', quantity: 500, unit: 'g', note: 'jong belegen', category: 'vleeswaren-kaas', checked: false });
   });
 
   it('F-02: validatie — lege naam geweigerd, naam ≤ 80, notitie ≤ 200', async () => {
@@ -35,8 +35,8 @@ describe('Items (F-02..F-06, F-09, F-17, UX-10)', () => {
     d.app.addItem(listId, { text: '2 melk' });
     d.app.addItem(listId, { text: '500 g kaas' });
     const its = allItems(d.app.view(listId)) as unknown as { name: string; quantity: number; unit: string | null }[];
-    expect(its.find((i) => i.name === 'melk')).toMatchObject({ quantity: 2, unit: null });
-    expect(its.find((i) => i.name === 'kaas')).toMatchObject({ quantity: 500, unit: 'g' });
+    expect(its.find((i) => i.name === 'Melk')).toMatchObject({ quantity: 2, unit: null });
+    expect(its.find((i) => i.name === 'Kaas')).toMatchObject({ quantity: 500, unit: 'g' });
   });
 
   it('F-02: 1000 items per lijst werkt en blijft na herstart bewaard', async () => {
@@ -59,7 +59,7 @@ describe('Items (F-02..F-06, F-09, F-17, UX-10)', () => {
     d.app.toggleChecked(listId, a.itemId);
     let v = d.app.view(listId);
     expect(v.sections[v.sections.length - 1].key).toBe('afgevinkt');
-    expect(v.sections[v.sections.length - 1].items[0].name).toBe('appels');
+    expect(v.sections[v.sections.length - 1].items[0].name).toBe('Appels');
     expect([v.checkedCount, v.total]).toEqual([1, 2]);
     await d.app.toggleChecked(listId, a.itemId).committed;
     v = d.app.view(listId);
@@ -78,7 +78,7 @@ describe('Items (F-02..F-06, F-09, F-17, UX-10)', () => {
     expect(() => d.app.updateItem(listId, r.itemId, { name: '' })).toThrow(InputError);
     expect(() => d.app.updateItem(listId, r.itemId, { category: 'bestaat-niet' as never })).toThrow(InputError);
     d = await d.restart();
-    expect(d.app.view(listId).sections[0].items[0]).toMatchObject({ name: 'volkorenbrood', quantity: 2, unit: 'stuks', note: 'gesneden', category: 'brood-gebak' });
+    expect(d.app.view(listId).sections[0].items[0]).toMatchObject({ name: 'Volkorenbrood', quantity: 2, unit: 'stuks', note: 'gesneden', category: 'brood-gebak' });
     await d.app.updateItem(listId, r.itemId, { quantity: null, note: null }).committed;
     expect(d.app.view(listId).sections[0].items[0]).toMatchObject({ quantity: null, note: null });
   });

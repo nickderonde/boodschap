@@ -34,7 +34,7 @@ describe('S-08: relay als brievenbus (WS)', () => {
     await a.shutdown();
     b.net.online(true);
     await waitFor(() => names(b, ids.get(b)!).length === 2, 10_000);
-    expect(names(b, ids.get(b)!)).toEqual(['eieren', 'melk']);
+    expect(names(b, ids.get(b)!)).toEqual(['Eieren', 'Melk']);
   });
 
   it('S-08c: B 7 dagen offline (gesimuleerde klok) → idem', async () => {
@@ -51,8 +51,8 @@ describe('S-08: relay als brievenbus (WS)', () => {
     a.app.addItem(ids.get(a)!, { text: 'na een week' });
     await waitFor(() => a.app.syncStatus(ids.get(a)!).kind === 'gesynchroniseerd', 10_000);
     b.net.online(true);
-    await waitFor(() => names(b, ids.get(b)!).includes('na een week'), 10_000);
+    await waitFor(() => names(b, ids.get(b)!).includes('Na een week'), 10_000);
     b.app.addItem(ids.get(b)!, { text: 'antwoord van B' });
-    await waitFor(() => names(a, ids.get(a)!).includes('antwoord van B'), 10_000);
+    await waitFor(() => names(a, ids.get(a)!).includes('Antwoord van B'), 10_000);
   });
 });

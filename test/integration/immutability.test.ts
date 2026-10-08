@@ -54,7 +54,7 @@ describe('Invariant §5.5: ItemState is onveranderlijk', () => {
           }
         }
         for (const it of m.items.values()) {
-          mergeList(m, editItemDelta(it, { x: true, n: 'kaas' }, clk, 1_759_740_000_000));
+          mergeList(m, editItemDelta(it, { x: true, n: 'Kaas' }, clk, 1_759_740_000_000));
           mergeList(m, deleteItemDelta(it, clk, 1_759_740_000_001));
           mergeList(m, restoreItemDelta(it, clk, 1_759_740_000_002));
         }
@@ -105,6 +105,6 @@ describe('Invariant §5.5: ItemState is onveranderlijk', () => {
     await w.settle(10_000);
     expect(unchanged(taken)).toBe(true);
     expect(names(a, la)).toEqual(names(b, lb));
-    expect(names(b, lb)).toEqual(['brood', 'kaas']);
+    expect(names(b, lb)).toEqual(['Brood', 'Kaas']);
   });
 });

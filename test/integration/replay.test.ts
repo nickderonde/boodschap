@@ -21,7 +21,7 @@ describe('S-11: replay en duplicaten (hub)', () => {
       const j = await c.app.join(info.text);
       await w.settle(20_000);
       if (j.kind === 'error') throw new Error();
-      expect(names(c, j.listId)).toEqual(['p0', 'p1', 'p2', 'p3', 'p4']);
+      expect(names(c, j.listId)).toEqual(['P0', 'P1', 'P2', 'P3', 'P4']);
       expect(canonicalList(c.app.stateOf(j.listId))).toBe(canonicalList(a.app.stateOf(ids.get(a)!)));
     }
   });
@@ -50,7 +50,7 @@ describe('S-11: replay en duplicaten (hub)', () => {
     await b.restart();
     await w.settle(10_000);
     expect(canonicalList(b.app.stateOf(ids.get(b)!))).toBe(ref);
-    expect(names(b, ids.get(b)!)).toEqual(['later', 'nieuw']);
+    expect(names(b, ids.get(b)!)).toEqual(['Later', 'Nieuw']);
   });
 
   it('S-11: eigen echo\'s (eigen events terug van de relay) veranderen niets', async () => {

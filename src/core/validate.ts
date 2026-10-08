@@ -1,4 +1,5 @@
-// Invoer- en payloadvalidatie (F-01, F-02, F-04, §5.3, §5.4, S-14).
+// Invoer- en payloadvalidatie (F-01, F-02, F-04, §5.3, §5.4, S-14). Namen met hoofdletter (UX-17).
+import { capitalizeName } from './capitalize';
 
 export const LIST_NAME_MAX = 40;
 export const ITEM_NAME_MAX = 80;
@@ -25,14 +26,14 @@ export function cleanListName(name: string): string {
   const t = (name ?? '').trim();
   if (t.length === 0) throw new InputError('naam-leeg');
   if (t.length > LIST_NAME_MAX) throw new InputError('naam-te-lang');
-  return t;
+  return capitalizeName(t);
 }
 
 export function cleanItemName(name: string): string {
   const t = (name ?? '').trim().replace(/\s+/g, ' ');
   if (t.length === 0) throw new InputError('naam-leeg');
   if (t.length > ITEM_NAME_MAX) throw new InputError('naam-te-lang');
-  return t;
+  return capitalizeName(t);
 }
 
 export function cleanNote(note: string | null | undefined): string | null {

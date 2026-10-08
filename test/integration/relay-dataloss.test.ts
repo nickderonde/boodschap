@@ -88,7 +88,7 @@ describe('S-10: relay-dataverlies (WS)', () => {
     expect(new Set(fromA.map((x) => x.id)).size).toBe(1); // steeds hetzelfde event
     w.relays[0].faults.silentDrop = false;
     w.relays[0].dropConnections(); // nieuwe REQ → EOSE → eigen-staatcontrole
-    await waitFor(() => names(b, ids.get(b)!).includes('stil'), 10_000);
+    await waitFor(() => names(b, ids.get(b)!).includes('Stil'), 10_000);
   });
 
   it('B-2 (WS): gelijktijdige flushes → strikt stijgende versies; de relay houdt het nieuwste event', async () => {

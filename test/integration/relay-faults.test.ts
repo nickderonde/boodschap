@@ -1,4 +1,5 @@
 // S-09: relay-uitval (WS, 3 relays).
+import { capitalizeName } from '../../src/core/capitalize';
 import { addWsDevice, makeWsWorld, names, sleep, waitFor, wsShareAndJoin, type WsWorld } from '../sim/ws';
 import { RelayConnection, type WebSocketLike } from '../../src/sync/transports/nostr/RelayConnection';
 import { VirtualScheduler } from '../support/VirtualScheduler';
@@ -29,7 +30,7 @@ describe('S-09: relay-uitval (WS)', () => {
       await sleep(200);
       const t = `item ${i++}`;
       a.app.addItem(ids.get(a)!, { text: t });
-      const ms = await waitFor(() => names(b, ids.get(b)!).includes(t), 5_000);
+      const ms = await waitFor(() => names(b, ids.get(b)!).includes(capitalizeName(t)), 5_000); // UX-17
       expect(ms).toBeLessThan(2_000);
       off();
     }
@@ -62,7 +63,7 @@ describe('S-09: relay-uitval (WS)', () => {
     w.relays[0].setDown(true);
     w.relays[0].wipe();
     a.app.addItem(ids.get(a)!, { text: 'tijdens uitval' });
-    await waitFor(() => names(b, ids.get(b)!).includes('tijdens uitval'));
+    await waitFor(() => names(b, ids.get(b)!).includes('Tijdens uitval'));
     w.relays[0].setDown(false);
     a.app.foreground();
     const aPub = a.app.sharedLists()[0].identity.id;

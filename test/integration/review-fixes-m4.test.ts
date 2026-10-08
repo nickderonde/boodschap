@@ -35,7 +35,7 @@ describe('Review M4/M5: N1 (pause/resume-race)', () => {
     expect(a.app.syncStatus(ids.get(a)!).kind).not.toBe('offline');
     a.app.addItem(ids.get(a)!, { text: 'na terugkeer' });
     await w.settle(30_000);
-    expect(names(b, ids.get(b)!)).toEqual(['na terugkeer', 'vlak voor achtergrond']);
+    expect(names(b, ids.get(b)!)).toEqual(['Na terugkeer', 'Vlak voor achtergrond']);
   });
 });
 

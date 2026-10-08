@@ -19,7 +19,7 @@ describe('S-02: geen verlies bij crash (lokaal)', () => {
         const confirmed: string[] = [];
         const pending: Promise<void>[] = [];
         for (let i = 0; i < n; i++) {
-          const name = `artikel-${i}`;
+          const name = `Artikel-${i}`; // UX-17: al met hoofdletter, zodat de naam ongewijzigd blijft
           try {
             const r = d.app.addItem(listId, { text: name });
             pending.push(r.committed.then(() => void confirmed.push(name)).catch(() => {}));
@@ -32,7 +32,7 @@ describe('S-02: geen verlies bij crash (lokaal)', () => {
         const names = new Set(after.app.view(listId).sections.flatMap((s) => s.items.map((i) => i.name)));
         for (const c of confirmed) expect(names.has(c)).toBe(true);
         // De database is consistent: alles wat er staat, is een geldig item.
-        for (const nm of names) expect(nm).toMatch(/^artikel-\d+$/);
+        for (const nm of names) expect(nm).toMatch(/^Artikel-\d+$/);
       }),
       { numRuns, seed: 20261006 },
     );

@@ -35,7 +35,7 @@ describe('S-20: schemaversie', () => {
     // De eigen v1-snapshots worden gewoon verder gepubliceerd.
     b.app.addItem(listB, { text: 'gaat door' });
     await w.settle(10_000);
-    expect(names(a, ids.get(a)!)).toEqual(['gaat door']);
+    expect(names(a, ids.get(a)!)).toEqual(['Gaat door']);
   });
 
   it('S-20: onbekende registers (nieuwere minor-versie) blijven bewaard en worden doorgegeven', async () => {

@@ -18,7 +18,7 @@ describe('F-07: ongedaan maken', () => {
     const v = d.app.view(listId);
     expect(v.total).toBe(2);
     expect(v.checkedCount).toBe(2);
-    expect(v.sections[0].items.find((i) => i.name === 'appels')?.quantity).toBe(3);
+    expect(v.sections[0].items.find((i) => i.name === 'Appels')?.quantity).toBe(3);
 
     const { result: tok2 } = d.app.deleteItem(listId, a.itemId);
     await d.app.undo(tok2).committed;

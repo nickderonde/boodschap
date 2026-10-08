@@ -38,7 +38,7 @@ describe('NF-12: gesimuleerde apparaten en KillSwitch', () => {
     await a.restart();
     await a.app.addItem(listA, { text: 'na herstart' }).committed;
     const names = a.app.view(listA).sections.flatMap((s) => s.items.map((i) => i.name)).sort();
-    expect(names).toEqual(['blijft', 'na herstart']);
+    expect(names).toEqual(['Blijft', 'Na herstart']);
   });
 
   it('I-2: over 5 herstarts geen dubbele item-ID\'s of nonces', async () => {

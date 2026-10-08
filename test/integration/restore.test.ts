@@ -64,7 +64,7 @@ describe('§19: toestelherstel (install_id)', () => {
     expect(newPk).toBeTruthy();
     expect(newPk).not.toBe(oldPk);
     expect(await restoredKeys.get(keyNames.nostr(la))).not.toBe(await a.keys.get(keyNames.nostr(la)));
-    expect(names(a2, la)).toEqual(['brood', 'melk']);
+    expect(names(a2, la)).toEqual(['Brood', 'Melk']);
     // R-1: geen lege of ongeldige pubkey in de eigen sync-tabellen van de kopie (die zou in het REQ-filter belanden).
     const rows = await a2.app.repo.read(async (r) => ({
       members: await r.all<{ pubkey: string }>('SELECT pubkey FROM members WHERE list_id=?', [la]),
@@ -98,7 +98,7 @@ describe('§19: toestelherstel (install_id)', () => {
     a2.app.addItem(la, { text: 'eieren' });
     b.app.addItem(lb, { text: 'appels' });
     await w.settle(60_000);
-    const expected = ['appels', 'brood', 'eieren', 'kaas', 'melk'];
+    const expected = ['Appels', 'Brood', 'Eieren', 'Kaas', 'Melk'];
     // De kopie doet mee als nieuw lid: B kent nu drie verschillende afzenders (A, de kopie en zichzelf).
     const members = await b.app.repo.read((r) => r.all<{ pubkey: string }>('SELECT pubkey FROM members WHERE list_id=?', [lb]));
     expect(new Set(members.map((m) => m.pubkey)).size).toBe(3);
@@ -107,14 +107,14 @@ describe('§19: toestelherstel (install_id)', () => {
     expect(names(a2, la)).toEqual(expected);
     expect(names(b, lb)).toEqual(expected);
     // Afvinken op de kopie komt aan bij het origineel (en omgekeerd: verwijderen op het origineel bij de kopie).
-    const melk = a2.app.view(la).sections.flatMap((s) => s.items).find((i) => i.name === 'melk')!;
+    const melk = a2.app.view(la).sections.flatMap((s) => s.items).find((i) => i.name === 'Melk')!;
     a2.app.toggleChecked(la, melk.id);
-    const brood = a.app.view(la).sections.flatMap((s) => s.items).find((i) => i.name === 'brood')!;
+    const brood = a.app.view(la).sections.flatMap((s) => s.items).find((i) => i.name === 'Brood')!;
     a.app.deleteItem(la, brood.id);
     await w.settle(60_000);
     for (const [d, l] of [[a, la], [a2, la], [b, lb]] as const) {
-      expect(names(d, l)).toEqual(['appels', 'eieren', 'kaas', 'melk']);
-      expect(d.app.view(l).sections.flatMap((s) => s.items).find((i) => i.name === 'melk')?.checked).toBe(true);
+      expect(names(d, l)).toEqual(['Appels', 'Eieren', 'Kaas', 'Melk']);
+      expect(d.app.view(l).sections.flatMap((s) => s.items).find((i) => i.name === 'Melk')?.checked).toBe(true);
     }
   });
 

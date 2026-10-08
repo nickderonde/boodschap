@@ -33,16 +33,16 @@ describe('S-13: sync-triggers (WS)', () => {
     const ids = await wsShareAndJoin(a, [b]);
     // live
     a.app.addItem(ids.get(a)!, { text: 'live' });
-    await waitFor(() => names(b, ids.get(b)!).includes('live'));
+    await waitFor(() => names(b, ids.get(b)!).includes('Live'));
     // achtergrond → sockets dicht; ondertussen wijzigt A
     await b.app.background();
     await sleep(100);
     expect(w.factories.get(b)!.openSockets).toBe(0);
     a.app.addItem(ids.get(a)!, { text: 'tijdens achtergrond' });
     await sleep(500);
-    expect(names(b, ids.get(b)!)).not.toContain('tijdens achtergrond'); // geen sync in de achtergrond
+    expect(names(b, ids.get(b)!)).not.toContain('Tijdens achtergrond'); // geen sync in de achtergrond
     b.app.foreground();
-    await waitFor(() => names(b, ids.get(b)!).includes('tijdens achtergrond'));
+    await waitFor(() => names(b, ids.get(b)!).includes('Tijdens achtergrond'));
   });
 
   it('UX-13: pull-to-refresh → REQ + flush; status bezig → gesynchroniseerd', async () => {

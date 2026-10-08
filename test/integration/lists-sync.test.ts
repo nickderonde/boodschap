@@ -41,14 +41,14 @@ describe('F-18: stoppen met delen / lijst verlaten (WS)', () => {
     await sleep(100);
     expect([...b.keys.data.keys()].filter((k) => k.includes(ids.get(b)!))).toEqual([]);
     expect(b.app.lists().find((l) => l.id === ids.get(b))).toMatchObject({ shared: false });
-    expect(names(b, ids.get(b)!)).toEqual(['gedeeld']);
+    expect(names(b, ids.get(b)!)).toEqual(['Gedeeld']);
     const before = w.relays[0].receivedLog.filter((x) => x.pubkey === bPub).length;
     b.app.addItem(ids.get(b)!, { text: 'alleen lokaal' });
     a.app.addItem(ids.get(a)!, { text: 'A gaat door' });
     await sleep(800);
     expect(w.relays[0].receivedLog.filter((x) => x.pubkey === bPub).length).toBe(before);
-    expect(names(a, ids.get(a)!)).toEqual(['A gaat door', 'gedeeld']);
-    expect(names(b, ids.get(b)!)).toEqual(['alleen lokaal', 'gedeeld']);
+    expect(names(a, ids.get(a)!)).toEqual(['A gaat door', 'Gedeeld']);
+    expect(names(b, ids.get(b)!)).toEqual(['Alleen lokaal', 'Gedeeld']);
     expect(b.app.syncStatus(ids.get(b)!).kind).toBe('lokaal');
   });
 });
@@ -69,7 +69,7 @@ describe('S-07 / S-04 tegen de WS-relay', () => {
     b.app.updateItem(ids.get(b)!, r.itemId, { name: 'oude kaas' });
     a.net.online(true);
     b.net.online(true);
-    await waitFor(() => names(a, ids.get(a)!).join() === 'oude kaas' && names(b, ids.get(b)!).join() === 'oude kaas', 10_000);
+    await waitFor(() => names(a, ids.get(a)!).join() === 'Oude kaas' && names(b, ids.get(b)!).join() === 'Oude kaas', 10_000);
   });
 
   it('S-04 (WS-variant): gelijktijdige offline bewerkingen op 2 apparaten → gelijke staat', async () => {
@@ -90,7 +90,7 @@ describe('S-07 / S-04 tegen de WS-relay', () => {
     a.net.online(true);
     b.net.online(true);
     await waitFor(() => canonicalList(a.app.stateOf(ids.get(a)!)) === canonicalList(b.app.stateOf(ids.get(b)!)) && names(a, ids.get(a)!).length === 3, 10_000);
-    expect(names(b, ids.get(b)!)).toEqual(['kaas', 'melk', 'volkorenbrood']);
-    expect(b.app.view(ids.get(b)!).sections.flatMap((s) => s.items).find((i) => i.name === 'volkorenbrood')?.quantity).toBe(2);
+    expect(names(b, ids.get(b)!)).toEqual(['Kaas', 'Melk', 'Volkorenbrood']);
+    expect(b.app.view(ids.get(b)!).sections.flatMap((s) => s.items).find((i) => i.name === 'Volkorenbrood')?.quantity).toBe(2);
   });
 });

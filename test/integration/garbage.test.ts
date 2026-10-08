@@ -20,7 +20,7 @@ describe('S-14: ruis en vreemde berichten (WS)', () => {
     const b = await addWsDevice(w, 'B');
     const ids = await wsShareAndJoin(a, [b]);
     a.app.addItem(ids.get(a)!, { text: 'echt' });
-    await waitFor(() => names(b, ids.get(b)!).includes('echt'));
+    await waitFor(() => names(b, ids.get(b)!).includes('Echt'));
     const before = canonicalList(b.app.stateOf(ids.get(b)!));
     const { listTag, encKey } = a.app.sharedLists()[0];
     const rnd = new SeededRandom(66);
@@ -50,7 +50,7 @@ describe('S-14: ruis en vreemde berichten (WS)', () => {
     b.app.foreground();
     await sleep(800);
     expect(canonicalList(b.app.stateOf(ids.get(b)!))).toBe(before);
-    expect(names(b, ids.get(b)!)).toEqual(['echt']);
+    expect(names(b, ids.get(b)!)).toEqual(['Echt']);
     // Gedempt: één logregel per code per minuut, zonder inhoud.
     const warn = b.log.lines.filter((l) => l.level === 'warn' && l.code.startsWith('recv.'));
     const perCode = new Map<string, number>();
@@ -59,6 +59,6 @@ describe('S-14: ruis en vreemde berichten (WS)', () => {
     expect(b.log.text()).not.toMatch(/verkeerde sleutel|geen deflate|echt/);
     // De app werkt gewoon door.
     a.app.addItem(ids.get(a)!, { text: 'daarna' });
-    await waitFor(() => names(b, ids.get(b)!).includes('daarna'));
+    await waitFor(() => names(b, ids.get(b)!).includes('Daarna'));
   });
 });

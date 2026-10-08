@@ -27,7 +27,7 @@ describe('S-02: geen verlies bij kill op willekeurige punten (hub)', () => {
           if (a.killSwitch.killed) break;
           try {
             const r = a.app.addItem(listA, { text: `artikel ${i}` });
-            void r.committed.then(() => confirmed.push(`artikel ${i}`)).catch(() => {});
+            void r.committed.then(() => confirmed.push(`Artikel ${i}`)).catch(() => {});
           } catch {
             break;
           }

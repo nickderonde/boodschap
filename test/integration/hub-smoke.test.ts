@@ -12,13 +12,13 @@ describe('Sync-keten op de hub (rooktest)', () => {
     await w.settle(5_000);
     const ids = await shareAndJoin(w, a, [b]);
     const listB = ids.get(b)!;
-    expect(names(b, listB)).toEqual(['melk']);
+    expect(names(b, listB)).toEqual(['Melk']);
     expect(b.app.view(listB).name).toBe('Boodschappen');
     b.app.addItem(listB, { text: 'kaas' });
     a.app.addItem(listA, { text: 'brood' });
     await w.settle(30_000);
-    expect(names(a, listA)).toEqual(['brood', 'kaas', 'melk']);
-    expect(names(b, listB)).toEqual(['brood', 'kaas', 'melk']);
+    expect(names(a, listA)).toEqual(['Brood', 'Kaas', 'Melk']);
+    expect(names(b, listB)).toEqual(['Brood', 'Kaas', 'Melk']);
     expect(canonicalList(a.app.stateOf(listA))).toBe(canonicalList(b.app.stateOf(listB)));
     expect(a.app.syncStatus(listA).kind).toBe('gesynchroniseerd');
     expect(b.app.syncStatus(listB).kind).toBe('gesynchroniseerd');

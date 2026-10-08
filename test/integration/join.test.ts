@@ -22,7 +22,7 @@ describe('F-14: lijst koppelen (WS)', () => {
     expect(r.kind).toBe('joined');
     if (r.kind !== 'joined') return;
     await waitFor(() => !b.app.syncStatus(r.listId).fetching);
-    expect(names(b, r.listId)).toEqual(['brood', 'kaas', 'melk']);
+    expect(names(b, r.listId)).toEqual(['Brood', 'Kaas', 'Melk']);
     expect(b.app.view(r.listId).name).toBe('Boodschappen');
   });
 
@@ -133,6 +133,6 @@ describe('F-14: lijst koppelen (WS)', () => {
     b.app.addItem(ids.get(b)!, { text: 'van B' });
     c.app.addItem(ids.get(c)!, { text: 'van C' });
     await waitFor(() => [a, b, c].every((d) => names(d, ids.get(d)!).length === 3), 10_000);
-    expect(names(c, ids.get(c)!)).toEqual(['van A', 'van B', 'van C']);
+    expect(names(c, ids.get(c)!)).toEqual(['Van A', 'Van B', 'Van C']);
   });
 });

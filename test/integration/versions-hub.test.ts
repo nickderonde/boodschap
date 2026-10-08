@@ -43,7 +43,7 @@ describe('Versies en klokcorrectie op de hub (S-16, S-10b, B-1, B-2, I-3)', () =
     const j = await b.app.join(info.text);
     await w.settle(30_000);
     if (j.kind === 'error') throw new Error();
-    expect(names(b, j.listId)).toEqual(['melk']);
+    expect(names(b, j.listId)).toEqual(['Melk']);
   });
 
   it('S-16 / E-3: twee relays (300 s en 900 s), apparaat +10 min, 3 herstarts → geen nieuwe identiteit, clock_offset_sec persistent, convergentie', async () => {
@@ -61,7 +61,7 @@ describe('Versies en klokcorrectie op de hub (S-16, S-10b, B-1, B-2, I-3)', () =
     }
     await w.settle(15 * 60_000);
     expect(a.app.sharedLists()[0].identity.id).toBe(pk); // geen rotatie
-    expect(names(b, listB)).toEqual(['artikel 0', 'artikel 1', 'artikel 2']);
+    expect(names(b, listB)).toEqual(['Artikel 0', 'Artikel 1', 'Artikel 2']);
     // De strenge relay heeft uiteindelijk het nieuwste event van A.
     const last = (await a.app.readShards(listA))!.shards.get(0)!.lastEventId;
     expect(w.hub.relay('wss://t0.test').all().some((m) => m.id === last)).toBe(true);
@@ -86,7 +86,7 @@ describe('Versies en klokcorrectie op de hub (S-16, S-10b, B-1, B-2, I-3)', () =
     await w.settle(15 * 60_000);
     const last = (await a.app.readShards(listA))!.shards.get(0)!.lastEventId;
     for (const r of ['wss://t0.test', 'wss://t1.test']) expect(w.hub.relay(r).all().some((m) => m.id === last)).toBe(true);
-    expect(names(b, ids.get(b)!)).toEqual(['kaas', 'worst']);
+    expect(names(b, ids.get(b)!)).toEqual(['Kaas', 'Worst']);
   });
 
   it('I-3: +1 u, 5 bewerkingen in 2 s, relay-latentie 200 ms → geen rotatie, aanwezig ≤ 30 s', async () => {
@@ -101,7 +101,7 @@ describe('Versies en klokcorrectie op de hub (S-16, S-10b, B-1, B-2, I-3)', () =
     }
     await w.settle(30_000 - (w.sched.now() - t0));
     expect(rotations(a)).toBe(0);
-    expect(names(b, ids.get(b)!)).toEqual(['snel 0', 'snel 1', 'snel 2', 'snel 3', 'snel 4']);
+    expect(names(b, ids.get(b)!)).toEqual(['Snel 0', 'Snel 1', 'Snel 2', 'Snel 3', 'Snel 4']);
   });
 
   it('D-03: RTT groter dan het venster (latentie 800 ms) en alle relays weigeren → terugrollen door de keten, geen rotatie, aanwezig ≤ 30 s', async () => {
@@ -116,7 +116,7 @@ describe('Versies en klokcorrectie op de hub (S-16, S-10b, B-1, B-2, I-3)', () =
     }
     await w.settle(30_000 - (w.sched.now() - t0));
     expect(rotations(a)).toBe(0);
-    expect(names(b, ids.get(b)!)).toEqual(['traag 0', 'traag 1', 'traag 2', 'traag 3', 'traag 4']);
+    expect(names(b, ids.get(b)!)).toEqual(['Traag 0', 'Traag 1', 'Traag 2', 'Traag 3', 'Traag 4']);
   });
 
   it('D-03b: vloer-afgeleide opvolgers (venster 50 ms < RTT 400 ms) → terugrollen door de keten, geen rotatie, aanwezig ≤ 30 s', async () => {
@@ -129,7 +129,7 @@ describe('Versies en klokcorrectie op de hub (S-16, S-10b, B-1, B-2, I-3)', () =
     }
     await w.settle(28_000);
     expect(rotations(a)).toBe(0);
-    expect(names(b, ids.get(b)!)).toEqual(['v0', 'v1', 'v2', 'v3', 'v4']);
+    expect(names(b, ids.get(b)!)).toEqual(['V0', 'V1', 'V2', 'V3', 'V4']);
   });
 
   it('S-16: voorsprong > 1 u ná acceptatie → precies één rotatie, daarna convergentie', async () => {
@@ -144,7 +144,7 @@ describe('Versies en klokcorrectie op de hub (S-16, S-10b, B-1, B-2, I-3)', () =
     a.app.addItem(listA, { text: 'nog een' });
     await w.settle(30_000);
     expect(rotations(a)).toBe(1);
-    expect(names(b, ids.get(b)!)).toEqual(['na klokcorrectie', 'nog een']);
+    expect(names(b, ids.get(b)!)).toEqual(['Na klokcorrectie', 'Nog een']);
   });
 
   it('S-16 (L-3): apparaat −1 u, relay met pastToleranceSec = 1800 → clock-behind-correctie, aanwezig ≤ 30 s', async () => {
@@ -161,7 +161,7 @@ describe('Versies en klokcorrectie op de hub (S-16, S-10b, B-1, B-2, I-3)', () =
     const j = await b.app.join(info.text);
     await w.settle(20_000);
     if (j.kind === 'error') throw new Error();
-    expect(names(b, j.listId)).toEqual(['vroeg']);
+    expect(names(b, j.listId)).toEqual(['Vroeg']);
   });
 
   it('S-10b: twee publicaties in dezelfde seconde — de nieuwste staat verliest nooit (ook na een kill tussen de twee)', async () => {
@@ -177,7 +177,7 @@ describe('Versies en klokcorrectie op de hub (S-16, S-10b, B-1, B-2, I-3)', () =
     const v2 = (await a.app.readShards(listA))!.shards.get(0)!.lastVersion;
     expect(v2).toBeGreaterThan(v1);
     await w.settle(10_000);
-    expect(names(b, ids.get(b)!)).toEqual(['eerste', 'tweede']);
+    expect(names(b, ids.get(b)!)).toEqual(['Eerste', 'Tweede']);
   });
 
   it('B-2: gelijktijdige flushes (directe flush tijdens een venster-flush met wachtende prepare) → één tegelijk, strikt stijgende versies', async () => {
@@ -209,7 +209,7 @@ describe('Versies en klokcorrectie op de hub (S-16, S-10b, B-1, B-2, I-3)', () =
     await w.settle(10_000);
     expect(maxConcurrent).toBe(1);
     for (let i = 1; i < versions.length; i++) expect(versions[i]).toBeGreaterThan(versions[i - 1]);
-    expect(names(b, ids.get(b)!)).toEqual(['x1', 'x2']);
+    expect(names(b, ids.get(b)!)).toEqual(['X1', 'X2']);
   });
 
   it('B-2: een geforceerde CAS-afwijking laat de flush herstarten', async () => {
@@ -229,6 +229,6 @@ describe('Versies en klokcorrectie op de hub (S-16, S-10b, B-1, B-2, I-3)', () =
     a.app.addItem(listA, { text: 'cas' });
     await w.settle(10_000);
     expect(a.log.codes()).toContain('flush.cas-retry');
-    expect(names(b, ids.get(b)!)).toEqual(['cas']);
+    expect(names(b, ids.get(b)!)).toEqual(['Cas']);
   });
 });

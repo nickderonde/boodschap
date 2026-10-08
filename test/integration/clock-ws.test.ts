@@ -21,7 +21,7 @@ describe('S-16: klokafwijking tegen de WS-relay', () => {
     expect(a.app.syncEngine!.debug.publisher.rotations).toBe(0);
     const j = await b.app.join(info.text);
     if (j.kind === 'error') throw new Error();
-    await waitFor(() => names(b, j.listId).includes('voor'));
+    await waitFor(() => names(b, j.listId).includes('Voor'));
   }, 40_000);
 
   it('S-16 (L-3): apparaat −1 u, relay pastToleranceSec = 1800 → aanwezig ≤ 30 s', async () => {

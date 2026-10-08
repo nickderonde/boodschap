@@ -29,7 +29,7 @@ describe('S-12: latentie (WS, productievensters)', () => {
     }, 10);
     try {
       for (let i = 0; i < 50; i++) {
-        const name = `wijziging ${i}`;
+        const name = `Wijziging ${i}`; // UX-17: al met hoofdletter
         addedAt.set(name, Date.now());
         a.app.addItem(listA, { text: name });
         await sleep(150);
