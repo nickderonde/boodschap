@@ -20,6 +20,7 @@
     "check:secrets": "node scripts/check-secrets.mjs",
     "make:icons": "node scripts/make-icons.mjs",
     "make:screenshots": "node scripts/make-screenshots.mjs",
+    "make:store-config": "node scripts/make-store-config.mjs",
     "test:handles": "NODE_OPTIONS=--disable-warning=ExperimentalWarning jest --detectOpenHandles --runInBand"
   },
   "dependencies": {

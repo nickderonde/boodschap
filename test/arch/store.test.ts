@@ -48,7 +48,7 @@ describe('ST-01 / ST-02 / ST-03: identiteit en versies', () => {
   it('ST-01: bundle-ID en package zijn exact het App-ID; geen andere ID\'s in eas.json', () => {
     expect(app.ios.bundleIdentifier).toBe(ID);
     expect(app.android.package).toBe(ID);
-    expect(JSON.stringify(eas)).not.toMatch(/bundleIdentifier|"package"|applicationId/);
+    expect(JSON.stringify(eas)).not.toMatch(/bundleIdentifier|"package"|applicationId/); // EAS leest het ID uit app.json
     const ids = JSON.stringify(app).match(/\b(nl|com)\.[a-z0-9]+\.[a-z0-9.]+\b/g) ?? [];
     expect([...new Set(ids)].filter((x) => !x.startsWith('com.google.android.gms.permission'))).toEqual([ID]);
   });
@@ -271,6 +271,42 @@ describe('ST-08: storeteksten NL en EN', () => {
     expect(t('en', 'review-notes')).toMatch(/no public user-generated content/i);
     expect(t('en', 'review-notes')).toMatch(/not make such a link tappable[\s\S]*text code/);
     expect(json('store/listing.json').reviewNotesForApple).toBe('store/en/review-notes.txt');
+  });
+});
+
+describe('EAS Metadata (Apple): store.config.json', () => {
+  const cfg = json('store.config.json');
+
+  it('store.config.json is actueel (gegenereerd uit store/) en volgt de structuur van het EAS-schema', () => {
+    const fresh = mjs<unknown>(`import { buildStoreConfig } from ${imp('scripts/make-store-config.mjs')}; console.log(JSON.stringify(buildStoreConfig()));`);
+    expect(cfg).toEqual(fresh); // anders: npm run make:store-config
+    expect(cfg.configVersion).toBe(0);
+    expect(Object.keys(cfg)).toEqual(['configVersion', 'apple']);
+    expect(cfg.apple.version).toBe(app.version);
+    expect(cfg.apple.copyright).toBe('2026 Nick de Ronde');
+    expect(cfg.apple.categories).toEqual(['FOOD_AND_DRINK', 'PRODUCTIVITY']);
+    expect(Object.keys(cfg.apple.info)).toEqual(['nl-NL', 'en-US']);
+    for (const [loc, i] of Object.entries(cfg.apple.info) as Array<[string, Record<string, unknown>]>) {
+      expect([loc, (i.title as string).length >= 2 && (i.title as string).length <= 30]).toEqual([loc, true]);
+      expect((i.subtitle as string).length).toBeLessThanOrEqual(30);
+      expect((i.promoText as string).length).toBeLessThanOrEqual(170);
+      expect((i.description as string).length).toBeLessThanOrEqual(4000);
+      expect(Buffer.byteLength((i.keywords as string[]).join(','), 'utf8')).toBeLessThanOrEqual(100);
+      for (const u of ['privacyPolicyUrl', 'supportUrl', 'marketingUrl']) expect(i[u]).toMatch(/^https:\/\/nickderonde\.github\.io\/boodschap\//);
+    }
+    const adv = cfg.apple.advisory;
+    for (const [k, v] of Object.entries(adv)) if (typeof v === 'string' && k !== 'ageRatingOverride' && k !== 'koreaAgeRatingOverride') expect([k, v]).toEqual([k, 'NONE']);
+    for (const k of ['gambling', 'unrestrictedWebAccess', 'userGeneratedContent', 'messagingAndChat', 'advertising']) expect([k, adv[k]]).toEqual([k, false]);
+    expect(cfg.apple.review).toBeUndefined(); // naam en telefoon vult Nick zelf in (STORE_INVULLEN.md)
+  });
+
+  it('eas.json submit.production.ios: taal nl-NL, SKU en metadataPath; bundle-ID uit app.json; geen leeg ascAppId (EAS weigert dat)', () => {
+    const ios = eas.submit.production.ios;
+    expect(ios.bundleIdentifier).toBeUndefined();
+    expect(ios.language).toBe('nl-NL');
+    expect(ios.metadataPath).toBe('./store.config.json');
+    if ('ascAppId' in ios) expect(ios.ascAppId).toMatch(/^\d+$/);
+    expect(read('docs/STORE_INVULLEN.md')).toMatch(/ascAppId/);
   });
 });
 

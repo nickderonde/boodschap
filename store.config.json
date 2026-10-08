@@ -1,0 +1,86 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "version": "1.0.0",
+    "copyright": "2026 Nick de Ronde",
+    "categories": [
+      "FOOD_AND_DRINK",
+      "PRODUCTIVITY"
+    ],
+    "advisory": {
+      "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+      "contests": "NONE",
+      "gamblingSimulated": "NONE",
+      "gunsOrOtherWeapons": "NONE",
+      "horrorOrFearThemes": "NONE",
+      "matureOrSuggestiveThemes": "NONE",
+      "medicalOrTreatmentInformation": "NONE",
+      "profanityOrCrudeHumor": "NONE",
+      "sexualContentGraphicAndNudity": "NONE",
+      "sexualContentOrNudity": "NONE",
+      "violenceCartoonOrFantasy": "NONE",
+      "violenceRealistic": "NONE",
+      "violenceRealisticProlongedGraphicOrSadistic": "NONE",
+      "gambling": false,
+      "lootBox": false,
+      "unrestrictedWebAccess": false,
+      "userGeneratedContent": false,
+      "messagingAndChat": false,
+      "advertising": false,
+      "parentalControls": false,
+      "ageAssurance": false,
+      "healthOrWellnessTopics": false,
+      "kidsAgeBand": null,
+      "ageRatingOverride": "NONE",
+      "koreaAgeRatingOverride": "NONE"
+    },
+    "info": {
+      "nl-NL": {
+        "title": "BOODSCHAP!",
+        "subtitle": "Samen je boodschappenlijst",
+        "description": "BOODSCHAP! is een eenvoudige boodschappenlijst die je samen met je huisgenoten gebruikt. Wat de een toevoegt of afvinkt, ziet de ander ook. Gratis, zonder advertenties en zonder account.\n\nSAMEN EEN LIJST\n• Deel een lijst met een QR-code of stuur de code via je chat-app.\n• Wijzigingen komen vanzelf bij iedereen aan; bovenin zie je of alles is bijgewerkt.\n• Afvinken, aantallen, notities en meerdere lijsten (bijvoorbeeld voor de supermarkt en de drogist).\n\nSNEL IN DE SUPERMARKT\n• Items staan vanzelf per afdeling, in een logische looproute.\n• Suggesties op basis van wat je eerder kocht.\n• Afgevinkte items gaan naar onderen; met één tik haal je ze weg, en per ongeluk verwijderd kun je ongedaan maken.\n• Werkt ook zonder bereik. Zodra er weer verbinding is, gaan je wijzigingen mee.\n\nPRIVACY\n• Geen account, geen tracking, geen analytics, geen advertenties.\n• Je lijsten staan op je telefoon. Gedeelde lijsten worden end-to-end versleuteld en reizen via openbare Nostr-relays; die kunnen de inhoud niet lezen.\n• Er is geen server van BOODSCHAP!. Wij kunnen je lijsten niet zien.\n• De camera wordt alleen gebruikt om een QR-code te scannen.\n\nOPEN SOURCE\nDe broncode is openbaar op GitHub, zodat iedereen kan nagaan wat de app doet.\n\nBOODSCHAP! is een app van De Ronde Engineering. Vragen of ideeën: info@derondeengineering.nl",
+        "keywords": [
+          "boodschappen",
+          "lijstje",
+          "winkellijst",
+          "delen",
+          "samen",
+          "supermarkt",
+          "offline",
+          "gezin",
+          "huishouden",
+          "afvinken"
+        ],
+        "promoText": "Eén boodschappenlijst voor het hele huishouden. Gratis, zonder account en zonder advertenties. Werkt ook zonder bereik in de supermarkt.",
+        "marketingUrl": "https://nickderonde.github.io/boodschap/",
+        "supportUrl": "https://nickderonde.github.io/boodschap/support/",
+        "privacyPolicyUrl": "https://nickderonde.github.io/boodschap/privacy/"
+      },
+      "en-US": {
+        "title": "BOODSCHAP!",
+        "subtitle": "Shared grocery list",
+        "description": "BOODSCHAP! is a simple grocery list you share with the people you live with. What one person adds or checks off, the others see too. Free, no ads and no account. Note: the app's interface is in Dutch.\n\nONE LIST, TOGETHER\n• Share a list with a QR code, or send the code through your chat app.\n• Changes reach everyone automatically; the top of the list shows whether everything is up to date.\n• Check off items, add quantities and notes, and keep several lists (for example the supermarket and the drugstore).\n\nFAST IN THE STORE\n• Items are grouped by aisle automatically, in a logical walking order.\n• Suggestions based on what you bought before.\n• Checked items move to the bottom; clear them with one tap, and undo if you delete something by accident.\n• Works without reception. Your changes sync as soon as you are back online.\n\nPRIVACY\n• No account, no tracking, no analytics, no ads.\n• Your lists are stored on your phone. Shared lists are end-to-end encrypted and travel through public Nostr relays, which cannot read the content.\n• There is no BOODSCHAP! server. We cannot see your lists.\n• The camera is only used to scan a QR code.\n\nOPEN SOURCE\nThe source code is public on GitHub, so anyone can verify what the app does.\n\nBOODSCHAP! is an app by De Ronde Engineering. Questions or ideas: info@derondeengineering.nl",
+        "keywords": [
+          "grocery",
+          "shopping list",
+          "groceries",
+          "share",
+          "family",
+          "household",
+          "offline",
+          "supermarket",
+          "checklist",
+          "dutch"
+        ],
+        "promoText": "One grocery list for the whole household. Free, no account and no ads. Works without reception in the store. Interface in Dutch.",
+        "marketingUrl": "https://nickderonde.github.io/boodschap/en/",
+        "supportUrl": "https://nickderonde.github.io/boodschap/en/support/",
+        "privacyPolicyUrl": "https://nickderonde.github.io/boodschap/en/privacy/"
+      }
+    },
+    "release": {
+      "automaticRelease": true,
+      "phasedRelease": false
+    }
+  }
+}
