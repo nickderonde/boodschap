@@ -161,7 +161,7 @@ describe('ST-05 / ST-12 / ST-18 / ST-22: permissies en storeconfiguratie', () =>
   it('ST-22 / ST-10: ontwikkelregio nl, lokalisaties nl en en (cameratekst in beide), beide URL-schema\'s', () => {
     expect(app.ios.infoPlist.CFBundleDevelopmentRegion).toBe('nl');
     expect(app.ios.infoPlist.CFBundleLocalizations).toEqual(['nl', 'en']);
-    for (const l of ['nl', 'en']) expect(json(app.locales[l]).NSCameraUsageDescription).toMatch(/QR/);
+    for (const l of ['nl', 'en']) expect(json(app.locales[l]).ios.NSCameraUsageDescription).toMatch(/QR/);
     expect(app.scheme).toEqual(['boodschap', 'bootschap']);
   });
 });

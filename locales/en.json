@@ -1,4 +1,6 @@
 {
-  "CFBundleDisplayName": "BOODSCHAP!",
-  "NSCameraUsageDescription": "BOODSCHAP! only uses the camera to scan the QR code of a shared list. Images are never stored or sent."
+  "ios": {
+    "CFBundleDisplayName": "BOODSCHAP!",
+    "NSCameraUsageDescription": "BOODSCHAP! only uses the camera to scan the QR code of a shared list. Images are never stored or sent."
+  }
 }

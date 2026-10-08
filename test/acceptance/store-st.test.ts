@@ -38,8 +38,8 @@ describe('ST-01 / ST-02 / ST-03: identiteit en versiebeheer', () => {
     expect(pkg.name).toBe('boodschap');
     expect(listing.fallbackName).toBe('BOODSCHAP! Boodschappenlijst');
     expect(listing.fallbackName.length).toBeLessThanOrEqual(30);
-    expect(json('locales/nl.json').CFBundleDisplayName).toBe('BOODSCHAP!');
-    expect(json('locales/en.json').CFBundleDisplayName).toBe('BOODSCHAP!');
+    expect(json('locales/nl.json').ios.CFBundleDisplayName).toBe('BOODSCHAP!');
+    expect(json('locales/en.json').ios.CFBundleDisplayName).toBe('BOODSCHAP!');
   });
 
   it('ET-ST03-1: semver 1.0.0; EAS: appVersionSource remote en production autoIncrement; changelog NL+EN', () => {
@@ -161,8 +161,8 @@ describe('ST-05 / ST-12 / ST-22: permissies, configuratie en de gegenereerde man
 
   it('ET-ST22-1: lokalisaties: nl en en bevatten de camera-tekst in de eigen taal', () => {
     expect(appJson.locales).toEqual({ nl: './locales/nl.json', en: './locales/en.json' });
-    expect(json('locales/nl.json').NSCameraUsageDescription).toMatch(/gebruikt de camera/);
-    expect(json('locales/en.json').NSCameraUsageDescription).toMatch(/only uses the camera/);
+    expect(json('locales/nl.json').ios.NSCameraUsageDescription).toMatch(/gebruikt de camera/);
+    expect(json('locales/en.json').ios.NSCameraUsageDescription).toMatch(/only uses the camera/);
   });
 });
 
