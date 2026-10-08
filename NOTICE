@@ -1,0 +1,14 @@
+BOODSCHAP!
+Copyright (c) 2026 Nick de Ronde — uitgegeven door De Ronde Engineering.
+
+De broncode valt onder de MIT-licentie (zie LICENSE).
+
+De naam "BOODSCHAP!", het logo en het app-icoon (de bestanden in assets/ en store/graphics/, en de bron in
+assets/source/) vallen NIET onder de softwarelicentie. Je mag ze niet gebruiken voor een eigen of afgeleide app
+of dienst zonder schriftelijke toestemming. Publiceer je een afgeleide versie, kies dan een eigen naam en icoon.
+
+The name "BOODSCHAP!", the logo and the app icon are not covered by the software license and may not be used
+for your own or derived apps or services without written permission.
+
+Gebruikte open-sourcepakketten en hun licenties: zie het scherm "Open-source licenties" in de app
+(src/ui/licenses.generated.ts).

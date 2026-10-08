@@ -1,0 +1,8 @@
+<!-- Boodschappentas met vinkje: gedeelde vorm voor alle iconen (1024-raster). Kleuren per variant ingevuld. -->
+<g id="glyph">
+  <path d="M 392 452 V 330 A 120 120 0 0 1 632 330 V 452" fill="none" stroke="{{BAG}}" stroke-width="40" stroke-linecap="round"/>
+  <path d="M 310 392 H 714 Q 748 392 752 426 L 790 816 Q 794 856 754 856 H 270 Q 230 856 234 816 L 272 426 Q 276 392 310 392 Z" fill="{{BAG}}"/>
+  <circle cx="392" cy="452" r="22" fill="{{CHECK}}"/>
+  <circle cx="632" cy="452" r="22" fill="{{CHECK}}"/>
+  <path d="M 404 636 L 486 716 L 632 562" fill="none" stroke="{{CHECK}}" stroke-width="62" stroke-linecap="round" stroke-linejoin="round"/>
+</g>

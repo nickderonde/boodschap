@@ -1,0 +1,505 @@
+{
+ "_note": "F-08 fixture, opgesteld door de Eindtester (onafhankelijk van de woordenlijst van de Engineer). 100 gangbare NL boodschappen met verwachte categorie-ID (ARCHITECTURE §8.1). Goedkeuring Projectleider: nog te geven.",
+ "items": [
+  {
+   "name": "Bananen",
+   "category": "groente-fruit",
+   "variant": "plural+caps"
+  },
+  {
+   "name": "tomaten",
+   "category": "groente-fruit",
+   "variant": "plural"
+  },
+  {
+   "name": "Appels",
+   "category": "groente-fruit",
+   "variant": "plural+caps"
+  },
+  {
+   "name": "rode paprika",
+   "category": "groente-fruit",
+   "variant": "two-word"
+  },
+  {
+   "name": "ijsbergsla",
+   "category": "groente-fruit",
+   "variant": "compound"
+  },
+  {
+   "name": "champignons",
+   "category": "groente-fruit",
+   "variant": "plural"
+  },
+  {
+   "name": "aardappelen",
+   "category": "groente-fruit",
+   "variant": "plural"
+  },
+  {
+   "name": "SINAASAPPELS",
+   "category": "groente-fruit",
+   "variant": "caps"
+  },
+  {
+   "name": "verse spinazie",
+   "category": "groente-fruit",
+   "variant": "two-word"
+  },
+  {
+   "name": "avocado's",
+   "category": "groente-fruit",
+   "variant": "plural-apostrophe"
+  },
+  {
+   "name": "Conference peren",
+   "category": "groente-fruit",
+   "variant": "plural+caps"
+  },
+  {
+   "name": "volkoren brood",
+   "category": "brood-gebak",
+   "variant": "two-word"
+  },
+  {
+   "name": "Croissants",
+   "category": "brood-gebak",
+   "variant": "plural+caps"
+  },
+  {
+   "name": "stokbrood",
+   "category": "brood-gebak",
+   "variant": "compound"
+  },
+  {
+   "name": "pistoletjes",
+   "category": "brood-gebak",
+   "variant": "plural-diminutive"
+  },
+  {
+   "name": "appeltaart",
+   "category": "brood-gebak",
+   "variant": "compound"
+  },
+  {
+   "name": "krentenbollen",
+   "category": "brood-gebak",
+   "variant": "plural-compound"
+  },
+  {
+   "name": "halfvolle melk",
+   "category": "zuivel-eieren",
+   "variant": "two-word"
+  },
+  {
+   "name": "Eieren",
+   "category": "zuivel-eieren",
+   "variant": "plural+caps"
+  },
+  {
+   "name": "Griekse yoghurt",
+   "category": "zuivel-eieren",
+   "variant": "two-word"
+  },
+  {
+   "name": "boter",
+   "category": "zuivel-eieren",
+   "variant": "plain"
+  },
+  {
+   "name": "slagroom",
+   "category": "zuivel-eieren",
+   "variant": "compound"
+  },
+  {
+   "name": "crème fraîche",
+   "category": "zuivel-eieren",
+   "variant": "accent"
+  },
+  {
+   "name": "Optimel drinkyoghurt",
+   "category": "zuivel-eieren",
+   "variant": "brand"
+  },
+  {
+   "name": "Kipfilet",
+   "category": "vlees-vis",
+   "variant": "caps-compound"
+  },
+  {
+   "name": "gehakt",
+   "category": "vlees-vis",
+   "variant": "plain"
+  },
+  {
+   "name": "rundergehakt",
+   "category": "vlees-vis",
+   "variant": "compound"
+  },
+  {
+   "name": "speklappen",
+   "category": "vlees-vis",
+   "variant": "plural-compound"
+  },
+  {
+   "name": "zalmfilet",
+   "category": "vlees-vis",
+   "variant": "compound"
+  },
+  {
+   "name": "kabeljauw",
+   "category": "vlees-vis",
+   "variant": "plain"
+  },
+  {
+   "name": "garnalen",
+   "category": "vlees-vis",
+   "variant": "plural"
+  },
+  {
+   "name": "jonge kaas",
+   "category": "vleeswaren-kaas",
+   "variant": "two-word"
+  },
+  {
+   "name": "belegen kaas",
+   "category": "vleeswaren-kaas",
+   "variant": "two-word"
+  },
+  {
+   "name": "boterhamworst",
+   "category": "vleeswaren-kaas",
+   "variant": "compound"
+  },
+  {
+   "name": "ham",
+   "category": "vleeswaren-kaas",
+   "variant": "plain"
+  },
+  {
+   "name": "geraspte kaas",
+   "category": "vleeswaren-kaas",
+   "variant": "two-word"
+  },
+  {
+   "name": "Leerdammer",
+   "category": "vleeswaren-kaas",
+   "variant": "brand"
+  },
+  {
+   "name": "hagelslag",
+   "category": "ontbijt-beleg",
+   "variant": "plain"
+  },
+  {
+   "name": "pindakaas",
+   "category": "ontbijt-beleg",
+   "variant": "compound"
+  },
+  {
+   "name": "Calvé pindakaas",
+   "category": "ontbijt-beleg",
+   "variant": "brand+accent"
+  },
+  {
+   "name": "jam",
+   "category": "ontbijt-beleg",
+   "variant": "plain"
+  },
+  {
+   "name": "cornflakes",
+   "category": "ontbijt-beleg",
+   "variant": "plain"
+  },
+  {
+   "name": "havermout",
+   "category": "ontbijt-beleg",
+   "variant": "compound"
+  },
+  {
+   "name": "chocoladepasta",
+   "category": "ontbijt-beleg",
+   "variant": "compound"
+  },
+  {
+   "name": "spaghetti",
+   "category": "pasta-rijst-wereld",
+   "variant": "plain"
+  },
+  {
+   "name": "basmatirijst",
+   "category": "pasta-rijst-wereld",
+   "variant": "compound"
+  },
+  {
+   "name": "noodles",
+   "category": "pasta-rijst-wereld",
+   "variant": "plain"
+  },
+  {
+   "name": "tortilla wraps",
+   "category": "pasta-rijst-wereld",
+   "variant": "plural"
+  },
+  {
+   "name": "kokosmelk",
+   "category": "pasta-rijst-wereld",
+   "variant": "compound"
+  },
+  {
+   "name": "couscous",
+   "category": "pasta-rijst-wereld",
+   "variant": "plain"
+  },
+  {
+   "name": "tomatenpuree",
+   "category": "houdbaar-conserven",
+   "variant": "compound"
+  },
+  {
+   "name": "kidneybonen",
+   "category": "houdbaar-conserven",
+   "variant": "plural-compound"
+  },
+  {
+   "name": "kikkererwten",
+   "category": "houdbaar-conserven",
+   "variant": "plural-compound"
+  },
+  {
+   "name": "ketchup",
+   "category": "houdbaar-conserven",
+   "variant": "plain"
+  },
+  {
+   "name": "olijfolie",
+   "category": "houdbaar-conserven",
+   "variant": "compound"
+  },
+  {
+   "name": "suiker",
+   "category": "houdbaar-conserven",
+   "variant": "plain"
+  },
+  {
+   "name": "chips",
+   "category": "snacks-snoep",
+   "variant": "plain"
+  },
+  {
+   "name": "Lays paprika chips",
+   "category": "snacks-snoep",
+   "variant": "brand"
+  },
+  {
+   "name": "chocolade",
+   "category": "snacks-snoep",
+   "variant": "plain"
+  },
+  {
+   "name": "Haribo",
+   "category": "snacks-snoep",
+   "variant": "brand"
+  },
+  {
+   "name": "koekjes",
+   "category": "snacks-snoep",
+   "variant": "plural-diminutive"
+  },
+  {
+   "name": "stroopwafels",
+   "category": "snacks-snoep",
+   "variant": "plural-compound"
+  },
+  {
+   "name": "cola",
+   "category": "dranken",
+   "variant": "plain"
+  },
+  {
+   "name": "Coca-Cola",
+   "category": "dranken",
+   "variant": "brand"
+  },
+  {
+   "name": "sinaasappelsap",
+   "category": "dranken",
+   "variant": "compound"
+  },
+  {
+   "name": "koffie",
+   "category": "dranken",
+   "variant": "plain"
+  },
+  {
+   "name": "mineraalwater",
+   "category": "dranken",
+   "variant": "compound"
+  },
+  {
+   "name": "rode wijn",
+   "category": "dranken",
+   "variant": "two-word"
+  },
+  {
+   "name": "Spa rood",
+   "category": "dranken",
+   "variant": "brand"
+  },
+  {
+   "name": "vanille-ijs",
+   "category": "diepvries",
+   "variant": "compound"
+  },
+  {
+   "name": "diepvriespizza",
+   "category": "diepvries",
+   "variant": "compound"
+  },
+  {
+   "name": "Magnum",
+   "category": "diepvries",
+   "variant": "brand"
+  },
+  {
+   "name": "patat",
+   "category": "diepvries",
+   "variant": "plain"
+  },
+  {
+   "name": "ijsblokjes",
+   "category": "diepvries",
+   "variant": "plural-compound"
+  },
+  {
+   "name": "visstick",
+   "category": "diepvries",
+   "variant": "compound"
+  },
+  {
+   "name": "toiletpapier",
+   "category": "huishouden",
+   "variant": "compound"
+  },
+  {
+   "name": "afwasmiddel",
+   "category": "huishouden",
+   "variant": "compound"
+  },
+  {
+   "name": "vuilniszakken",
+   "category": "huishouden",
+   "variant": "plural-compound"
+  },
+  {
+   "name": "keukenrol",
+   "category": "huishouden",
+   "variant": "compound"
+  },
+  {
+   "name": "wasmiddel",
+   "category": "huishouden",
+   "variant": "compound"
+  },
+  {
+   "name": "allesreiniger",
+   "category": "huishouden",
+   "variant": "compound"
+  },
+  {
+   "name": "Dreft afwasmiddel",
+   "category": "huishouden",
+   "variant": "brand"
+  },
+  {
+   "name": "tandpasta",
+   "category": "verzorging",
+   "variant": "compound"
+  },
+  {
+   "name": "shampoo",
+   "category": "verzorging",
+   "variant": "plain"
+  },
+  {
+   "name": "deodorant",
+   "category": "verzorging",
+   "variant": "plain"
+  },
+  {
+   "name": "zeep",
+   "category": "verzorging",
+   "variant": "plain"
+  },
+  {
+   "name": "Dove douchegel",
+   "category": "verzorging",
+   "variant": "brand"
+  },
+  {
+   "name": "luiers",
+   "category": "baby-kind",
+   "variant": "plural"
+  },
+  {
+   "name": "Pampers luiers",
+   "category": "baby-kind",
+   "variant": "brand"
+  },
+  {
+   "name": "babyvoeding",
+   "category": "baby-kind",
+   "variant": "compound"
+  },
+  {
+   "name": "babydoekjes",
+   "category": "baby-kind",
+   "variant": "plural-compound"
+  },
+  {
+   "name": "fruithapje",
+   "category": "baby-kind",
+   "variant": "compound"
+  },
+  {
+   "name": "kattenvoer",
+   "category": "huisdieren",
+   "variant": "compound"
+  },
+  {
+   "name": "hondenbrokken",
+   "category": "huisdieren",
+   "variant": "plural-compound"
+  },
+  {
+   "name": "kattenbakvulling",
+   "category": "huisdieren",
+   "variant": "compound"
+  },
+  {
+   "name": "Whiskas",
+   "category": "huisdieren",
+   "variant": "brand"
+  },
+  {
+   "name": "Pedigree",
+   "category": "huisdieren",
+   "variant": "brand"
+  },
+  {
+   "name": "cadeaupapier",
+   "category": "overig",
+   "variant": "unknown"
+  },
+  {
+   "name": "postzegels",
+   "category": "overig",
+   "variant": "unknown"
+  },
+  {
+   "name": "xyzzy",
+   "category": "overig",
+   "variant": "unknown"
+  }
+ ]
+}

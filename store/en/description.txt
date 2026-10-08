@@ -1,0 +1,23 @@
+BOODSCHAP! is a simple grocery list you share with the people you live with. What one person adds or checks off, the others see too. Free, no ads and no account. Note: the app's interface is in Dutch.
+
+ONE LIST, TOGETHER
+• Share a list with a QR code, or send the code through your chat app.
+• Changes reach everyone automatically; the top of the list shows whether everything is up to date.
+• Check off items, add quantities and notes, and keep several lists (for example the supermarket and the drugstore).
+
+FAST IN THE STORE
+• Items are grouped by aisle automatically, in a logical walking order.
+• Suggestions based on what you bought before.
+• Checked items move to the bottom; clear them with one tap, and undo if you delete something by accident.
+• Works without reception. Your changes sync as soon as you are back online.
+
+PRIVACY
+• No account, no tracking, no analytics, no ads.
+• Your lists are stored on your phone. Shared lists are end-to-end encrypted and travel through public Nostr relays, which cannot read the content.
+• There is no BOODSCHAP! server. We cannot see your lists.
+• The camera is only used to scan a QR code.
+
+OPEN SOURCE
+The source code is public on GitHub, so anyone can verify what the app does.
+
+BOODSCHAP! is an app by De Ronde Engineering. Questions or ideas: info@derondeengineering.nl

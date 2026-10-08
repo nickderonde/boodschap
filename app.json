@@ -1,0 +1,84 @@
+{
+  "expo": {
+    "name": "BOODSCHAP!",
+    "slug": "boodschap",
+    "scheme": ["boodschap", "bootschap"],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "primaryColor": "#1F7A55",
+    "icon": "./assets/images/icon.png",
+    "githubUrl": "https://github.com/nickderonde/boodschap",
+    "locales": {
+      "nl": "./locales/nl.json",
+      "en": "./locales/en.json"
+    },
+    "ios": {
+      "bundleIdentifier": "nl.derondeengineering.boodschap",
+      "supportsTablet": false,
+      "icon": {
+        "light": "./assets/images/icon.png",
+        "dark": "./assets/images/icon-ios-dark.png",
+        "tinted": "./assets/images/icon-ios-tinted.png"
+      },
+      "config": {
+        "usesNonExemptEncryption": true
+      },
+      "infoPlist": {
+        "CFBundleDevelopmentRegion": "nl",
+        "CFBundleLocalizations": ["nl", "en"]
+      }
+    },
+    "android": {
+      "package": "nl.derondeengineering.boodschap",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-foreground.png",
+        "monochromeImage": "./assets/images/adaptive-monochrome.png",
+        "backgroundColor": "#1F7A55"
+      },
+      "allowBackup": false,
+      "permissions": ["android.permission.CAMERA", "android.permission.INTERNET"],
+      "blockedPermissions": [
+        "com.google.android.gms.permission.AD_ID",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.VIBRATE",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_MEDIA_VIDEO",
+        "android.permission.READ_MEDIA_AUDIO",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-sqlite",
+      ["expo-secure-store", { "faceIDPermission": false }],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "BOODSCHAP! gebruikt de camera alleen om de QR-code van een gedeelde lijst te scannen. Beelden worden niet opgeslagen of verstuurd.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false,
+          "barcodeScannerEnabled": true
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "imageWidth": 150,
+          "resizeMode": "contain",
+          "backgroundColor": "#F6F6F3",
+          "dark": {
+            "image": "./assets/images/splash-icon-dark.png",
+            "backgroundColor": "#111214"
+          }
+        }
+      ],
+      "./plugins/withOptionalCamera"
+    ]
+  }
+}

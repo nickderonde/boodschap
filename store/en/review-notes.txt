@@ -1,0 +1,13 @@
+Notes for the reviewer (Apple App Review / Google Play)
+
+- No account and no sign-in: the app works right after installation. No demo account is needed.
+- The app opens with the list "Boodschappen" (Groceries). Add items with the input field at the bottom; tap an item to check it off.
+- Sharing is optional. Sync can only be observed with two devices: on device A open a list and tap "Delen" (Share); on device B tap "Lijst toevoegen" (Add list) → "Scannen" (Scan) and scan the QR code, or paste the share text. Changes then appear on both devices.
+- Sync is end-to-end encrypted and runs through public Nostr relays (WebSocket, wss://). There is no server of our own.
+- The camera is only used to scan the QR code under "Lijst toevoegen". Without a camera the code can be pasted.
+- No in-app purchases, no ads, no tracking. The interface is in Dutch.
+- What makes it different: it works fully offline first, and sharing is end-to-end encrypted without any account or server of our own.
+- There is no public user-generated content: a list is only visible to people who have its share code (Guideline 1.2 does not apply). There is no chat and no public feed.
+- The share link uses a custom URL scheme (boodschap://). Most chat apps do not make such a link tappable; that is expected. The share text therefore always includes a text code (BS1-...) that can be pasted under "Lijst toevoegen".
+- Please use these English notes in App Store Connect; the Dutch version is identical in content.
+- Contact: info@derondeengineering.nl

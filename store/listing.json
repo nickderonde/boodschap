@@ -1,0 +1,22 @@
+{
+  "appName": "BOODSCHAP!",
+  "fallbackName": "BOODSCHAP! Boodschappenlijst",
+  "bundleId": "nl.derondeengineering.boodschap",
+  "primaryLanguage": "nl-NL",
+  "languages": ["nl-NL", "en-US"],
+  "apple": { "primaryCategory": "Food & Drink", "secondaryCategory": "Productivity", "price": "free" },
+  "google": { "category": "Food & Drink", "type": "app", "price": "free", "containsAds": false },
+  "privacyPolicyUrl": { "nl": "https://nickderonde.github.io/boodschap/privacy/", "en": "https://nickderonde.github.io/boodschap/en/privacy/" },
+  "supportUrl": { "nl": "https://nickderonde.github.io/boodschap/support/", "en": "https://nickderonde.github.io/boodschap/en/support/" },
+  "marketingUrl": "https://nickderonde.github.io/boodschap/",
+  "contactEmail": "info@derondeengineering.nl",
+  "reviewNotesForApple": "store/en/review-notes.txt",
+  "copyright": "2026 Nick de Ronde",
+  "copyrightGoogle": "2026 De Ronde Engineering",
+  "developerName": { "apple": "Nick de Ronde", "google": "De Ronde Engineering" },
+  "limits": {
+    "_bron": "Gecontroleerd 2026-10-07: developer.apple.com/help/app-store-connect/reference/app-information/* en support.google.com/googleplay/android-developer/answer/113469 en 9866151",
+    "apple": { "name": 30, "subtitle": 30, "keywordsBytes": 100, "promotionalText": 170, "description": 4000, "whatsNew": 4000, "reviewNotesBytes": 4000 },
+    "google": { "title": 30, "shortDescription": 80, "fullDescription": 4000 }
+  }
+}

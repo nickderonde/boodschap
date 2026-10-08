@@ -1,0 +1,405 @@
+{
+ "_note": "VOORLOPIGE fixture (Engineer, M1). Wordt vervangen door de fixture van de Eindtester (F-08).",
+ "items": [
+  {
+   "name": "tomaten",
+   "category": "groente-fruit"
+  },
+  {
+   "name": "halfvolle melk",
+   "category": "zuivel-eieren"
+  },
+  {
+   "name": "hagelslag",
+   "category": "ontbijt-beleg"
+  },
+  {
+   "name": "toiletpapier",
+   "category": "huishouden"
+  },
+  {
+   "name": "bananen",
+   "category": "groente-fruit"
+  },
+  {
+   "name": "appels",
+   "category": "groente-fruit"
+  },
+  {
+   "name": "komkommer",
+   "category": "groente-fruit"
+  },
+  {
+   "name": "rode uien",
+   "category": "groente-fruit"
+  },
+  {
+   "name": "knoflook",
+   "category": "groente-fruit"
+  },
+  {
+   "name": "aardappelen",
+   "category": "groente-fruit"
+  },
+  {
+   "name": "broccoli",
+   "category": "groente-fruit"
+  },
+  {
+   "name": "sla",
+   "category": "groente-fruit"
+  },
+  {
+   "name": "champignons",
+   "category": "groente-fruit"
+  },
+  {
+   "name": "paprika's",
+   "category": "groente-fruit"
+  },
+  {
+   "name": "citroen",
+   "category": "groente-fruit"
+  },
+  {
+   "name": "druiven",
+   "category": "groente-fruit"
+  },
+  {
+   "name": "aardbeien",
+   "category": "groente-fruit"
+  },
+  {
+   "name": "wortels",
+   "category": "groente-fruit"
+  },
+  {
+   "name": "volkorenbrood",
+   "category": "brood-gebak"
+  },
+  {
+   "name": "stokbrood",
+   "category": "brood-gebak"
+  },
+  {
+   "name": "krentenbollen",
+   "category": "brood-gebak"
+  },
+  {
+   "name": "croissants",
+   "category": "brood-gebak"
+  },
+  {
+   "name": "beschuit",
+   "category": "brood-gebak"
+  },
+  {
+   "name": "wraps",
+   "category": "pasta-rijst-wereld"
+  },
+  {
+   "name": "ontbijtkoek",
+   "category": "brood-gebak"
+  },
+  {
+   "name": "kipfilet",
+   "category": "vlees-vis"
+  },
+  {
+   "name": "rundergehakt",
+   "category": "vlees-vis"
+  },
+  {
+   "name": "zalmfilet",
+   "category": "vlees-vis"
+  },
+  {
+   "name": "rookworst",
+   "category": "vlees-vis"
+  },
+  {
+   "name": "spekjes",
+   "category": "snacks-snoep"
+  },
+  {
+   "name": "garnalen",
+   "category": "vlees-vis"
+  },
+  {
+   "name": "jonge kaas",
+   "category": "vleeswaren-kaas"
+  },
+  {
+   "name": "geraspte kaas",
+   "category": "vleeswaren-kaas"
+  },
+  {
+   "name": "achterham",
+   "category": "vleeswaren-kaas"
+  },
+  {
+   "name": "salami",
+   "category": "vleeswaren-kaas"
+  },
+  {
+   "name": "hummus",
+   "category": "vleeswaren-kaas"
+  },
+  {
+   "name": "mozzarella",
+   "category": "vleeswaren-kaas"
+  },
+  {
+   "name": "eieren",
+   "category": "zuivel-eieren"
+  },
+  {
+   "name": "yoghurt",
+   "category": "zuivel-eieren"
+  },
+  {
+   "name": "kwark",
+   "category": "zuivel-eieren"
+  },
+  {
+   "name": "roomboter",
+   "category": "zuivel-eieren"
+  },
+  {
+   "name": "slagroom",
+   "category": "zuivel-eieren"
+  },
+  {
+   "name": "vla",
+   "category": "zuivel-eieren"
+  },
+  {
+   "name": "karnemelk",
+   "category": "zuivel-eieren"
+  },
+  {
+   "name": "pindakaas",
+   "category": "ontbijt-beleg"
+  },
+  {
+   "name": "jam",
+   "category": "ontbijt-beleg"
+  },
+  {
+   "name": "honing",
+   "category": "ontbijt-beleg"
+  },
+  {
+   "name": "muesli",
+   "category": "ontbijt-beleg"
+  },
+  {
+   "name": "havermout",
+   "category": "ontbijt-beleg"
+  },
+  {
+   "name": "cornflakes",
+   "category": "ontbijt-beleg"
+  },
+  {
+   "name": "spaghetti",
+   "category": "pasta-rijst-wereld"
+  },
+  {
+   "name": "penne",
+   "category": "pasta-rijst-wereld"
+  },
+  {
+   "name": "basmatirijst",
+   "category": "pasta-rijst-wereld"
+  },
+  {
+   "name": "noedels",
+   "category": "pasta-rijst-wereld"
+  },
+  {
+   "name": "sojasaus",
+   "category": "pasta-rijst-wereld"
+  },
+  {
+   "name": "kokosmelk",
+   "category": "pasta-rijst-wereld"
+  },
+  {
+   "name": "pesto",
+   "category": "pasta-rijst-wereld"
+  },
+  {
+   "name": "tortilla's",
+   "category": "pasta-rijst-wereld"
+  },
+  {
+   "name": "olijfolie",
+   "category": "houdbaar-conserven"
+  },
+  {
+   "name": "suiker",
+   "category": "houdbaar-conserven"
+  },
+  {
+   "name": "bloem",
+   "category": "houdbaar-conserven"
+  },
+  {
+   "name": "mayonaise",
+   "category": "houdbaar-conserven"
+  },
+  {
+   "name": "ketchup",
+   "category": "houdbaar-conserven"
+  },
+  {
+   "name": "kidneybonen",
+   "category": "houdbaar-conserven"
+  },
+  {
+   "name": "tomatenpuree",
+   "category": "houdbaar-conserven"
+  },
+  {
+   "name": "bouillonblokjes",
+   "category": "houdbaar-conserven"
+  },
+  {
+   "name": "zout",
+   "category": "houdbaar-conserven"
+  },
+  {
+   "name": "chips",
+   "category": "snacks-snoep"
+  },
+  {
+   "name": "drop",
+   "category": "snacks-snoep"
+  },
+  {
+   "name": "chocolade",
+   "category": "snacks-snoep"
+  },
+  {
+   "name": "koekjes",
+   "category": "snacks-snoep"
+  },
+  {
+   "name": "borrelnootjes",
+   "category": "snacks-snoep"
+  },
+  {
+   "name": "popcorn",
+   "category": "snacks-snoep"
+  },
+  {
+   "name": "cola",
+   "category": "dranken"
+  },
+  {
+   "name": "sinaasappelsap",
+   "category": "dranken"
+  },
+  {
+   "name": "koffie",
+   "category": "dranken"
+  },
+  {
+   "name": "thee",
+   "category": "dranken"
+  },
+  {
+   "name": "bier",
+   "category": "dranken"
+  },
+  {
+   "name": "rode wijn",
+   "category": "dranken"
+  },
+  {
+   "name": "bruiswater",
+   "category": "dranken"
+  },
+  {
+   "name": "diepvriespizza",
+   "category": "diepvries"
+  },
+  {
+   "name": "patat",
+   "category": "diepvries"
+  },
+  {
+   "name": "bitterballen",
+   "category": "diepvries"
+  },
+  {
+   "name": "ijsblokjes",
+   "category": "diepvries"
+  },
+  {
+   "name": "keukenrol",
+   "category": "huishouden"
+  },
+  {
+   "name": "afwasmiddel",
+   "category": "huishouden"
+  },
+  {
+   "name": "vaatwastabletten",
+   "category": "huishouden"
+  },
+  {
+   "name": "wasmiddel",
+   "category": "huishouden"
+  },
+  {
+   "name": "vuilniszakken",
+   "category": "huishouden"
+  },
+  {
+   "name": "allesreiniger",
+   "category": "huishouden"
+  },
+  {
+   "name": "tandpasta",
+   "category": "verzorging"
+  },
+  {
+   "name": "shampoo",
+   "category": "verzorging"
+  },
+  {
+   "name": "douchegel",
+   "category": "verzorging"
+  },
+  {
+   "name": "deodorant",
+   "category": "verzorging"
+  },
+  {
+   "name": "paracetamol",
+   "category": "verzorging"
+  },
+  {
+   "name": "luiers",
+   "category": "baby-kind"
+  },
+  {
+   "name": "billendoekjes",
+   "category": "baby-kind"
+  },
+  {
+   "name": "kattenvoer",
+   "category": "huisdieren"
+  },
+  {
+   "name": "hondenbrokken",
+   "category": "huisdieren"
+  },
+  {
+   "name": "batterijen",
+   "category": "huishouden"
+  }
+ ]
+}

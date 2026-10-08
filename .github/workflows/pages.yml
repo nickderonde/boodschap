@@ -1,0 +1,40 @@
+# ST-06/ST-21: publiceert de map site/ op GitHub Pages (https://nickderonde.github.io/boodschap/).
+# Instellen in GitHub: Settings → Pages → Source: "GitHub Actions".
+name: Website (GitHub Pages)
+
+on:
+  push:
+    branches: ["main"]
+    paths: ["site/**", ".github/workflows/pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Geen placeholders op de site (KvK-nummer, review CR-03 C-4)
+        run: |
+          if grep -rnE "KVK-NUMMER|\[TODO" site/; then echo "Vul eerst de placeholders in site/ in."; exit 1; fi
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload site/
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: "site"
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

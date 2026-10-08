@@ -1,0 +1,12 @@
+Notities voor de beoordelaar (Apple App Review / Google Play)
+
+- Geen account en geen inlog: de app werkt direct na installatie. Er is geen demo-account nodig.
+- De app opent met de lijst "Boodschappen". Voeg items toe met het invoerveld onderaan; tik op een item om het af te vinken.
+- Delen is optioneel. Synchronisatie kun je alleen zien met twee toestellen: maak op toestel A een lijst, tik op Delen; op toestel B: Lijst toevoegen → Scannen (QR) of plak de deeltekst. Wijzigingen verschijnen daarna op beide toestellen.
+- Synchronisatie loopt end-to-end versleuteld via openbare Nostr-relays (WebSocket, wss://). Er is geen eigen server.
+- De camera wordt alleen gebruikt voor het scannen van de QR-code bij "Lijst toevoegen". Zonder camera kan de code worden geplakt.
+- Geen in-app aankopen, geen advertenties, geen tracking. De interface is Nederlands.
+- Wat de app onderscheidt: werkt volledig offline en delen is end-to-end versleuteld, zonder account of eigen server.
+- Geen openbare inhoud van gebruikers: een lijst is alleen zichtbaar voor wie de deelcode heeft (richtlijn 1.2 is niet van toepassing). Geen chat, geen openbare feed.
+- De deellink gebruikt een eigen URL-schema (boodschap://). De meeste chat-apps maken zo'n link niet klikbaar; dat is verwacht. De deeltekst bevat daarom altijd ook een tekstcode (BS1-...) die bij "Lijst toevoegen" geplakt kan worden.
+- Contact: info@derondeengineering.nl

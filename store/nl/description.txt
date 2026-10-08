@@ -1,0 +1,23 @@
+BOODSCHAP! is een eenvoudige boodschappenlijst die je samen met je huisgenoten gebruikt. Wat de een toevoegt of afvinkt, ziet de ander ook. Gratis, zonder advertenties en zonder account.
+
+SAMEN EEN LIJST
+• Deel een lijst met een QR-code of stuur de code via je chat-app.
+• Wijzigingen komen vanzelf bij iedereen aan; bovenin zie je of alles is bijgewerkt.
+• Afvinken, aantallen, notities en meerdere lijsten (bijvoorbeeld voor de supermarkt en de drogist).
+
+SNEL IN DE SUPERMARKT
+• Items staan vanzelf per afdeling, in een logische looproute.
+• Suggesties op basis van wat je eerder kocht.
+• Afgevinkte items gaan naar onderen; met één tik haal je ze weg, en per ongeluk verwijderd kun je ongedaan maken.
+• Werkt ook zonder bereik. Zodra er weer verbinding is, gaan je wijzigingen mee.
+
+PRIVACY
+• Geen account, geen tracking, geen analytics, geen advertenties.
+• Je lijsten staan op je telefoon. Gedeelde lijsten worden end-to-end versleuteld en reizen via openbare Nostr-relays; die kunnen de inhoud niet lezen.
+• Er is geen server van BOODSCHAP!. Wij kunnen je lijsten niet zien.
+• De camera wordt alleen gebruikt om een QR-code te scannen.
+
+OPEN SOURCE
+De broncode is openbaar op GitHub, zodat iedereen kan nagaan wat de app doet.
+
+BOODSCHAP! is een app van De Ronde Engineering. Vragen of ideeën: info@derondeengineering.nl

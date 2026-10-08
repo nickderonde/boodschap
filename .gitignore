@@ -1,0 +1,38 @@
+# dependencies
+node_modules/
+
+# Expo / Metro
+.expo/
+dist/
+dist-*/
+web-build/
+expo-env.d.ts
+.metro-health-check*
+
+# native builds (EAS / prebuild)
+ios/
+android/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# tests
+coverage/
+*.db
+*.db-wal
+*.db-shm
+
+# misc
+.DS_Store
+*.log
+npm-debug.*
+.env
+.env*.local
+*.tsbuildinfo
+
+# editor
+*.swp
+*.swo
