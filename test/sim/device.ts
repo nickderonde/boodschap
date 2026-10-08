@@ -10,6 +10,7 @@ import { createMemoryTransport, type MemoryTransport } from '../../src/sync/tran
 import type { MemoryHub } from '../../src/sync/transports/memory/MemoryHub';
 import { NodeSqliteDriver } from '../support/NodeSqliteDriver';
 import { MemoryKeyStore } from '../support/MemoryKeyStore';
+import { MemoryDeviceMarker } from '../support/MemoryDeviceMarker';
 import { SeededRandom } from '../support/SeededRandom';
 import { KillSwitch } from '../support/KillSwitch';
 import { CapturingLogger } from '../support/CapturingLogger';
@@ -33,6 +34,8 @@ export interface DeviceOptions {
   dynamicRelays?: boolean;
   /** Een bestaande KeyStore (bijv. `restoredCopy()` voor een herstel uit een back-up, §19). */
   keys?: MemoryKeyStore;
+  /** Device-only merkteken (D-50); standaard een nieuw, leeg merkteken per toestel. */
+  deviceMarker?: MemoryDeviceMarker;
 }
 
 export interface TestDevice {
@@ -55,6 +58,7 @@ export interface TestDevice {
 
 export async function createTestDevice(o: DeviceOptions): Promise<TestDevice> {
   const keys = o.keys ?? new MemoryKeyStore();
+  const deviceMarker = o.deviceMarker ?? new MemoryDeviceMarker();
   const random = new SeededRandom(o.seed ?? hashName(o.name));
   const log = new CapturingLogger();
   const offsetClock = o.clock ?? (o.scheduler ? o.scheduler.clock(o.clockOffsetMs ?? 0) : realClock(o.clockOffsetMs ?? 0));
@@ -95,6 +99,7 @@ export async function createTestDevice(o: DeviceOptions): Promise<TestDevice> {
     const app = new BootschapAppImpl({
       db: ks.driver(driver),
       keys: ks.keys(keys),
+      deviceMarker,
       clock,
       timers,
       random,

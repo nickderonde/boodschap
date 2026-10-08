@@ -1,5 +1,6 @@
 // BootschapApp-facade (§9.3, §10): enige API voor de UI, optimistisch via StateCache + WriteQueue.
 // Implementeert ook SyncHost voor de engine (opslag van de sync-tabellen en merge via de wachtrij).
+import type { DeviceMarker } from '../storage/DeviceMarker';
 import { makeConfig, type Config } from '../config';
 import { bytesEqual, fromHex, toHex } from '../core/bytes';
 import { categorize } from '../core/categorize/categorize';
@@ -52,6 +53,8 @@ export interface AppDeps {
   /** Test-hooks voor crashpunten (§13.3). */
   faults?: Faults;
   strings?: { defaultListName: string; sharedListPlaceholderName: string; shareWarning: string };
+  /** §19 / D-50: device-only merkteken (niet in back-ups). Ontbreekt het, dan geldt het gedrag van K-6. */
+  deviceMarker?: DeviceMarker;
 }
 
 export interface BootschapApp {
@@ -230,11 +233,19 @@ export class BootschapAppImpl implements BootschapApp, SyncHost {
       return null;
     }
     if (inStore === inDb) return null;
-    // K-6: de KeyStore kon de vorige keer niet worden geschreven (structurele fout). Niet opnieuw roteren; alleen
-    // opnieuw proberen de KeyStore te schrijven.
+    // K-6: de KeyStore kon de install_id eerder niet opslaan (structurele fout). Is dit het origineel, dan niet roteren
+    // maar opnieuw proberen te schrijven. R-2 / D-50: de markering in `meta` gaat mee in een back-up; het device-only
+    // merkteken (Caches) niet. Ontbreekt dat merkteken, dan is dit een kopie (of is de cache opgeruimd): roteren, wat
+    // hooguit één keer onnodig maar altijd veilig is. Is er geen merkteken beschikbaar of mislukte het schrijven ervan,
+    // dan het oude K-6-gedrag (nooit roteren bij elke start).
     if ((await this.repo.read((r) => dao.getMeta(r, 'install_id_unsaved'))) === inDb) {
-      if (await this.writeInstallIdToStore(inDb)) await this.repo.tx((tx) => tx.run("DELETE FROM meta WHERE key='install_id_unsaved'", []));
-      return null;
+      const marker = await this.readMarker();
+      const markerFailed = (await this.repo.read((r) => dao.getMeta(r, 'install_marker_failed'))) === inDb;
+      if (marker === undefined || markerFailed || marker === inDb) {
+        if (await this.writeInstallIdToStore(inDb)) await this.repo.tx((tx) => tx.run("DELETE FROM meta WHERE key='install_id_unsaved'", []));
+        return null;
+      }
+      this.log.warn('install.restored-unsaved');
     }
     this.log.warn('install.restored');
     const rows = await this.repo.read((r) => dao.loadLists(r));
@@ -247,21 +258,56 @@ export class BootschapAppImpl implements BootschapApp, SyncHost {
     // K-6: eerst de KeyStore, dan de database. Faalt de KeyStore, dan markeren we dat in de database zodat een volgende
     // start niet opnieuw roteert.
     const saved = await this.writeInstallIdToStore(installId);
+    const markerOk = saved || (await this.writeMarker(installId));
     await this.repo.tx(async (tx) => {
       await dao.setMeta(tx, 'device_id', fresh);
       await dao.setMeta(tx, 'install_id', installId);
-      if (!saved) await dao.setMeta(tx, 'install_id_unsaved', installId);
+      await this.markUnsaved(tx, installId, saved, markerOk);
     });
     return fresh;
+  }
+
+  /** K-6 / D-50: markering als de KeyStore faalde; plus of ook het device-only merkteken niet geschreven kon worden. */
+  private async markUnsaved(tx: SqlTx, installId: string, saved: boolean, markerOk: boolean): Promise<void> {
+    if (saved) {
+      await tx.run("DELETE FROM meta WHERE key IN ('install_id_unsaved','install_marker_failed')", []);
+      return;
+    }
+    await dao.setMeta(tx, 'install_id_unsaved', installId);
+    if (markerOk) await tx.run("DELETE FROM meta WHERE key='install_marker_failed'", []);
+    else await dao.setMeta(tx, 'install_marker_failed', installId);
+  }
+
+  /** undefined = geen merkteken beschikbaar (geen dependency of leesfout); null = geen merkteken aanwezig. */
+  private async readMarker(): Promise<string | null | undefined> {
+    if (!this.deps.deviceMarker) return undefined;
+    try {
+      return await this.deps.deviceMarker.read();
+    } catch {
+      this.log.warn('install.marker-unreadable');
+      return undefined;
+    }
+  }
+
+  private async writeMarker(value: string): Promise<boolean> {
+    if (!this.deps.deviceMarker) return false;
+    try {
+      await this.deps.deviceMarker.write(value);
+      return true;
+    } catch {
+      this.log.warn('install.marker-failed');
+      return false;
+    }
   }
 
   /** Nieuwe installatie (of installatie van vóór §19): KeyStore eerst, dan de database (K-6). */
   private async newInstallId(): Promise<void> {
     const installId = newDeviceId(this.deps.random);
     const saved = await this.writeInstallIdToStore(installId);
+    const markerOk = saved || (await this.writeMarker(installId));
     await this.repo.tx(async (tx) => {
       await dao.setMeta(tx, 'install_id', installId);
-      if (!saved) await dao.setMeta(tx, 'install_id_unsaved', installId);
+      await this.markUnsaved(tx, installId, saved, markerOk);
     });
   }
 

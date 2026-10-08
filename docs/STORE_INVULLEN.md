@@ -34,7 +34,7 @@ Al gemaakt (Android-emulator): `store/screenshots/out-android/google/alle/01.png
 
 1. Upload de iOS-build: `npx eas-cli submit --platform ios --latest`.
    - Log in met je Apple ID als daarom wordt gevraagd. Bestaat de app nog niet in App Store Connect, dan maakt EAS hem aan met de gegevens uit `eas.json` (naam BOODSCHAP!, taal Nederlands, SKU `boodschap`) en het bundle-ID `nl.derondeengineering.boodschap` uit `app.json`.
-   - Na afloop noemt EAS een **ASC App ID** (alleen cijfers). Zet dat in `eas.json` onder `submit.production.ios` als `"ascAppId": "1234567890"` (met jouw nummer). Een leeg veld mag daar niet staan; EAS weigert dan het hele bestand, daarom staat het er nu nog niet.
+   - Na afloop noemt EAS een **ASC App ID** (alleen cijfers). Dat nummer staat inmiddels in `eas.json` onder `submit.production.ios` (`"ascAppId": "6820509019"`). Een leeg veld mag daar nooit staan; EAS weigert dan het hele bestand.
 2. Teksten in één keer naar Apple (aanbevolen): `npx eas-cli metadata:push`. Dat vult naam, ondertitel, beschrijving, trefwoorden, promotietekst, adressen, categorieën, copyright, leeftijdsclassificatie en "na goedkeuring automatisch uitbrengen" in, in het Nederlands en Engels. Controleer daarna de schermen hieronder; wat al is ingevuld sla je over.
 
 ### A1. App-informatie (linkermenu: **App Information**)

@@ -24,7 +24,8 @@
         "appName": "BOODSCHAP!",
         "language": "nl-NL",
         "sku": "boodschap",
-        "metadataPath": "./store.config.json"
+        "metadataPath": "./store.config.json",
+        "ascAppId": "6820509019"
       }
     }
   }

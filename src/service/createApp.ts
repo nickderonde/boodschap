@@ -5,6 +5,7 @@ import { makeConfig, type Config } from '../config';
 import type { Logger, Random, Timers } from '../core/types';
 import { openExpoSqliteDriver } from '../storage/ExpoSqliteDriver';
 import { expoSecureKeyStore } from '../storage/ExpoSecureKeyStore';
+import { expoCacheMarker } from '../storage/ExpoCacheMarker';
 import { createNostrTransport } from '../sync/transports/nostr/NostrTransport';
 import type { WebSocketLike } from '../sync/transports/nostr/RelayConnection';
 import { createBootschapApp, type BootschapApp } from './BootschapApp';
@@ -33,6 +34,7 @@ export async function createApp(over?: Partial<Config>, strings?: { defaultListN
   return createBootschapApp({
     db,
     keys: expoSecureKeyStore,
+    deviceMarker: expoCacheMarker,
     clock: { nowMs: () => Date.now() },
     timers,
     random,

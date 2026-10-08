@@ -307,12 +307,12 @@ describe('EAS Metadata (Apple): store.config.json', () => {
     expect(cfg.apple.review).toBeUndefined(); // naam en telefoon vult Nick zelf in (STORE_INVULLEN.md)
   });
 
-  it('eas.json submit.production.ios: taal nl-NL, SKU en metadataPath; bundle-ID uit app.json; geen leeg ascAppId (EAS weigert dat)', () => {
+  it('eas.json submit.production.ios: taal nl-NL, SKU en metadataPath; bundle-ID uit app.json; ascAppId van App Store Connect (nooit leeg: EAS weigert dat)', () => {
     const ios = eas.submit.production.ios;
     expect(ios.bundleIdentifier).toBeUndefined();
     expect(ios.language).toBe('nl-NL');
     expect(ios.metadataPath).toBe('./store.config.json');
-    if ('ascAppId' in ios) expect(ios.ascAppId).toMatch(/^\d+$/);
+    expect(ios.ascAppId).toBe('6820509019'); // App Store Connect app-ID (na de eerste indiening); nooit leeg
     expect(read('docs/STORE_INVULLEN.md')).toMatch(/ascAppId/);
   });
 });

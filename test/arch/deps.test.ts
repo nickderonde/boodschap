@@ -38,6 +38,8 @@ const NATIVE_ALLOWLIST = new Set([
   '@react-native-community/netinfo', 'react-native-svg', 'expo-keep-awake', 'react', 'react-dom',
   // ST-04: opstartscherm met lichte en donkere variant (config-plugin; in Expo Go aanwezig).
   'expo-splash-screen', 'expo-system-ui',
+  // D-50: device-only merkteken in de cache (iOS Library/Caches, niet in back-ups).
+  'expo-file-system',
 ]);
 
 /** Pure-JS dependencies (geen native code). */

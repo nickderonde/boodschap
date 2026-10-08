@@ -87,7 +87,7 @@ describe('Architectuur: importregels (§2, S-19, NF-08)', () => {
       for (const spec of importsOf(f)) {
         const local = resolveLocal(f, spec);
         if (local) expect([f, ['core', 'storage'].includes(layerOf(local))]).toEqual([f, true]);
-        else if (/^expo-/.test(spec)) expect([f, /\/(ExpoSqliteDriver|ExpoSecureKeyStore)\.ts$/.test(f)]).toEqual([f, true]);
+        else if (/^expo-/.test(spec)) expect([f, /\/(ExpoSqliteDriver|ExpoSecureKeyStore|ExpoCacheMarker)\.ts$/.test(f)]).toEqual([f, true]);
         else expect([f, spec]).toEqual([f, 'not-allowed']);
       }
     }

@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import { addDevice, makeWorld, names, shareAndJoin, type World } from '../sim/hub';
 import { tmpDbFile } from '../support/single';
 import { MemoryKeyStore } from '../support/MemoryKeyStore';
+import { MemoryDeviceMarker } from '../support/MemoryDeviceMarker';
 import * as dao from '../../src/storage/dao';
 import { keyNames } from '../../src/storage/KeyStore';
 import type { TestDevice } from '../sim/device';
@@ -158,6 +159,72 @@ describe('§19: toestelherstel (install_id)', () => {
     await a.restart();
     expect(a.app.deviceId).toBe(dev);
   });
+
+  it('R-2 / D-50: faalt de KeyStore op het origineel, dan herkent een kopie uit de back-up zich toch (device-only merkteken) en roteert; het origineel niet', async () => {
+    const w = await makeWorld();
+    const keys = new FailingInstallKeys();
+    const marker = new MemoryDeviceMarker();
+    const fileA = tmpDbFile('r2');
+    const a = await addDevice(w, 'A', { dbFile: fileA, keys, deviceMarker: marker });
+    const b = await addDevice(w, 'B');
+    const ids = await shareAndJoin(w, a, [b]);
+    const la = ids.get(a)!;
+    const lb = ids.get(b)!;
+    a.app.addItem(la, { text: 'Melk' });
+    await w.settle(30_000);
+    expect(await meta(a, 'install_id_unsaved')).toBe(await meta(a, 'install_id'));
+    expect(marker.value).toBe(await meta(a, 'install_id'));
+    const dev = a.app.deviceId;
+    const pk = await pubkeyOf(a, la);
+    // Kopie uit de back-up: database (met install_id_unsaved) en Keychain mee, Caches niet (nieuw, leeg merkteken).
+    const a2 = await addDevice(w, 'A-hersteld', { dbFile: backupDb(fileA), keys: keys.restoredCopy(), deviceMarker: new MemoryDeviceMarker() });
+    expect(a2.log.codes()).toContain('install.restored-unsaved');
+    expect(a2.app.deviceId).not.toBe(dev);
+    expect(await pubkeyOf(a2, la)).not.toBe(pk);
+    // Het origineel blijft wie het was, ook na herstarts.
+    for (let i = 0; i < 2; i++) {
+      await a.restart();
+      expect(a.app.deviceId).toBe(dev);
+      expect(await pubkeyOf(a, la)).toBe(pk);
+    }
+    // En alle drie convergeren.
+    a.app.addItem(la, { text: 'Kaas' });
+    a2.app.addItem(la, { text: 'Brood' });
+    await w.settle(60_000);
+    for (const [d, l] of [[a, la], [a2, la], [b, lb]] as const) expect(names(d, l)).toEqual(['Brood', 'Kaas', 'Melk']);
+  });
+
+  it('D-50: wordt de cache opgeruimd op het origineel, dan hooguit één (veilige) rotatie en daarna niet bij elke start; zonder werkend merkteken nooit', async () => {
+    const w = await makeWorld();
+    const keys = new FailingInstallKeys();
+    const marker = new MemoryDeviceMarker();
+    const a = await addDevice(w, 'A', { dbFile: tmpDbFile('d50'), keys, deviceMarker: marker });
+    const b = await addDevice(w, 'B');
+    const ids = await shareAndJoin(w, a, [b]);
+    const la = ids.get(a)!;
+    a.app.addItem(la, { text: 'Melk' });
+    await w.settle(30_000);
+    marker.purge();
+    await a.restart();
+    const dev = a.app.deviceId;
+    const pk = await pubkeyOf(a, la);
+    for (let i = 0; i < 3; i++) {
+      await a.restart();
+      expect(a.app.deviceId).toBe(dev);
+      expect(await pubkeyOf(a, la)).toBe(pk);
+    }
+    expect(names(a, la)).toEqual(['Melk']); // geen dataverlies
+    // Merkteken kan niet geschreven worden (bijv. schijf vol): terug naar K-6, nooit roteren.
+    marker.failing = true;
+    marker.purge();
+    await a.restart(); // roteert één keer (merkteken weg), schrijven mislukt → install_marker_failed
+    const dev2 = a.app.deviceId;
+    for (let i = 0; i < 3; i++) {
+      await a.restart();
+      expect(a.app.deviceId).toBe(dev2);
+    }
+    expect(await meta(a, 'install_marker_failed')).toBe(await meta(a, 'install_id'));
+  });
 });
 
 /** KeyStore waarin het schrijven van de install_id (deviceOnly) structureel faalt (K-6). */
@@ -168,4 +235,3 @@ class FailingInstallKeys extends MemoryKeyStore {
     return super.set(key, value, opts);
   }
 }
-

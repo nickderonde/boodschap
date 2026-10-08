@@ -1,5 +1,6 @@
 // Helpers voor hub-scenario's: een gedeelde wereld (scheduler + hub + relays) en apparaten die een lijst delen.
 import type { MemoryKeyStore } from '../support/MemoryKeyStore';
+import type { MemoryDeviceMarker } from '../support/MemoryDeviceMarker';
 import { MemoryHub } from '../../src/sync/transports/memory/MemoryHub';
 import { VirtualScheduler } from '../support/VirtualScheduler';
 import { createTestDevice, type TestDevice } from './device';
@@ -30,7 +31,7 @@ export async function makeWorld(opts: { relays?: string[]; seed?: number } = {})
 export async function addDevice(
   w: World,
   name: string,
-  o: { clockOffsetMs?: number; config?: Partial<Config>; endpoints?: string[]; seed?: number; dbFile?: string; keys?: MemoryKeyStore } = {},
+  o: { clockOffsetMs?: number; config?: Partial<Config>; endpoints?: string[]; seed?: number; dbFile?: string; keys?: MemoryKeyStore; deviceMarker?: MemoryDeviceMarker } = {},
 ): Promise<TestDevice> {
   const d = await createTestDevice({
     name,
@@ -41,6 +42,7 @@ export async function addDevice(
     seed: o.seed,
     dbFile: o.dbFile,
     keys: o.keys,
+    deviceMarker: o.deviceMarker,
     config: { localWindowMs: 1000, ...(o.config ?? {}) },
   });
   w.devices.push(d);
