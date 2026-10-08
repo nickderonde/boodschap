@@ -13,7 +13,11 @@ Eigenaar: Engineer. Bijgewerkt: 2026-10-06. Basis: ARCHITECTURE v0.3 (akkoord En
 | M4 UI | **Klaar** (Architect: akkoord met opmerkingen; N1–N3 en K-1..K-8 verwerkt, zie `docs/reviews/review-architect-code-M4-M5-response.md`; rooktest met Nick nog te doen) | +14 UI-tests (ui-project) | A-04-check aan het begin: SDK 57 = `latest` → geen upgrade. Expo Router-schermen in het Nederlands (lijsten, lijst, item bewerken, delen met QR, koppelen met scannen/plakken, instellingen met relays). UX-01 (`strings.test`), UX-02 (`statusText.test`), UX-05 (`store.test`), UX-07 (`confirm.test`), UX-10 (`selectors.test`) en UX-13 groen. `expo export` ios/android, `expo-doctor` 21/21, `npx expo start` start zonder fouten (dev-bundel HTTP 200). |
 | M5 afronding | **Grotendeels klaar** | — | `README.md` (installatie, twee telefoons via Expo Go, koppelen, relays en privacy, waarschuwing B-02, beperkingen, EAS-pad, testcommando's). Open: de Eindtester volgt de README op een schone checkout; de Architect werkt ARCHITECTURE bij (D-01..D-29). |
 
-## Laatste volledige run (R-2 / D-50 en ascAppId)
+## Laatste volledige run (A-1 / D-51: geen Android-back-up of toestel-overdracht)
+
+- `plugins/withNoDataExtraction.js` + test op de gegenereerde manifest; README en supportpagina-FAQ bijgewerkt.
+
+### Eerder: R-2 / D-50 en ascAppId
 
 - R-2: device-only merkteken in de cache naast `install_id_unsaved` (D-50), met tests die zonder de fix falen. `eas.json`: `ascAppId` 6820509019, gevalideerd met EAS.
 

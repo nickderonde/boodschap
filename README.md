@@ -154,6 +154,7 @@ Twee keuzes bij het weggooien van een gedeelde lijst:
 
 - **Geen pushmeldingen** (die vereisen een server). Synchroniseren gebeurt bij het openen van de app, bij terugkeer naar de app, bij herstel van het netwerk en live zolang de app open is. In de achtergrond synchroniseert de app niet.
 - **In Expo Go** opent een gedeelde link de app niet (zie §3). Scannen en plakken werken wel.
+- **Nieuwe telefoon (Android):** BOODSCHAP! neemt bewust niets mee in een Google-back-up of bij het overzetten naar een nieuwe telefoon (D-51). De app begint daar leeg; koppel je lijsten opnieuw met de deelcode vanaf een telefoon die ze nog heeft. Een nooit gedeelde lijst deel je eerst op de oude telefoon. **iPhone:** na het terugzetten van een back-up staan de lijsten er weer en meldt de app zich bij gedeelde lijsten als nieuw toestel (§19).
 - **Geen sleutelrotatie en leden niet te verwijderen** (zie §6).
 - **Publieke relays** zijn gratis maar bieden geen garantie: ze kunnen berichten weigeren of na verloop van tijd opruimen. BOODSCHAP! stuurt de volledige staat opnieuw als een relay iets kwijt is, en gebruikt meerdere relays tegelijk.
 - **Verwijderde items** laten een kleine markering achter (nodig voor correcte synchronisatie). Een lijst kan ±14.000 van zulke regels bevatten. Daarboven toont de app "Lijst te groot om te synchroniseren".

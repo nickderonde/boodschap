@@ -61,12 +61,7 @@
     "plugins": [
       "expo-router",
       "expo-sqlite",
-      [
-        "expo-secure-store",
-        {
-          "faceIDPermission": false
-        }
-      ],
+      ["expo-secure-store", { "faceIDPermission": false, "configureAndroidBackup": false }],
       [
         "expo-camera",
         {
@@ -89,7 +84,8 @@
           }
         }
       ],
-      "./plugins/withOptionalCamera"
+      "./plugins/withOptionalCamera",
+      "./plugins/withNoDataExtraction"
     ],
     "extra": {
       "router": {},
