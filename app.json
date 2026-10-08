@@ -2,7 +2,10 @@
   "expo": {
     "name": "BOODSCHAP!",
     "slug": "boodschap",
-    "scheme": ["boodschap", "bootschap"],
+    "scheme": [
+      "boodschap",
+      "bootschap"
+    ],
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
@@ -26,7 +29,10 @@
       },
       "infoPlist": {
         "CFBundleDevelopmentRegion": "nl",
-        "CFBundleLocalizations": ["nl", "en"]
+        "CFBundleLocalizations": [
+          "nl",
+          "en"
+        ]
       }
     },
     "android": {
@@ -37,7 +43,10 @@
         "backgroundColor": "#1F7A55"
       },
       "allowBackup": false,
-      "permissions": ["android.permission.CAMERA", "android.permission.INTERNET"],
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.INTERNET"
+      ],
       "blockedPermissions": [
         "com.google.android.gms.permission.AD_ID",
         "android.permission.RECORD_AUDIO",
@@ -55,7 +64,12 @@
     "plugins": [
       "expo-router",
       "expo-sqlite",
-      ["expo-secure-store", { "faceIDPermission": false }],
+      [
+        "expo-secure-store",
+        {
+          "faceIDPermission": false
+        }
+      ],
       [
         "expo-camera",
         {
@@ -79,6 +93,13 @@
         }
       ],
       "./plugins/withOptionalCamera"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "75a7256f-f8dd-4738-a75a-2c507d64d17f"
+      }
+    },
+    "owner": "nickderonde"
   }
 }
