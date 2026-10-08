@@ -104,8 +104,8 @@ describe('NF-02 / S-14 / S-11: een derde met toegang tot de relay kan niets verv
     const b = await addWsDevice(w, 'B');
     const ids = await wsShareAndJoin(a, [b]);
     const [la, lb] = [ids.get(a)!, ids.get(b)!];
-    a.app.addItem(la, { text: 'echt-1' });
-    await waitFor(() => names(b, lb).includes('echt-1'), 15_000);
+    a.app.addItem(la, { text: 'Echt-1' });
+    await waitFor(() => names(b, lb).includes('Echt-1'), 15_000);
     await sleep(1_500);
     const errors: string[] = [];
     for (const d of [a, b]) d.app.onError((e) => errors.push(e.code));
@@ -116,7 +116,7 @@ describe('NF-02 / S-14 / S-11: een derde met toegang tot de relay kan niets verv
     await sleep(1_500);
     expect(canonicalOf(p.a, p.la)).toBe(before.a);
     expect(canonicalOf(p.b, p.lb)).toBe(before.b);
-    expect(names(p.b, p.lb)).toEqual(['echt-1']);
+    expect(names(p.b, p.lb)).toEqual(['Echt-1']);
   }
 
   it('ET-NF02-1: eigen sleutelpaar: gekopieerde content, aangepaste ciphertext, willekeurige content, onbekende d-tag, andere kinds, te groot -> staat ongewijzigd, geen foutalarm', async () => {
@@ -145,8 +145,8 @@ describe('NF-02 / S-14 / S-11: een derde met toegang tot de relay kan niets verv
     expect(p.errors).toEqual([]);
     for (const dv of [p.a, p.b]) expect(dv.log.lines.filter((l) => l.level === 'error')).toEqual([]);
     // en het systeem werkt gewoon door
-    p.a.app.addItem(p.la, { text: 'echt-2' });
-    await waitFor(() => names(p.b, p.lb).includes('echt-2'), 15_000);
+    p.a.app.addItem(p.la, { text: 'Echt-2' });
+    await waitFor(() => names(p.b, p.lb).includes('Echt-2'), 15_000);
   }, 60_000);
 
   it('ET-NF02-2: vervalste events met A\'s pubkey (ongeldige handtekening, id klopt niet, aangepaste inhoud, nieuwere created_at) worden genegeerd en A herstelt de relay', async () => {
@@ -176,20 +176,20 @@ describe('NF-02 / S-14 / S-11: een derde met toegang tot de relay kan niets verv
     expect(p.errors).toEqual([]);
     // De relay bevat nu nep-events op A's slot (nieuwer dan het echte); A en B moeten gewoon door kunnen werken.
     p.relay.core.opts.verifySignatures = true;
-    p.a.app.addItem(p.la, { text: 'echt-2' });
-    p.b.app.addItem(p.lb, { text: 'echt-3' });
-    await waitFor(() => names(p.b, p.lb).includes('echt-2') && names(p.a, p.la).includes('echt-3'), 30_000);
+    p.a.app.addItem(p.la, { text: 'Echt-2' });
+    p.b.app.addItem(p.lb, { text: 'Echt-3' });
+    await waitFor(() => names(p.b, p.lb).includes('Echt-2') && names(p.a, p.la).includes('Echt-3'), 30_000);
     await sleep(2_000);
     expect(canonicalOf(p.a, p.la)).toBe(canonicalOf(p.b, p.lb));
-    expect(names(p.a, p.la)).toEqual(['echt-1', 'echt-2', 'echt-3']);
+    expect(names(p.a, p.la)).toEqual(['Echt-1', 'Echt-2', 'Echt-3']);
   }, 90_000);
 
   it('ET-NF02-3: replay van een oude staat door de relay (alleen een oud eigen event terug) -> geen regressie; apparaat publiceert opnieuw (S-10c, S-11)', async () => {
     const p = await setup();
     const aEvents1 = eventsOf(w).filter((e) => e.kind === 30078);
     const oldA = newest(aEvents1);
-    p.a.app.addItem(p.la, { text: 'echt-2' });
-    p.a.app.addItem(p.la, { text: 'echt-3' });
+    p.a.app.addItem(p.la, { text: 'Echt-2' });
+    p.a.app.addItem(p.la, { text: 'Echt-3' });
     await waitFor(() => names(p.b, p.lb).length === 3, 15_000);
     await sleep(2_000);
     const latest = canonicalOf(p.b, p.lb);
@@ -200,7 +200,7 @@ describe('NF-02 / S-14 / S-11: een derde met toegang tot de relay kan niets verv
     await sleep(3_000);
     expect(canonicalOf(p.b, p.lb)).toBe(latest);
     expect(canonicalOf(p.a, p.la)).toBe(latest);
-    expect(names(p.b, p.lb)).toEqual(['echt-1', 'echt-2', 'echt-3']);
+    expect(names(p.b, p.lb)).toEqual(['Echt-1', 'Echt-2', 'Echt-3']);
     // zelfherstel: de relay krijgt de nieuwste staat terug, en een nieuw apparaat ziet alles
     await waitFor(() => newest(eventsOf(w).filter((e) => e.pubkey === oldA.pubkey)).created_at > oldA.created_at, 20_000);
     const c = await addWsDevice(w, 'C');
@@ -238,7 +238,7 @@ describe('S-12 / S-03 / S-08a: latentie (productievensters, live abonnement)', (
     try {
       for (let i = 0; i < n; i++) {
         const [src, dst, l] = i % 2 === 0 ? [a, b, la] : [b, a, lb];
-        const name = `wijziging-${i}`;
+        const name = `Wijziging-${i}`;
         addedAt.set(`${dst.name}|${name}`, Date.now());
         src.app.addItem(l, { text: name });
         await sleep(gapMs);
@@ -286,7 +286,7 @@ describe('S-12 / S-03 / S-08a: latentie (productievensters, live abonnement)', (
     const ids = await wsShareAndJoin(a, [b]);
     const [la, lb] = [ids.get(a)!, ids.get(b)!];
     a.net.online(false);
-    for (let i = 0; i < 5; i++) a.app.addItem(la, { text: `offline-${i}` });
+    for (let i = 0; i < 5; i++) a.app.addItem(la, { text: `Offline-${i}` });
     await sleep(1_500);
     expect(names(b, lb)).toEqual([]);
     const t0 = Date.now();
@@ -295,7 +295,7 @@ describe('S-12 / S-03 / S-08a: latentie (productievensters, live abonnement)', (
     expect(Date.now() - t0).toBeLessThanOrEqual(10_000);
     // S-08a
     b.net.online(false);
-    for (let i = 0; i < 50; i++) a.app.addItem(la, { text: `veel-${i}` });
+    for (let i = 0; i < 50; i++) a.app.addItem(la, { text: `Veel-${i}` });
     await waitFor(async () => a.app.syncStatus(la).pending === 0, 15_000);
     const t1 = Date.now();
     b.net.online(true);
@@ -340,8 +340,8 @@ describe('S-15 / NF-10: 1000 items met 30% tombstones over echte Nostr-events', 
   it('ET-S15-4: relays weigeren events > 16 KiB: sync convergeert via kleinere delen, daarna werken wijzigingen nog', async () => {
     const p = await big(16 * 1024);
     for (const e of eventsOf(w)) expect(Buffer.byteLength(JSON.stringify(e))).toBeLessThanOrEqual(16 * 1024);
-    p.b.app.addItem(p.lb, { text: 'laatste' });
-    await waitFor(() => p.a.app.view(p.la).sections.some((s) => s.items.some((i) => i.name === 'laatste')), 30_000);
+    p.b.app.addItem(p.lb, { text: 'Laatste' });
+    await waitFor(() => p.a.app.view(p.la).sections.some((s) => s.items.some((i) => i.name === 'Laatste')), 30_000);
     await sleep(2_000);
     expect(canonicalOf(p.a, p.la)).toBe(canonicalOf(p.b, p.lb));
   }, 120_000);

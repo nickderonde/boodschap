@@ -81,7 +81,7 @@ describe('C-2 / R-1: herstel uit een back-up', () => {
     const b = await wsDevice('B');
     const ids = await wsShareAndJoin(a, [b]);
     const [la, lb] = [ids.get(a)!, ids.get(b)!];
-    for (const n of ['melk', 'brood']) a.app.addItem(la, { text: n });
+    for (const n of ['Melk', 'Brood']) a.app.addItem(la, { text: n });
     await waitFor(() => names(b, lb).length === 2, 20_000);
     await waitFor(async () => a.app.syncStatus(la).pending === 0, 20_000);
     const oldPk = a.app.sharedLists()[0].identity.id;
@@ -93,14 +93,14 @@ describe('C-2 / R-1: herstel uit een back-up', () => {
     expect(newPk).toMatch(/^[0-9a-f]{64}$/); // R-1: geen lege of ongeldige sleutel
     expect(newPk).not.toBe(oldPk);
     expect(a2.app.deviceId).not.toBe(a.app.deviceId);
-    expect(names(a2, la)).toEqual(['brood', 'melk']); // lijst en items zijn er
+    expect(names(a2, la)).toEqual(['Brood', 'Melk']); // lijst en items zijn er
 
     // Wijzigingen komen binnen op de herstelde telefoon (via de relay die lege authors weigert) ...
-    b.app.addItem(lb, { text: 'kaas' });
-    await waitFor(() => names(a2, la).includes('kaas'), 20_000);
+    b.app.addItem(lb, { text: 'Kaas' });
+    await waitFor(() => names(a2, la).includes('Kaas'), 20_000);
     // ... en die van de herstelde telefoon bij B en bij het origineel
-    a2.app.addItem(la, { text: 'eieren' });
-    await waitFor(() => names(b, lb).includes('eieren') && names(a, la).includes('eieren'), 20_000);
+    a2.app.addItem(la, { text: 'Eieren' });
+    await waitFor(() => names(b, lb).includes('Eieren') && names(a, la).includes('Eieren'), 20_000);
     await waitFor(() => a.app.syncStatus(la).pending === 0 && a2.app.syncStatus(la).pending === 0 && b.app.syncStatus(lb).pending === 0, 20_000);
     expect(canonicalOf(a2, la)).toBe(canonicalOf(b, lb));
     expect(canonicalOf(a, la)).toBe(canonicalOf(b, lb));
@@ -122,8 +122,8 @@ describe('C-2 / R-1: herstel uit een back-up', () => {
     const b = await wsDevice('B');
     const ids = await wsShareAndJoin(a, [b]);
     const la = ids.get(a)!;
-    a.app.addItem(la, { text: 'melk' });
-    await waitFor(() => names(b, ids.get(b)!).includes('melk'), 15_000);
+    a.app.addItem(la, { text: 'Melk' });
+    await waitFor(() => names(b, ids.get(b)!).includes('Melk'), 15_000);
     const pk = a.app.sharedLists()[0].identity.id;
     await a.restart();
     expect(a.app.sharedLists()[0].identity.id).toBe(pk);

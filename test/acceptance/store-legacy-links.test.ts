@@ -59,7 +59,7 @@ describe('ST-10: koppelen met oude codes via de facade', () => {
     const w = await makeWorld();
     const a = await addDevice(w, 'A');
     const la = a.app.lists()[0].id;
-    for (const n of ['melk', 'brood', 'kaas']) a.app.addItem(la, { text: n });
+    for (const n of ['Melk', 'Brood', 'Kaas']) a.app.addItem(la, { text: n });
     const info = await a.app.share(la);
     await w.settle(10_000);
     expect(info.link.startsWith('boodschap://join#')).toBe(true);
@@ -81,7 +81,7 @@ describe('ST-10: koppelen met oude codes via de facade', () => {
       expect([label, r.kind]).toEqual([label, 'joined']);
       if (r.kind === 'error') throw new Error();
       await w.settle(30_000);
-      expect([label, sortedNames(d, r.listId)]).toEqual([label, ['brood', 'kaas', 'melk']]);
+      expect([label, sortedNames(d, r.listId)]).toEqual([label, ['Brood', 'Kaas', 'Melk']]);
     }
   });
 

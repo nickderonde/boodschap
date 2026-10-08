@@ -120,10 +120,10 @@ async function itemScreen() {
   const d = await singleDevice({ seed: 1501 });
   const listId = d.app.lists()[0].id;
   const ids: Record<string, string> = {};
-  for (const [n, extra] of [['melk', { quantity: 2, unit: 'l' }], ['brood', { note: 'volkoren' }], ['kaas', {}], ['appels', {}]] as const) {
+  for (const [n, extra] of [['Melk', { quantity: 2, unit: 'l' }], ['Brood', { note: 'volkoren' }], ['Kaas', {}], ['Appels', {}]] as const) {
     const r = d.app.addItem(listId, { text: n, ...extra }).result;
     if (r.kind !== 'added') throw new Error();
-    ids[n] = r.itemId;
+    ids[n.toLowerCase()] = r.itemId; // sleutels in kleine letters; de weergavenaam is nu met hoofdletter (UX-17)
   }
   makeStore(d.app);
   ctx.store!.actions.toggle(listId, ids.kaas); // kaas is afgevinkt
@@ -135,24 +135,24 @@ async function itemScreen() {
 describe('UX-15 (CR-01): item verwijderen met swipe naar links', () => {
   it('ET-UX15-1: de actie is pas na een swipe zichtbaar; alleen openen verwijdert niets; rode actie heet "Verwijderen" (tekst uit strings.nl)', async () => {
     const { d, listId } = await itemScreen();
-    expect(itemAction('melk')).toBeNull();
-    await swipeOpen('melk');
-    const action = screen.getByRole('button', { name: strings.swipeDeleteItem('melk') });
+    expect(itemAction('Melk')).toBeNull();
+    await swipeOpen('Melk');
+    const action = screen.getByRole('button', { name: strings.swipeDeleteItem('Melk') });
     expect(within(action).getByText(strings.swipeDelete)).toBeTruthy();
     expect(strings.swipeDelete).toBe('Verwijderen');
-    expect(names(d.app, listId)).toContain('melk');
+    expect(names(d.app, listId)).toContain('Melk');
     expect(ctx.alerts).toHaveLength(0);
   });
 
   it('ET-UX15-2: tik op de actie verwijdert het item direct (geen dialoog) en toont de snackbar "Ongedaan maken"', async () => {
     const { d, listId } = await itemScreen();
-    await swipeOpen('melk');
-    await press(screen.getByRole('button', { name: strings.swipeDeleteItem('melk') }));
-    expect(names(d.app, listId)).toEqual(['appels', 'brood', 'kaas']);
+    await swipeOpen('Melk');
+    await press(screen.getByRole('button', { name: strings.swipeDeleteItem('Melk') }));
+    expect(names(d.app, listId)).toEqual(['Appels', 'Brood', 'Kaas']);
     expect(ctx.alerts).toHaveLength(0);
-    expect(screen.getByText(strings.itemDeleted('melk'))).toBeTruthy();
+    expect(screen.getByText(strings.itemDeleted('Melk'))).toBeTruthy();
     expect(screen.getByRole('button', { name: strings.undo })).toBeTruthy();
-    expect(screen.queryByText('melk')).toBeNull();
+    expect(screen.queryByText('Melk')).toBeNull();
     expect(router.push).not.toHaveBeenCalled();
   });
 
@@ -160,74 +160,74 @@ describe('UX-15 (CR-01): item verwijderen met swipe naar links', () => {
     const { d, listId } = await itemScreen();
     expect(isFullSwipe(-Math.round(ROW_WIDTH * 0.85), ROW_WIDTH)).toBe(true);
     expect(isFullSwipe(-60, ROW_WIDTH)).toBe(false); // een korte swipe is geen volledige swipe
-    await swipeFull('brood');
-    expect(names(d.app, listId)).toEqual(['appels', 'kaas', 'melk']);
+    await swipeFull('Brood');
+    expect(names(d.app, listId)).toEqual(['Appels', 'Kaas', 'Melk']);
     expect(ctx.alerts).toHaveLength(0);
-    expect(screen.getByText(strings.itemDeleted('brood'))).toBeTruthy();
+    expect(screen.getByText(strings.itemDeleted('Brood'))).toBeTruthy();
   });
 
   it('ET-UX15-3b: een korte of halve veeg verwijdert niets (alleen de actie komt erbij); een veeg naar rechts doet niets', async () => {
     const { d, listId } = await itemScreen();
-    await drag('brood', -60);
-    await drag('brood', -ROW_WIDTH * 0.25);
-    await drag('melk', 150);
-    expect(names(d.app, listId)).toEqual(['appels', 'brood', 'kaas', 'melk']);
+    await drag('Brood', -60);
+    await drag('Brood', -ROW_WIDTH * 0.25);
+    await drag('Melk', 150);
+    expect(names(d.app, listId)).toEqual(['Appels', 'Brood', 'Kaas', 'Melk']);
     expect(ctx.alerts).toHaveLength(0);
-    expect(screen.queryByText(strings.itemDeleted('brood'))).toBeNull();
+    expect(screen.queryByText(strings.itemDeleted('Brood'))).toBeNull();
   });
 
   it('ET-UX15-3d: drempel van 50% van de rijbreedte: net eronder (47%) verwijdert niet, net erboven (53%) wel; terugslepen vóór loslaten annuleert', async () => {
     const { d, listId } = await itemScreen();
-    await drag('brood', -Math.round(ROW_WIDTH * 0.47));
-    expect(names(d.app, listId)).toContain('brood');
-    await dragAndBack('melk', -Math.round(ROW_WIDTH * 0.9), -Math.round(ROW_WIDTH * 0.2));
-    expect(names(d.app, listId)).toContain('melk');
+    await drag('Brood', -Math.round(ROW_WIDTH * 0.47));
+    expect(names(d.app, listId)).toContain('Brood');
+    await dragAndBack('Melk', -Math.round(ROW_WIDTH * 0.9), -Math.round(ROW_WIDTH * 0.2));
+    expect(names(d.app, listId)).toContain('Melk');
     expect(ctx.alerts).toHaveLength(0);
-    await drag('brood', -Math.round(ROW_WIDTH * 0.53));
-    expect(names(d.app, listId)).not.toContain('brood');
-    expect(screen.getByText(strings.itemDeleted('brood'))).toBeTruthy();
+    await drag('Brood', -Math.round(ROW_WIDTH * 0.53));
+    expect(names(d.app, listId)).not.toContain('Brood');
+    expect(screen.getByText(strings.itemDeleted('Brood'))).toBeTruthy();
   });
 
   it('ET-UX15-3c: een volledige swipe op een rij die al open staat verwijdert ook (de zichtbare actie telt mee)', async () => {
     const { d, listId } = await itemScreen();
-    await swipeOpen('appels');
-    await swipeFull('appels');
-    expect(names(d.app, listId)).not.toContain('appels');
-    expect(screen.getByText(strings.itemDeleted('appels'))).toBeTruthy();
+    await swipeOpen('Appels');
+    await swipeFull('Appels');
+    expect(names(d.app, listId)).not.toContain('Appels');
+    expect(screen.getByText(strings.itemDeleted('Appels'))).toBeTruthy();
   });
 
   it('ET-UX15-4: ook een afgevinkt item is te verwijderen met swipe, en "Ongedaan maken" herstelt het afgevinkt', async () => {
     const { d, listId } = await itemScreen();
-    expect(screen.getByLabelText(strings.uncheckItem('kaas'))).toBeTruthy();
-    await swipeOpen('kaas');
-    await press(screen.getByRole('button', { name: strings.swipeDeleteItem('kaas') }));
-    expect(names(d.app, listId)).not.toContain('kaas');
+    expect(screen.getByLabelText(strings.uncheckItem('Kaas'))).toBeTruthy();
+    await swipeOpen('Kaas');
+    await press(screen.getByRole('button', { name: strings.swipeDeleteItem('Kaas') }));
+    expect(names(d.app, listId)).not.toContain('Kaas');
     await press(screen.getByRole('button', { name: strings.undo }));
-    expect(find(d, listId, 'kaas')?.checked).toBe(true);
-    expect(screen.queryByText(strings.itemDeleted('kaas'))).toBeNull();
-    expect(screen.getByLabelText(strings.uncheckItem('kaas'))).toBeTruthy();
+    expect(find(d, listId, 'Kaas')?.checked).toBe(true);
+    expect(screen.queryByText(strings.itemDeleted('Kaas'))).toBeNull();
+    expect(screen.getByLabelText(strings.uncheckItem('Kaas'))).toBeTruthy();
   });
 
   it('ET-UX15-5: swipe, verwijderen, ongedaan maken herstelt exact hetzelfde item (zelfde id, hoeveelheid, eenheid, notitie)', async () => {
     const { d, listId, ids } = await itemScreen();
-    const before = allItems(d, listId).find((i) => i.name === 'melk')!;
-    await swipeOpen('melk');
-    await press(screen.getByRole('button', { name: strings.swipeDeleteItem('melk') }));
+    const before = allItems(d, listId).find((i) => i.name === 'Melk')!;
+    await swipeOpen('Melk');
+    await press(screen.getByRole('button', { name: strings.swipeDeleteItem('Melk') }));
     await press(screen.getByRole('button', { name: strings.undo }));
-    const after = allItems(d, listId).find((i) => i.name === 'melk')!;
+    const after = allItems(d, listId).find((i) => i.name === 'Melk')!;
     expect(after.id).toBe(ids.melk);
     expect([after.quantity, after.unit, after.note, after.category, after.checked]).toEqual([before.quantity, before.unit, before.note, before.category, before.checked]);
     // een tweede keer verwijderen en herstellen werkt ook (R-DEL: telkens een nieuwe HLC)
-    await swipeOpen('melk');
-    await press(screen.getByRole('button', { name: strings.swipeDeleteItem('melk') }));
+    await swipeOpen('Melk');
+    await press(screen.getByRole('button', { name: strings.swipeDeleteItem('Melk') }));
     await press(screen.getByRole('button', { name: strings.undo }));
-    expect(names(d.app, listId)).toContain('melk');
+    expect(names(d.app, listId)).toContain('Melk');
   });
 
   it('ET-UX15-6: de verwijdering is een gewone R-DEL-verwijdering: tombstone met een HLC hoger dan elke andere wijziging aan het item', async () => {
     const { d, listId, ids } = await itemScreen();
-    await swipeOpen('melk');
-    await press(screen.getByRole('button', { name: strings.swipeDeleteItem('melk') }));
+    await swipeOpen('Melk');
+    await press(screen.getByRole('button', { name: strings.swipeDeleteItem('Melk') }));
     const it = d.app.stateOf(listId).items.get(ids.melk)!;
     expect(it.del).toBeTruthy();
     for (const [, reg] of Object.entries(it.regs)) expect(it.del! > reg[1]).toBe(true);
@@ -235,31 +235,31 @@ describe('UX-15 (CR-01): item verwijderen met swipe naar links', () => {
 
   it('ET-UX15-7: maximaal één rij tegelijk open: een tweede swipe sluit de eerste; een tik op een rij sluit de open rij; scrollen sluit', async () => {
     await itemScreen();
-    await swipeOpen('melk');
-    expect(itemAction('melk')).toBeTruthy();
-    await swipeOpen('brood');
-    expect(itemAction('brood')).toBeTruthy();
-    expect(itemAction('melk')).toBeNull(); // eerste rij is dicht
+    await swipeOpen('Melk');
+    expect(itemAction('Melk')).toBeTruthy();
+    await swipeOpen('Brood');
+    expect(itemAction('Brood')).toBeTruthy();
+    expect(itemAction('Melk')).toBeNull(); // eerste rij is dicht
     // tik op een andere rij: sluit de open rij én vinkt af zoals altijd
-    await press(screen.getByLabelText(strings.checkItem('appels')));
-    expect(itemAction('brood')).toBeNull();
-    expect(screen.getByLabelText(strings.uncheckItem('appels'))).toBeTruthy();
+    await press(screen.getByLabelText(strings.checkItem('Appels')));
+    expect(itemAction('Brood')).toBeNull();
+    expect(screen.getByLabelText(strings.uncheckItem('Appels'))).toBeTruthy();
     // scrollen sluit de open rij
-    await swipeOpen('melk');
-    expect(itemAction('melk')).toBeTruthy();
+    await swipeOpen('Melk');
+    expect(itemAction('Melk')).toBeTruthy();
     await act(async () => {
       fireEvent(screen.UNSAFE_getByType(SectionList), 'scrollBeginDrag');
     });
-    expect(itemAction('melk')).toBeNull();
+    expect(itemAction('Melk')).toBeNull();
   });
 
   it('ET-UX15-8: afvinken met een tik werkt ook als de rij zelf open staat; de rij sluit', async () => {
     const { d, listId } = await itemScreen();
-    await swipeOpen('melk');
-    await press(screen.getByLabelText(strings.checkItem('melk')));
-    expect(find(d, listId, 'melk')?.checked).toBe(true);
-    expect(itemAction('melk')).toBeNull();
-    expect(names(d.app, listId)).toContain('melk'); // niet per ongeluk verwijderd
+    await swipeOpen('Melk');
+    await press(screen.getByLabelText(strings.checkItem('Melk')));
+    expect(find(d, listId, 'Melk')?.checked).toBe(true);
+    expect(itemAction('Melk')).toBeNull();
+    expect(names(d.app, listId)).toContain('Melk'); // niet per ongeluk verwijderd
   });
 
   it('ET-UX15-9: toegankelijkheid: elke itemrij heeft de actie "Verwijderen"; uitvoeren verwijdert met snackbar zonder dialoog', async () => {
@@ -268,20 +268,20 @@ describe('UX-15 (CR-01): item verwijderen met swipe naar links', () => {
     expect(rows).toHaveLength(4);
     for (const r of rows) expect(r.props.accessibilityActions).toEqual([{ name: 'delete', label: strings.swipeDelete }]);
     await act(async () => {
-      fireEvent(screen.getByLabelText(strings.checkItem('appels')), 'accessibilityAction', { nativeEvent: { actionName: 'delete' } });
+      fireEvent(screen.getByLabelText(strings.checkItem('Appels')), 'accessibilityAction', { nativeEvent: { actionName: 'delete' } });
     });
-    expect(names(d.app, listId)).toEqual(['brood', 'kaas', 'melk']);
+    expect(names(d.app, listId)).toEqual(['Brood', 'Kaas', 'Melk']);
     expect(ctx.alerts).toHaveLength(0);
-    expect(screen.getByText(strings.itemDeleted('appels'))).toBeTruthy();
+    expect(screen.getByText(strings.itemDeleted('Appels'))).toBeTruthy();
     await act(async () => {
-      fireEvent(screen.getByLabelText(strings.uncheckItem('kaas')), 'accessibilityAction', { nativeEvent: { actionName: 'delete' } });
+      fireEvent(screen.getByLabelText(strings.uncheckItem('Kaas')), 'accessibilityAction', { nativeEvent: { actionName: 'delete' } });
     });
-    expect(names(d.app, listId)).not.toContain('kaas'); // ook voor afgevinkte items
+    expect(names(d.app, listId)).not.toContain('Kaas'); // ook voor afgevinkte items
     // een onbekende actie doet niets
     await act(async () => {
-      fireEvent(screen.getByLabelText(strings.checkItem('melk')), 'accessibilityAction', { nativeEvent: { actionName: 'activate' } });
+      fireEvent(screen.getByLabelText(strings.checkItem('Melk')), 'accessibilityAction', { nativeEvent: { actionName: 'activate' } });
     });
-    expect(names(d.app, listId)).toContain('melk');
+    expect(names(d.app, listId)).toContain('Melk');
   });
 
   it('ET-UX15-10: het bewerkscherm houdt zijn verwijderknop (met ongedaan maken)', async () => {
@@ -291,19 +291,19 @@ describe('UX-15 (CR-01): item verwijderen met swipe naar links', () => {
     await act(async () => {
       fireEvent.press(edit.getByRole('button', { name: strings.deleteItem }));
     });
-    expect(names(d.app, listId)).not.toContain('brood');
-    expect(ctx.store!.getState().message?.text).toBe(strings.itemDeleted('brood'));
+    expect(names(d.app, listId)).not.toContain('Brood');
+    expect(ctx.store!.getState().message?.text).toBe(strings.itemDeleted('Brood'));
     expect(ctx.store!.getState().message?.undo).toBeDefined();
   });
 
   it('ET-UX15-11: snel achter elkaar twee items verwijderen en alleen het laatste herstellen: het eerste blijft weg, geen crash', async () => {
     const { d, listId } = await itemScreen();
-    await swipeOpen('melk');
-    await press(screen.getByRole('button', { name: strings.swipeDeleteItem('melk') }));
-    await swipeOpen('brood');
-    await press(screen.getByRole('button', { name: strings.swipeDeleteItem('brood') }));
+    await swipeOpen('Melk');
+    await press(screen.getByRole('button', { name: strings.swipeDeleteItem('Melk') }));
+    await swipeOpen('Brood');
+    await press(screen.getByRole('button', { name: strings.swipeDeleteItem('Brood') }));
     await press(screen.getByRole('button', { name: strings.undo }));
-    expect(names(d.app, listId)).toEqual(['appels', 'brood', 'kaas']);
+    expect(names(d.app, listId)).toEqual(['Appels', 'Brood', 'Kaas']);
   });
 
   it('ET-UX15-12: de verwijdering synct naar het tweede apparaat en "Ongedaan maken" herstelt het ook daar', async () => {
@@ -313,23 +313,23 @@ describe('UX-15 (CR-01): item verwijderen met swipe naar links', () => {
     const b = await addDevice(w, 'B');
     const ids = await shareAndJoin(w, a, [b]);
     const [la, lb] = [ids.get(a)!, ids.get(b)!];
-    for (const n of ['melk', 'brood']) a.app.addItem(la, { text: n });
+    for (const n of ['Melk', 'Brood']) a.app.addItem(la, { text: n });
     await w.settle(20_000);
-    expect(names(b.app, lb)).toEqual(['brood', 'melk']);
+    expect(names(b.app, lb)).toEqual(['Brood', 'Melk']);
     makeStore(a.app);
     ctx.params = { id: la };
     render(<ListScreen />);
-    await swipeOpen('melk');
-    await press(screen.getByRole('button', { name: strings.swipeDeleteItem('melk') }));
+    await swipeOpen('Melk');
+    await press(screen.getByRole('button', { name: strings.swipeDeleteItem('Melk') }));
     await act(async () => {
       await w.settle(6_000); // binnen het undo-venster van 10 s (virtuele tijd)
     });
-    expect(names(b.app, lb)).toEqual(['brood']);
+    expect(names(b.app, lb)).toEqual(['Brood']);
     await press(screen.getByRole('button', { name: strings.undo }));
     await act(async () => {
       await w.settle(20_000);
     });
-    expect(names(b.app, lb)).toEqual(['brood', 'melk']);
+    expect(names(b.app, lb)).toEqual(['Brood', 'Melk']);
   });
 });
 
@@ -339,7 +339,7 @@ describe('UX-16 (CR-02): lijst verwijderen met swipe in het overzicht', () => {
     const d = await singleDevice({ seed: 1601 });
     makeStore(d.app);
     const first = d.app.lists()[0];
-    d.app.addItem(first.id, { text: 'melk' });
+    d.app.addItem(first.id, { text: 'Melk' });
     if (opts.second) d.app.createList('Feestje');
     const del = jest.spyOn(d.app, 'deleteList');
     const leave = jest.spyOn(d.app, 'leave');
@@ -467,7 +467,7 @@ describe('UX-16 (CR-02): lijst verwijderen met swipe in het overzicht', () => {
       const a = await addDevice(w, 'A');
       const b = await addDevice(w, 'B');
       const ids = await shareAndJoin(w, a, [b]);
-      a.app.addItem(ids.get(a)!, { text: 'melk' });
+      a.app.addItem(ids.get(a)!, { text: 'Melk' });
       await w.settle(20_000);
       makeStore(a.app);
       const del = jest.spyOn(a.app, 'deleteList');
@@ -513,7 +513,7 @@ describe('UX-16 (CR-02): lijst verwijderen met swipe in het overzicht', () => {
       expect(del).not.toHaveBeenCalled();
       expect(leave).toHaveBeenCalledWith(la, true);
       expect(a.app.lists().find((l) => l.id === la)?.shared).toBe(false);
-      expect(names(b.app, lb)).toEqual(['melk']);
+      expect(names(b.app, lb)).toEqual(['Melk']);
       expect(b.app.lists().filter((l) => l.id === lb)).toHaveLength(1);
     });
 

@@ -442,3 +442,49 @@ Geen open defecten. Gesloten in deze ronde: D-ET-11 (copyright; ET-ST19-1), de K
 2. **Vrijgeven voor het maken van de production-builds en de rooktest** (ST-16): **JA** (VRIJGEVEN VOOR PRODUCTION-BUILD EN ROOKTEST). Nick test de echte build op zijn toestellen (H-01..H-08, deellink in WhatsApp, camera, herstart, koude start).
 3. **Bij Nick:** Google-organisatieverificatie en productietoegang (ST-20), DSA-gegevens als handelaar (ST-19), naamcontrole in de stores en bij BOIP (ST-02), ruwe schermafbeeldingen (ST-09), formulieren voor privacy-labels, exportverklaring en leeftijd (ST-11/12/13), repository aanmaken en publiek zetten (ST-14).
 Zodra punt 1 en de rooktest groen zijn, is het advies VRIJGEVEN VOOR STORE-INDIENING.
+
+---
+
+# Addendum CR-04 (2026-10-08): hoofdletter in namen (UX-17)
+
+Basis: REQUIREMENTS v0.6.4 (UX-17), commit `0bbc080` (`src/core/capitalize.ts`, D-48) en commit `208299e` (D-49: `usesNonExemptEncryption` uit `app.json`).
+
+## 1. Bijgewerkte acceptatietests
+
+Na UX-17 faalden **84** van mijn acceptatietests, omdat ze nog namen in kleine letters verwachtten (`'melk'` waar nu `'Melk'` uitkomt). Werkwijze: per falend bestand heb ik de verwachte itemnamen (en de bijbehorende zoekacties, labels en meldingen) naar de weergavevorm met hoofdletter gezet; de assertions, de drempels en de scenario's zijn verder ongewijzigd. Daarna opnieuw gedraaid: 11 tests bleven falen. Van die elf heb ik de foutmelding één voor één gelezen; alle elf gingen alleen over de hoofdletter (een nog niet bijgewerkte tekst als `'van A'` of `'alleen B'`; een zoeksleutel `ids.melk` in kleine letters; een opzoeking `find(…, name)` op een gegenereerde naam; `'a1:true'`), geen enkele verborg een echte regressie. Na de laatste correcties zijn alle 197 tests van dat moment groen. Een gegenereerde naam (1000-itemslijsten) wordt in de test met een eigen uitwerking van de regel (`capName` in `helpers.ts`, inclusief de IJ-regel) opgezocht, zodat de test niet van de implementatie afhangt.
+De tests van ST-12/ST-05 zijn door de Engineer bijgewerkt voor D-49 (geen encryptiesleutel meer in `app.json` of de Info.plist, wel de documentatie van de antwoorden per build); ik heb die wijziging nagelezen en akkoord bevonden.
+
+## 2. Nieuwe tests voor UX-17
+
+`test/acceptance/capitalize-ux17.test.ts` (9 tests) en `test/acceptance/ui/ui-capitalize.test.tsx` (3 tests):
+
+| Criterium | Oordeel | Test |
+|---|---|---|
+| "bananen" → "Bananen"; alleen de eerste letter ("halfvolle melk" → "Halfvolle melk", "coca-cola light" → "Coca-cola light"); trimmen eerst; accent ("éclair" → "Éclair") | **PASS** | ET-UX17-1 |
+| IJ-regel: "ijs", "ijsbergsla", "ijzer" en het toetsenbordresultaat "Ijs" → "IJs…" | **PASS** | ET-UX17-1, 5, 10 |
+| Blijft gelijk: "iPhone-lader", "eBook", "pH-neutrale zeep", "IJsselmeer", "7up", "0% yoghurt", "(bio) melk", emoji vooraan, "MELK", "Melk" | **PASS** | ET-UX17-1 |
+| Idempotent (tweede keer toepassen verandert niets) voor alle bovenstaande gevallen | **PASS** | ET-UX17-2 |
+| Hoeveelheid eerst ontleed: "2 melk" → "Melk" ×2; "500 g kaas"; "3x appels"; "1,5 l ijsthee" → "IJsthee" | **PASS** | ET-UX17-3 |
+| Notities, eenheden en categorie-ID's niet aangepast | **PASS** | ET-UX17-4 |
+| Hernoemen van items en aanmaken en hernoemen van lijsten; blijft na herstart | **PASS** | ET-UX17-5 |
+| Dubbel-detectie hoofdletterongevoelig ("melk" na "Melk", "MELK"), "toch toevoegen" werkt | **PASS** | ET-UX17-6, ET-UX17-11 |
+| Categorie (F-08), gekozen categorie (F-09) en suggesties (F-11) hoofdletterongevoelig; één suggestie "Melk" voor "mel", "MEL", "Mel" | **PASS** | ET-UX17-7, ET-UX17-11 |
+| Bestaande namen worden niet gemigreerd (kleine letters blijven na herstart en na andere bewerkingen); alleen een bewerking van de naam zelf geeft een hoofdletter | **PASS** | ET-UX17-8 |
+| Een gesynchroniseerde naam behoudt de schrijfwijze van de afzender; een binnenkomende kleine-letternaam wordt niet aangepast; een hernoeming door de partner synct met hoofdletter | **PASS** | ET-UX17-9 |
+| In de UI: getypt "bananen", "ijsbergsla", "2 melk", "iPhone-lader", "7up" verschijnen correct; suggestiechip met hoofdletter; nieuwe lijst "feestje" → "Feestje" | **PASS** | ET-UX17-10..12 |
+
+## 3. Regressie
+
+| Controle | Resultaat |
+|---|---|
+| `npm test` | 82 suites geslaagd, 1 overgeslagen (live-rooktest); **591 tests geslaagd, 0 gefaald** |
+| `npm run typecheck` | 0 fouten |
+| `npm run test:handles` | schoon (591 geslaagd, geen open handles) |
+| `npx expo-doctor` / `check:deps` / `check:licenses` | 21/21 / "Dependencies are up to date" / 829 pakketten toegestaan |
+| `expo export` ios en android | geslaagd |
+| `npm run check:secrets` | werkmap **schoon**. De historie-scan telt alle lokale refs: 13 treffers, allemaal in de lokale, niet gepushte branches `master` en `lokale-historie` (oude commits). De branch `main` (de publieke historie, 6 commits, alleen het noreply-adres als auteur en committer) bevat geen e-mailadres of lokaal pad in de commit-metadata; de twee losse treffers in de diffs zijn voorbeeldteksten (een lokaal voorbeeldpad in de beschrijving van ST-15 en een sleutelvoorvoegsel in de scriptbeschrijving) |
+
+## 4. Defecten en advies
+
+Geen nieuwe defecten. UX-17 is aantoonbaar gehaald; het gedrag van de Engineer komt overeen met de eis, ook bij de randgevallen.
+Het advies voor ST-15 en de store-indiening uit addendum CR-03 blijft gelden, met de kanttekening dat de publieke historie (`main`) schoon is zolang alleen `main` wordt gepusht; de lokale branches mogen niet worden gepusht.

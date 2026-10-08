@@ -4,7 +4,7 @@ import { addDevice, makeWorld, shareAndJoin } from '../sim/hub';
 import type { TestDevice } from '../sim/device';
 import type { MemoryRelay } from '../../src/sync/transports/memory/MemoryHub';
 import { tmpDbFile } from '../support/single';
-import { allItems, expectSameState, find, HOUR, lcgWords, sortedNames } from './helpers';
+import { allItems, capName, expectSameState, find, HOUR, lcgWords, sortedNames } from './helpers';
 
 const R4 = ['wss://relay-1.test', 'wss://relay-2.test', 'wss://relay-3.test', 'wss://relay-4.test'];
 
@@ -23,7 +23,7 @@ describe('S-02 / H-04: app gekilld direct na een wijziging en herstart', () => {
     const la = ids.get(a)!;
     a.net.online(false); // vliegtuigmodus, zoals H-04
     const confirmed: string[] = [];
-    for (const n of ['kill-1', 'kill-2', 'kill-3']) {
+    for (const n of ['Kill-1', 'Kill-2', 'Kill-3']) {
       const r = a.app.addItem(la, { text: n });
       await r.committed; // bevestigd aan de UI
       confirmed.push(n);
@@ -49,8 +49,8 @@ describe('S-02 / H-04: app gekilld direct na een wijziging en herstart', () => {
       const confirmed: string[] = [];
       for (let i = 0; i < 12 && !a.killSwitch.killed; i++) {
         try {
-          const r = a.app.addItem(la, { text: `artikel ${i}` });
-          void r.committed.then(() => confirmed.push(`artikel ${i}`)).catch(() => {});
+          const r = a.app.addItem(la, { text: `Artikel ${i}` });
+          void r.committed.then(() => confirmed.push(`Artikel ${i}`)).catch(() => {});
         } catch {
           break;
         }
@@ -76,15 +76,15 @@ describe('S-02 / H-04: app gekilld direct na een wijziging en herstart', () => {
       const ids = await shareAndJoin(w, a, [b]);
       const la = ids.get(a)!;
       a.crashAt(point);
-      const r = a.app.addItem(la, { text: `na ${point}` });
+      const r = a.app.addItem(la, { text: `Na ${point}` });
       void r.committed.catch(() => {}); // na de kill bevriest de zombie: niet erop wachten
       await w.settle(10_000);
       expect([point, a.killSwitch.killed]).toEqual([point, true]); // het punt is echt geraakt
       a.crashAt(null);
       await a.restart();
       await w.settle(60_000);
-      expect(sortedNames(a, la)).toEqual([`na ${point}`]);
-      expect(sortedNames(b, ids.get(b)!)).toEqual([`na ${point}`]);
+      expect(sortedNames(a, la)).toEqual([`Na ${point}`]);
+      expect(sortedNames(b, ids.get(b)!)).toEqual([`Na ${point}`]);
       expectSameState([a, b], ids);
     });
   }
@@ -102,29 +102,29 @@ describe('S-09 / S-10 / S-11 / NF-02e: relay valt uit, gooit data weg of levert 
   async function activity(p: Awaited<ReturnType<typeof trio>>, extra?: () => Promise<void>) {
     const { w, a, b, la, lb } = p;
     a.net.online(false);
-    for (const n of ['a1', 'a2', 'a3']) mustAdd(a, la, n);
-    mustAdd(b, lb, 'b1');
+    for (const n of ['A1', 'A2', 'A3']) mustAdd(a, la, n);
+    mustAdd(b, lb, 'B1');
     await w.settle(1_500);
-    const shared = mustAdd(b, lb, 'gedeeld');
+    const shared = mustAdd(b, lb, 'Gedeeld');
     await w.settle(1_500);
     a.net.online(true);
     await w.settle(3_000);
     if (extra) await extra();
     b.app.updateItem(lb, shared, { quantity: 4 });
-    mustAdd(a, la, 'a4');
+    mustAdd(a, la, 'A4');
     await w.settle(60_000);
   }
-  const expected = ['a1', 'a2', 'a3', 'a4', 'b1', 'gedeeld'];
+  const expected = ['A1', 'A2', 'A3', 'A4', 'B1', 'Gedeeld'];
 
   it('ET-S09-1: 1 van de 4 relays ligt er de hele tijd uit -> sync gewoon binnen normale tijd', async () => {
     const p = await trio();
     p.relays[0].setDown(true);
     await p.w.settle(1_000);
-    mustAdd(p.a, p.la, 'tijdens-uitval');
+    mustAdd(p.a, p.la, 'Tijdens-uitval');
     await p.w.settle(5_000); // S-12-orde: geen minuten
-    expect(sortedNames(p.b, p.lb)).toContain('tijdens-uitval');
+    expect(sortedNames(p.b, p.lb)).toContain('Tijdens-uitval');
     await activity(p);
-    expect(sortedNames(p.a, p.la)).toEqual([...expected, 'tijdens-uitval'].sort());
+    expect(sortedNames(p.a, p.la)).toEqual([...expected, 'Tijdens-uitval'].sort());
     expectSameState([p.a, p.b], p.ids);
   });
 
@@ -147,16 +147,16 @@ describe('S-09 / S-10 / S-11 / NF-02e: relay valt uit, gooit data weg of levert 
     const errors: string[] = [];
     p.a.app.onError((e) => errors.push(e.code));
     p.b.app.onError((e) => errors.push(e.code));
-    const id = mustAdd(p.a, p.la, 'zonder-relay');
+    const id = mustAdd(p.a, p.la, 'Zonder-relay');
     p.a.app.updateItem(p.la, id, { quantity: 2 });
     p.a.app.toggleChecked(p.la, id);
-    mustAdd(p.b, p.lb, 'ook-zonder');
+    mustAdd(p.b, p.lb, 'Ook-zonder');
     await p.w.settle(10 * 60_000);
-    expect(find(p.a, p.la, 'zonder-relay')?.checked).toBe(true);
+    expect(find(p.a, p.la, 'Zonder-relay')?.checked).toBe(true);
     expect(['offline', 'fout', 'bezig']).toContain(p.a.app.syncStatus(p.la).kind);
     p.relays[2].setDown(false); // 1 relay komt terug
     await p.w.settle(5 * 60_000);
-    expect(sortedNames(p.a, p.la)).toEqual(['ook-zonder', 'zonder-relay']);
+    expect(sortedNames(p.a, p.la)).toEqual(['Ook-zonder', 'Zonder-relay']);
     expectSameState([p.a, p.b], p.ids);
   });
 
@@ -211,13 +211,13 @@ describe('S-09 / S-10 / S-11 / NF-02e: relay valt uit, gooit data weg of levert 
     const p = await trio();
     await p.w.settle(5_000);
     for (const r of p.relays) r.faults.refuse = 'blocked:';
-    mustAdd(p.a, p.la, 'melk');
+    mustAdd(p.a, p.la, 'Melk');
     await p.w.settle(60_000);
     expect(p.a.app.syncStatus(p.la).kind).toBe('fout');
     for (const r of p.relays) r.faults.refuse = null;
     await p.w.settle(10 * 60_000);
     expect(p.a.app.syncStatus(p.la).pending).toBe(0);
-    expect(sortedNames(p.b, p.lb)).toEqual(['melk']);
+    expect(sortedNames(p.b, p.lb)).toEqual(['Melk']);
   });
 
   it('ET-S11-1: relay levert alles 10x dubbel, in willekeurige volgorde en met vertraging -> staat gelijk aan enkelvoudige levering', async () => {
@@ -230,7 +230,7 @@ describe('S-09 / S-10 / S-11 / NF-02e: relay valt uit, gooit data weg of levert 
     await activity(p);
     expect(sortedNames(p.a, p.la)).toEqual(expected);
     expectSameState([p.a, p.b], p.ids);
-    expect(find(p.a, p.la, 'gedeeld')?.quantity).toBe(4);
+    expect(find(p.a, p.la, 'Gedeeld')?.quantity).toBe(4);
   });
 
   it('ET-S10-3: relay laat events stil vallen (zoals nos.lol, geen OK) naast een gezonde relay -> convergeert', async () => {
@@ -280,22 +280,22 @@ describe('S-18 / F-16 / S-04: drie apparaten', () => {
     const c = await addDevice(w, 'C');
     const ids = await shareAndJoin(w, a, [b, c]);
     const [la, lb, lc] = [a, b, c].map((d) => ids.get(d)!);
-    mustAdd(a, la, 'brood');
-    mustAdd(a, la, 'kaas');
+    mustAdd(a, la, 'Brood');
+    mustAdd(a, la, 'Kaas');
     await w.settle(30_000);
     for (const d of [a, b, c]) d.net.online(false);
     await w.settle(1_000);
     const idOf = (d: TestDevice, l: string, n: string) => find(d, l, n)!.id;
-    mustAdd(a, la, 'van A');
-    a.app.updateItem(la, idOf(a, la, 'brood'), { quantity: 1 });
+    mustAdd(a, la, 'Van A');
+    a.app.updateItem(la, idOf(a, la, 'Brood'), { quantity: 1 });
     await w.settle(1_500);
-    mustAdd(b, lb, 'van B');
-    b.app.updateItem(lb, idOf(b, lb, 'brood'), { quantity: 2, note: 'B-notitie' });
-    b.app.deleteItem(lb, idOf(b, lb, 'kaas'));
+    mustAdd(b, lb, 'Van B');
+    b.app.updateItem(lb, idOf(b, lb, 'Brood'), { quantity: 2, note: 'B-notitie' });
+    b.app.deleteItem(lb, idOf(b, lb, 'Kaas'));
     await w.settle(1_500);
-    mustAdd(c, lc, 'van C');
-    c.app.updateItem(lc, idOf(c, lc, 'brood'), { quantity: 3 });
-    c.app.toggleChecked(lc, idOf(c, lc, 'kaas')); // later dan B's verwijdering? nee: eerder in tijd dan B? zie onder
+    mustAdd(c, lc, 'Van C');
+    c.app.updateItem(lc, idOf(c, lc, 'Brood'), { quantity: 3 });
+    c.app.toggleChecked(lc, idOf(c, lc, 'Kaas')); // later dan B's verwijdering? nee: eerder in tijd dan B? zie onder
     await w.settle(1_500);
     for (const d of [c, a, b]) {
       d.net.online(true);
@@ -303,11 +303,11 @@ describe('S-18 / F-16 / S-04: drie apparaten', () => {
     }
     await w.settle(120_000);
     expectSameState([a, b, c], ids);
-    expect(sortedNames(a, la)).toEqual(expect.arrayContaining(['van A', 'van B', 'van C', 'brood']));
-    expect(find(a, la, 'brood')?.quantity).toBe(3); // C schreef als laatste
-    expect(find(a, la, 'brood')?.note).toBe('B-notitie');
+    expect(sortedNames(a, la)).toEqual(expect.arrayContaining(['Van A', 'Van B', 'Van C', 'Brood']));
+    expect(find(a, la, 'Brood')?.quantity).toBe(3); // C schreef als laatste
+    expect(find(a, la, 'Brood')?.note).toBe('B-notitie');
     // C's afvinken (later dan B's verwijdering) laat kaas herleven (R-DEL)
-    expect(find(a, la, 'kaas')?.checked).toBe(true);
+    expect(find(a, la, 'Kaas')?.checked).toBe(true);
   });
 
   it('ET-S18-2: derde apparaat koppelt terwijl de rest offline is en ziet de hele lijst; daarna convergentie met één 1 uur voorlopende klok', async () => {
@@ -315,7 +315,7 @@ describe('S-18 / F-16 / S-04: drie apparaten', () => {
     const a = await addDevice(w, 'A');
     const b = await addDevice(w, 'B', { clockOffsetMs: HOUR });
     const ids = await shareAndJoin(w, a, [b]);
-    for (const n of ['x1', 'x2', 'x3']) mustAdd(a, ids.get(a)!, n);
+    for (const n of ['X1', 'X2', 'X3']) mustAdd(a, ids.get(a)!, n);
     await w.settle(30_000);
     const info = await a.app.share(ids.get(a)!);
     a.net.online(false);
@@ -325,8 +325,8 @@ describe('S-18 / F-16 / S-04: drie apparaten', () => {
     if (j.kind === 'error') throw new Error(j.code);
     ids.set(c, j.listId);
     await w.settle(60_000);
-    expect(sortedNames(c, j.listId)).toEqual(['x1', 'x2', 'x3']);
-    mustAdd(c, j.listId, 'van C');
+    expect(sortedNames(c, j.listId)).toEqual(['X1', 'X2', 'X3']);
+    mustAdd(c, j.listId, 'Van C');
     a.net.online(true);
     b.net.online(true);
     await w.settle(120_000);
@@ -342,16 +342,16 @@ describe('S-16: klokafwijking van een uur', () => {
     const b = await addDevice(w, 'Achter', { clockOffsetMs: -HOUR });
     const ids = await shareAndJoin(w, a, [b]);
     const [la, lb] = [ids.get(a)!, ids.get(b)!];
-    const id = mustAdd(a, la, 'ping');
+    const id = mustAdd(a, la, 'Ping');
     await w.settle(15_000);
     for (let i = 1; i <= 8; i++) {
       const [d, l, other, lo] = i % 2 === 0 ? [a, la, b, lb] : [b, lb, a, la];
-      d.app.updateItem(l, find(d, l, 'ping')!.id, { quantity: i });
+      d.app.updateItem(l, find(d, l, 'Ping')!.id, { quantity: i });
       await w.settle(15_000); // de ander ziet het
-      expect([i, find(other, lo, 'ping')!.quantity]).toEqual([i, i]);
+      expect([i, find(other, lo, 'Ping')!.quantity]).toEqual([i, i]);
     }
-    expect(find(a, la, 'ping')!.quantity).toBe(8);
-    expect(find(b, lb, 'ping')!.quantity).toBe(8);
+    expect(find(a, la, 'Ping')!.quantity).toBe(8);
+    expect(find(b, lb, 'Ping')!.quantity).toBe(8);
     void id;
     expectSameState([a, b], ids);
   });
@@ -362,17 +362,17 @@ describe('S-16: klokafwijking van een uur', () => {
     const b = await addDevice(w, 'Achter', { clockOffsetMs: -HOUR });
     const ids = await shareAndJoin(w, a, [b]);
     const [la, lb] = [ids.get(a)!, ids.get(b)!];
-    mustAdd(a, la, 'melk');
+    mustAdd(a, la, 'Melk');
     await w.settle(15_000);
-    const tok = a.app.deleteItem(la, find(a, la, 'melk')!.id).result;
+    const tok = a.app.deleteItem(la, find(a, la, 'Melk')!.id).result;
     await w.settle(7_000); // binnen het undo-venster van 10 s
-    expect(find(b, lb, 'melk')).toBeUndefined();
+    expect(find(b, lb, 'Melk')).toBeUndefined();
     a.app.undo(tok);
     await w.settle(15_000);
-    b.app.updateItem(lb, find(b, lb, 'melk')!.id, { quantity: 6 });
-    b.app.toggleChecked(lb, find(b, lb, 'melk')!.id);
+    b.app.updateItem(lb, find(b, lb, 'Melk')!.id, { quantity: 6 });
+    b.app.toggleChecked(lb, find(b, lb, 'Melk')!.id);
     await w.settle(30_000);
-    expect(find(a, la, 'melk')).toMatchObject({ quantity: 6, checked: true });
+    expect(find(a, la, 'Melk')).toMatchObject({ quantity: 6, checked: true });
     expectSameState([a, b], ids);
   });
 
@@ -386,14 +386,14 @@ describe('S-16: klokafwijking van een uur', () => {
     const b = await addDevice(w, 'Achter', { clockOffsetMs: -HOUR });
     const c = await addDevice(w, 'Normaal');
     const ids = await shareAndJoin(w, a, [b, c]);
-    mustAdd(a, ids.get(a)!, 'van voor');
+    mustAdd(a, ids.get(a)!, 'Van voor');
     await w.settle(30_000);
-    expect(sortedNames(c, ids.get(c)!)).toContain('van voor');
-    expect(sortedNames(b, ids.get(b)!)).toContain('van voor');
-    mustAdd(b, ids.get(b)!, 'van achter');
+    expect(sortedNames(c, ids.get(c)!)).toContain('Van voor');
+    expect(sortedNames(b, ids.get(b)!)).toContain('Van voor');
+    mustAdd(b, ids.get(b)!, 'Van achter');
     await w.settle(30_000);
-    expect(sortedNames(c, ids.get(c)!)).toContain('van achter');
-    expect(sortedNames(a, ids.get(a)!)).toContain('van achter');
+    expect(sortedNames(c, ids.get(c)!)).toContain('Van achter');
+    expect(sortedNames(a, ids.get(a)!)).toContain('Van achter');
     expectSameState([a, b, c], ids);
   });
 
@@ -403,15 +403,15 @@ describe('S-16: klokafwijking van een uur', () => {
     const b = await addDevice(w, 'Normaal');
     const ids = await shareAndJoin(w, a, [b]);
     const [la, lb] = [ids.get(a)!, ids.get(b)!];
-    mustAdd(a, la, 'uit de toekomst');
+    mustAdd(a, la, 'Uit de toekomst');
     await w.settle(30_000);
-    expect(sortedNames(b, lb)).toContain('uit de toekomst');
-    const idNew = mustAdd(b, lb, 'nieuw van B');
-    b.app.updateItem(lb, find(b, lb, 'uit de toekomst')!.id, { quantity: 5 }); // causaal: B zag het
+    expect(sortedNames(b, lb)).toContain('Uit de toekomst');
+    const idNew = mustAdd(b, lb, 'Nieuw van B');
+    b.app.updateItem(lb, find(b, lb, 'Uit de toekomst')!.id, { quantity: 5 }); // causaal: B zag het
     await w.settle(30_000);
-    expect(find(a, la, 'uit de toekomst')?.quantity).toBe(5);
+    expect(find(a, la, 'Uit de toekomst')?.quantity).toBe(5);
     expectSameState([a, b], ids);
-    const hlcMs = parseInt(find(b, lb, 'nieuw van B')!.addedHlc.slice(0, 12), 16);
+    const hlcMs = parseInt(find(b, lb, 'Nieuw van B')!.addedHlc.slice(0, 12), 16);
     const bNow = b.clock.nowMs();
     expect([idNew.length > 0, hlcMs <= bNow + 24 * HOUR + 60_000]).toEqual([true, true]);
   });
@@ -431,7 +431,7 @@ describe('S-15 / NF-10 / F-02: grote lijst van 1000 items', () => {
       mustAdd(a, la, name);
       added.push(name);
       if (i % 3 === 0) {
-        const it = find(a, la, name)!;
+        const it = find(a, la, capName(name))!;
         a.app.updateItem(la, it.id, { note: word() + ' ' + word() });
       }
     }
@@ -465,9 +465,9 @@ describe('S-15 / NF-10 / F-02: grote lijst van 1000 items', () => {
     expectSameState([p.a, p.b], p.ids);
     for (const r of p.w.hub.relays.values()) for (const m of r.all()) expect(m.raw.length).toBeLessThanOrEqual(16 * 1024);
     // en daarna werken verdere wijzigingen nog
-    mustAdd(p.b, p.lb, 'na groot');
+    mustAdd(p.b, p.lb, 'Na groot');
     await p.w.settle(60_000);
-    expect(find(p.a, p.la, 'na groot')).toBeDefined();
+    expect(find(p.a, p.la, 'Na groot')).toBeDefined();
   }, 120_000);
 });
 
@@ -475,7 +475,7 @@ describe('F-13 / F-14 / F-15 / F-18 / NF-05: delen en koppelen via code/payload'
   it('ET-F13-1: een lijst die nooit gedeeld is gebruikt geen netwerk', async () => {
     const w = await makeWorld({ relays: R4 });
     const a = await addDevice(w, 'A');
-    mustAdd(a, a.app.lists()[0].id, 'privé');
+    mustAdd(a, a.app.lists()[0].id, 'Privé');
     await w.settle(60_000);
     expect(a.app.syncStatus(a.app.lists()[0].id).kind).toBe('lokaal');
     for (const r of w.hub.relays.values()) expect([r.name, r.received, r.conns.size]).toEqual([r.name, 0, 0]);
@@ -485,7 +485,7 @@ describe('F-13 / F-14 / F-15 / F-18 / NF-05: delen en koppelen via code/payload'
     const w = await makeWorld({ relays: R4 });
     const a = await addDevice(w, 'A');
     const la = a.app.lists()[0].id;
-    for (let i = 0; i < 20; i++) mustAdd(a, la, `artikel ${i}`);
+    for (let i = 0; i < 20; i++) mustAdd(a, la, `Artikel ${i}`);
     const info = await a.app.share(la);
     await w.settle(10_000);
     expect((await a.app.shareInfo(la)).ready).toBe(true);
@@ -562,16 +562,16 @@ describe('F-13 / F-14 / F-15 / F-18 / NF-05: delen en koppelen via code/payload'
     const b = await addDevice(w, 'B');
     const ids = await shareAndJoin(w, a, [b]);
     const [la, lb] = [ids.get(a)!, ids.get(b)!];
-    mustAdd(a, la, 'voor het verlaten');
+    mustAdd(a, la, 'Voor het verlaten');
     await w.settle(15_000);
     await b.app.leave(lb, true);
     await w.settle(5_000);
-    expect(sortedNames(b, lb)).toEqual(['voor het verlaten']); // lokale kopie
+    expect(sortedNames(b, lb)).toEqual(['Voor het verlaten']); // lokale kopie
     expect(b.app.lists().find((l) => l.id === lb)?.shared).toBe(false);
-    mustAdd(a, la, 'na het verlaten');
-    mustAdd(b, lb, 'alleen B');
+    mustAdd(a, la, 'Na het verlaten');
+    mustAdd(b, lb, 'Alleen B');
     await w.settle(60_000);
-    expect(sortedNames(b, lb)).toEqual(['alleen B', 'voor het verlaten']);
-    expect(sortedNames(a, la)).toEqual(['na het verlaten', 'voor het verlaten']);
+    expect(sortedNames(b, lb)).toEqual(['Alleen B', 'Voor het verlaten']);
+    expect(sortedNames(a, la)).toEqual(['Na het verlaten', 'Voor het verlaten']);
   });
 });

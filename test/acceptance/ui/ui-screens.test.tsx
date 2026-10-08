@@ -97,7 +97,7 @@ describe('F-01 / UX-10 / UX-11: lijstenoverzicht', () => {
     const d = await singleDevice({ seed: 23 });
     const store = makeStore(d.app);
     const listId = d.app.lists()[0].id;
-    for (const n of ['melk', 'brood', 'kaas']) d.app.addItem(listId, { text: n });
+    for (const n of ['Melk', 'Brood', 'Kaas']) d.app.addItem(listId, { text: n });
     const first = d.app.view(listId).sections[0].items[0];
     store.actions.toggle(listId, first.id);
     render(<ListsScreen />);
@@ -140,7 +140,7 @@ describe('F-14 / F-15 / UX-06: koppelen via geplakte code', () => {
     const a = await addDevice(w, 'A');
     const b = await addDevice(w, 'B');
     const la = a.app.lists()[0].id;
-    for (const n of ['melk', 'brood', 'kaas']) a.app.addItem(la, { text: n });
+    for (const n of ['Melk', 'Brood', 'Kaas']) a.app.addItem(la, { text: n });
     const info = await a.app.share(la);
     await w.settle(10_000);
     makeStore(b.app);
@@ -170,7 +170,7 @@ describe('F-14 / F-15 / UX-06: koppelen via geplakte code', () => {
       await w.settle(20_000);
     });
     const listId = b.app.lists().find((l) => l.shared)!.id;
-    expect(b.app.view(listId).sections.flatMap((s) => s.items).map((i) => i.name).sort()).toEqual(['brood', 'kaas', 'melk']);
+    expect(b.app.view(listId).sections.flatMap((s) => s.items).map((i) => i.name).sort()).toEqual(['Brood', 'Kaas', 'Melk']);
   });
 
   it('ET-F15-2: de knop "Plakken" haalt de tekst van het klembord; alleen de code of alleen de link werkt ook', async () => {

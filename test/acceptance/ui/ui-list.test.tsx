@@ -89,7 +89,7 @@ describe('UX-11 / UX-06: eerste start en lege toestand', () => {
 
   it('ET-UX06-1: geen jargon (relay, HLC, Nostr, CRDT) op het lijstscherm', async () => {
     const { d, listId } = await local();
-    d.app.addItem(listId, { text: 'melk' });
+    d.app.addItem(listId, { text: 'Melk' });
     render(<ListScreen />);
     const all = allText(screen.toJSON()).join(' | ');
     expect(all.length).toBeGreaterThan(20);
@@ -101,15 +101,15 @@ describe('F-02 / UX-03: snel achter elkaar items invoeren', () => {
   it('ET-UX03-1: na toevoegen is het veld leeg en blijft het invoerveld bruikbaar (geen blur bij submit); toetsenbord-Klaar voegt toe', async () => {
     const { d, listId } = await local();
     render(<ListScreen />);
-    const input = await submit('melk');
+    const input = await submit('Melk');
     expect(screen.getByLabelText(strings.addPlaceholder).props.value).toBe('');
     expect(input.props.blurOnSubmit).toBe(false);
     expect(input.props.submitBehavior).toBe('submit');
-    await submit('brood');
-    await submit('kaas');
+    await submit('Brood');
+    await submit('Kaas');
     expect(d.app.view(listId).total).toBe(3);
-    expect(screen.getByText('melk')).toBeTruthy();
-    expect(screen.getByText('kaas')).toBeTruthy();
+    expect(screen.getByText('Melk')).toBeTruthy();
+    expect(screen.getByText('Kaas')).toBeTruthy();
   });
 
   it('ET-F02-1: de plus-knop voegt toe; lege of spaties-invoer wordt niet toegevoegd en geeft geen crash', async () => {
@@ -119,7 +119,7 @@ describe('F-02 / UX-03: snel achter elkaar items invoeren', () => {
     const add = screen.getByRole('button', { name: strings.add });
     await press(add);
     expect(d.app.view(listId).total).toBe(0);
-    await type('appels');
+    await type('Appels');
     await press(screen.getByRole('button', { name: strings.add }));
     expect(d.app.view(listId).total).toBe(1);
     expect(screen.getByLabelText(strings.addPlaceholder).props.value).toBe('');
@@ -133,9 +133,9 @@ describe('F-02 / UX-03: snel achter elkaar items invoeren', () => {
     await submit('3x appels');
     const items = d.app.view(listId).sections.flatMap((s) => s.items);
     expect(items.map((i) => [i.name, i.quantity, i.unit]).sort()).toEqual([
-      ['appels', 3, null],
-      ['kaas', 500, 'g'],
-      ['melk', 2, null],
+      ['Appels', 3, null],
+      ['Kaas', 500, 'g'],
+      ['Melk', 2, null],
     ]);
     expect(screen.getByText('500 g')).toBeTruthy();
   });
@@ -143,8 +143,8 @@ describe('F-02 / UX-03: snel achter elkaar items invoeren', () => {
   it('ET-F17-1: een dubbel item wordt niet stil toegevoegd: melding met "Toch toevoegen" en "Hoeveelheid verhogen"', async () => {
     const { d, listId } = await local();
     render(<ListScreen />);
-    await submit('melk');
-    await submit('melk');
+    await submit('Melk');
+    await submit('Melk');
     expect(d.app.view(listId).total).toBe(1);
     const a = ctx.alerts[ctx.alerts.length - 1];
     expect(a.title).toBe(strings.duplicateTitle);
@@ -152,7 +152,7 @@ describe('F-02 / UX-03: snel achter elkaar items invoeren', () => {
     await act(async () => pressAlertButton(strings.duplicateIncrease));
     expect(d.app.view(listId).total).toBe(1);
     expect(d.app.view(listId).sections[0].items[0].quantity).toBe(2);
-    await submit('melk');
+    await submit('Melk');
     await act(async () => pressAlertButton(strings.duplicateAddAnyway));
     expect(d.app.view(listId).total).toBe(2);
   });
@@ -171,21 +171,21 @@ describe('F-11: suggesties tijdens het typen', () => {
   it('ET-F11-1: vanaf 1 teken suggesties; eerder gebruikte items eerst; maximaal 8; tikken voegt toe met de eerdere categorie', async () => {
     const { d, listId } = await local();
     // historie: een eerder gekocht, inmiddels afgevinkt product met een zelfgekozen categorie
-    const r = d.app.addItem(listId, { text: 'hagelslag melk' }).result;
+    const r = d.app.addItem(listId, { text: 'Hagelslag melk' }).result;
     if (r.kind !== 'added') throw new Error();
     d.app.updateItem(listId, r.itemId, { category: 'snacks-snoep' });
     d.app.toggleChecked(listId, r.itemId);
-    for (let i = 0; i < 12; i++) d.app.addItem(listId, { text: `hagelzout ${i}` });
+    for (let i = 0; i < 12; i++) d.app.addItem(listId, { text: `Hagelzout ${i}` });
     await d.app.flushWrites();
     render(<ListScreen />);
     await type('h');
     const chips = screen.getAllByLabelText(/ toevoegen$/);
     expect(chips.length).toBeGreaterThanOrEqual(1);
     expect(chips.length).toBeLessThanOrEqual(8);
-    await type('hagelslag');
-    const chip = screen.getByLabelText(strings.suggestionLabel('hagelslag melk'));
+    await type('Hagelslag');
+    const chip = screen.getByLabelText(strings.suggestionLabel('Hagelslag melk'));
     await press(chip);
-    const added = d.app.view(listId).sections.flatMap((s) => s.items).filter((i) => i.name === 'hagelslag melk' && !i.checked);
+    const added = d.app.view(listId).sections.flatMap((s) => s.items).filter((i) => i.name === 'Hagelslag melk' && !i.checked);
     expect(added).toHaveLength(1);
     expect(added[0].category).toBe('snacks-snoep');
     expect(screen.getByLabelText(strings.addPlaceholder).props.value).toBe('');
@@ -205,7 +205,7 @@ describe('F-11: suggesties tijdens het typen', () => {
     expect(screen.queryAllByLabelText(/ toevoegen$/)).toHaveLength(0);
     await type('kaa');
     expect(screen.queryAllByLabelText(/ toevoegen$/).length).toBeGreaterThan(0);
-    await submit('kaas');
+    await submit('Kaas');
     expect(screen.queryAllByLabelText(/ toevoegen$/)).toHaveLength(0);
   });
 });
@@ -213,16 +213,16 @@ describe('F-11: suggesties tijdens het typen', () => {
 describe('F-03 / UX-04: afvinken, doorhalen en onderaan', () => {
   it('ET-F03-1: één tik vinkt af; het item gaat naar het onderdeel "Afgevinkt" onderaan; nogmaals tikken zet terug', async () => {
     const { d, listId } = await local();
-    for (const n of ['melk', 'brood', 'tomaten']) d.app.addItem(listId, { text: n });
+    for (const n of ['Melk', 'Brood', 'Tomaten']) d.app.addItem(listId, { text: n });
     render(<ListScreen />);
     expect(headers()).toEqual(['Groente & fruit', 'Brood & gebak', 'Zuivel & eieren']);
-    await press(screen.getByLabelText(strings.checkItem('brood')));
+    await press(screen.getByLabelText(strings.checkItem('Brood')));
     expect(headers()).toEqual(['Groente & fruit', 'Zuivel & eieren', strings.checkedSection]);
-    const cb = screen.getByLabelText(strings.uncheckItem('brood'));
+    const cb = screen.getByLabelText(strings.uncheckItem('Brood'));
     expect(cb.props.accessibilityState).toMatchObject({ checked: true });
     // brood staat nu na de andere items (onderaan) in de weergave
     const order = screen.getAllByRole('checkbox').map((n) => n.props.accessibilityLabel as string);
-    expect(order[order.length - 1]).toBe(strings.uncheckItem('brood'));
+    expect(order[order.length - 1]).toBe(strings.uncheckItem('Brood'));
     await press(cb);
     expect(headers()).toEqual(['Groente & fruit', 'Brood & gebak', 'Zuivel & eieren']);
   });
@@ -234,14 +234,14 @@ describe('F-03 / UX-04: afvinken, doorhalen en onderaan', () => {
 
   it('ET-F03-2: afgevinkt-onderdeel is doorgehaald weergegeven en het afvinken blijft na opnieuw openen van het scherm bewaard', async () => {
     const { d, listId } = await local();
-    d.app.addItem(listId, { text: 'melk' });
+    d.app.addItem(listId, { text: 'Melk' });
     const first = render(<ListScreen />);
-    await press(screen.getByLabelText(strings.checkItem('melk')));
+    await press(screen.getByLabelText(strings.checkItem('Melk')));
     await d.app.flushWrites();
     first.unmount();
     render(<ListScreen />);
-    expect(screen.getByLabelText(strings.uncheckItem('melk'))).toBeTruthy();
-    const name = screen.getByText('melk');
+    expect(screen.getByLabelText(strings.uncheckItem('Melk'))).toBeTruthy();
+    const name = screen.getByText('Melk');
     expect(JSON.stringify(name.props.style)).toContain('line-through');
   });
 });
@@ -249,16 +249,16 @@ describe('F-03 / UX-04: afvinken, doorhalen en onderaan', () => {
 describe('F-10: categoriegroepering in vaste supermarktvolgorde', () => {
   it('ET-F10-1: groepen staan in de afgesproken volgorde; lege categorieën zijn verborgen; binnen een categorie op toevoegvolgorde', async () => {
     const { d, listId } = await local();
-    for (const n of ['kattenvoer', 'shampoo', 'cola', 'kaas', 'brood', 'tomaten', 'appels', 'xyzzy onbekend']) d.app.addItem(listId, { text: n });
+    for (const n of ['Kattenvoer', 'Shampoo', 'Cola', 'Kaas', 'Brood', 'Tomaten', 'Appels', 'Xyzzy onbekend']) d.app.addItem(listId, { text: n });
     render(<ListScreen />);
     expect(headers()).toEqual(['Groente & fruit', 'Brood & gebak', 'Vleeswaren & kaas', 'Dranken', 'Verzorging & drogisterij', 'Huisdieren', 'Overig']);
     const names = screen.getAllByRole('checkbox').map((n) => n.props.accessibilityLabel as string);
-    expect(names.indexOf(strings.checkItem('tomaten'))).toBeLessThan(names.indexOf(strings.checkItem('appels'))); // eerst toegevoegd, eerst getoond
+    expect(names.indexOf(strings.checkItem('Tomaten'))).toBeLessThan(names.indexOf(strings.checkItem('Appels'))); // eerst toegevoegd, eerst getoond
   });
 
   it('ET-F10-2: alle 16 categorieën: de volgorde van de secties in de weergave is de vaste supermarktvolgorde (B-05)', async () => {
     const { d, listId } = await local();
-    const sample = ['kattenvoer', 'xyzzy onbekend', 'luiers', 'shampoo', 'afwasmiddel', 'ijs', 'cola', 'chips', 'rijst', 'tomatenpuree', 'hagelslag', 'melk', 'kaas', 'kipfilet', 'brood', 'tomaten'];
+    const sample = ['Kattenvoer', 'Xyzzy onbekend', 'Luiers', 'Shampoo', 'Afwasmiddel', 'ijs', 'Cola', 'Chips', 'Rijst', 'Tomatenpuree', 'Hagelslag', 'Melk', 'Kaas', 'Kipfilet', 'Brood', 'Tomaten'];
     for (const n of sample) d.app.addItem(listId, { text: n });
     expect(d.app.view(listId).sections.map((s) => s.key)).toEqual([
       'groente-fruit', 'brood-gebak', 'vlees-vis', 'vleeswaren-kaas', 'zuivel-eieren', 'ontbijt-beleg', 'pasta-rijst-wereld', 'houdbaar-conserven', 'snacks-snoep', 'dranken', 'diepvries', 'huishouden', 'verzorging', 'baby-kind', 'huisdieren', 'overig',
@@ -269,7 +269,7 @@ describe('F-10: categoriegroepering in vaste supermarktvolgorde', () => {
 describe('F-05 / F-06 / F-07 / UX-07: verwijderen met ongedaan maken', () => {
   it('ET-F05-1: item verwijderen via het bewerkscherm; snackbar met "Ongedaan maken" herstelt het item', async () => {
     const { d, listId } = await local();
-    const r = d.app.addItem(listId, { text: 'kaas' }).result;
+    const r = d.app.addItem(listId, { text: 'Kaas' }).result;
     if (r.kind !== 'added') throw new Error();
     ctx.params = { id: listId, itemId: r.itemId };
     const edit = render(<EditItemScreen />);
@@ -281,25 +281,25 @@ describe('F-05 / F-06 / F-07 / UX-07: verwijderen met ongedaan maken', () => {
     expect(d.app.view(listId).total).toBe(0);
     ctx.params = { id: listId };
     const list = render(<ListScreen />); // terug op het lijstscherm: de snackbar staat er nog
-    expect(list.getByText(strings.itemDeleted('kaas'))).toBeTruthy();
+    expect(list.getByText(strings.itemDeleted('Kaas'))).toBeTruthy();
     await act(async () => {
       fireEvent.press(list.getByRole('button', { name: strings.undo }));
     });
-    expect(d.app.view(listId).sections.flatMap((s) => s.items).map((i) => i.name)).toEqual(['kaas']);
-    expect(list.queryByText(strings.itemDeleted('kaas'))).toBeNull();
+    expect(d.app.view(listId).sections.flatMap((s) => s.items).map((i) => i.name)).toEqual(['Kaas']);
+    expect(list.queryByText(strings.itemDeleted('Kaas'))).toBeNull();
   });
 
   it('ET-F06-1: "Afgevinkte wissen" wist alleen afgevinkte items; ongedaan maken herstelt exact die items; de snackbar verloopt', async () => {
     const { d, listId } = await local();
-    for (const n of ['a1', 'a2', 'a3', 'b1']) d.app.addItem(listId, { text: n });
+    for (const n of ['A1', 'A2', 'A3', 'B1']) d.app.addItem(listId, { text: n });
     render(<ListScreen />);
-    for (const n of ['a1', 'a2', 'a3']) await press(screen.getByLabelText(strings.checkItem(n)));
+    for (const n of ['A1', 'A2', 'A3']) await press(screen.getByLabelText(strings.checkItem(n)));
     expect(headers()).toContain(strings.checkedSection);
     await press(screen.getByRole('button', { name: strings.clearChecked }));
-    expect(d.app.view(listId).sections.flatMap((s) => s.items).map((i) => i.name)).toEqual(['b1']);
+    expect(d.app.view(listId).sections.flatMap((s) => s.items).map((i) => i.name)).toEqual(['B1']);
     expect(screen.getByText(strings.itemsCleared(3))).toBeTruthy();
     await press(screen.getByRole('button', { name: strings.undo }));
-    expect(d.app.view(listId).sections.flatMap((s) => s.items).map((i) => `${i.name}:${i.checked}`).sort()).toEqual(['a1:true', 'a2:true', 'a3:true', 'b1:false']);
+    expect(d.app.view(listId).sections.flatMap((s) => s.items).map((i) => `${i.name}:${i.checked}`).sort()).toEqual(['A1:true', 'A2:true', 'A3:true', 'B1:false']);
     // opnieuw wissen; nu laten we de snackbar verlopen
     await press(screen.getByRole('button', { name: strings.clearChecked }));
     expect(screen.getByText(strings.itemsCleared(3))).toBeTruthy();
@@ -310,10 +310,10 @@ describe('F-05 / F-06 / F-07 / UX-07: verwijderen met ongedaan maken', () => {
   it('ET-F06-2: 200 afgevinkte items wissen werkt en is in één keer ongedaan te maken', async () => {
     const { d, listId } = await local();
     for (let i = 0; i < 200; i++) {
-      const r = d.app.addItem(listId, { text: `artikel ${i}` }).result;
+      const r = d.app.addItem(listId, { text: `Artikel ${i}` }).result;
       if (r.kind === 'added') d.app.toggleChecked(listId, r.itemId);
     }
-    d.app.addItem(listId, { text: 'blijft' });
+    d.app.addItem(listId, { text: 'Blijft' });
     await d.app.flushWrites();
     render(<ListScreen />);
     await press(screen.getByRole('button', { name: strings.clearChecked }));
@@ -325,7 +325,7 @@ describe('F-05 / F-06 / F-07 / UX-07: verwijderen met ongedaan maken', () => {
 
   it('ET-UX07-1: lijst verwijderen vraagt eerst bevestiging; annuleren laat de lijst staan; bevestigen verwijdert en gaat terug', async () => {
     const { d, listId } = await local();
-    d.app.addItem(listId, { text: 'melk' });
+    d.app.addItem(listId, { text: 'Melk' });
     render(<ListScreen />);
     await press(screen.getByRole('button', { name: strings.menu }));
     await act(async () => pressAlertButton(strings.deleteList));
@@ -367,11 +367,11 @@ describe('F-05 / F-06 / F-07 / UX-07: verwijderen met ongedaan maken', () => {
 describe('F-04 / F-09: bewerken en handmatige categorie', () => {
   it('ET-F04-1: naam, hoeveelheid, eenheid, notitie en categorie bewerken; de wijziging is direct zichtbaar; ongeldige hoeveelheid geeft een melding', async () => {
     const { d, listId } = await local();
-    const r = d.app.addItem(listId, { text: 'melk' }).result;
+    const r = d.app.addItem(listId, { text: 'Melk' }).result;
     if (r.kind !== 'added') throw new Error();
     ctx.params = { id: listId, itemId: r.itemId };
     const edit = render(<EditItemScreen />);
-    fireEvent.changeText(edit.getByLabelText(strings.name), 'halfvolle melk');
+    fireEvent.changeText(edit.getByLabelText(strings.name), 'Halfvolle melk');
     fireEvent.changeText(edit.getByLabelText(strings.quantity), '2,5');
     fireEvent.press(edit.getByLabelText(`${strings.unit} l`));
     fireEvent.changeText(edit.getByLabelText(strings.note), 'van de boer');
@@ -380,7 +380,7 @@ describe('F-04 / F-09: bewerken en handmatige categorie', () => {
       fireEvent.press(edit.getByRole('button', { name: strings.save }));
     });
     const it = d.app.view(listId).sections.flatMap((s) => s.items)[0];
-    expect(it).toMatchObject({ name: 'halfvolle melk', quantity: 2.5, unit: 'l', note: 'van de boer', category: 'dranken' });
+    expect(it).toMatchObject({ name: 'Halfvolle melk', quantity: 2.5, unit: 'l', note: 'van de boer', category: 'dranken' });
     expect(router.back).toHaveBeenCalled();
   });
 });
@@ -398,7 +398,7 @@ describe('UX-10: voortgang "x van y afgevinkt"', () => {
     const progress = () => b.app.lists().find((l) => l.id === lb)!;
     expect([progress().checkedCount, progress().total]).toEqual([0, 0]);
     await act(async () => {
-      for (const n of ['x1', 'x2', 'x3']) a.app.addItem(la, { text: n });
+      for (const n of ['X1', 'X2', 'X3']) a.app.addItem(la, { text: n });
       await w.settle(15_000);
     });
     expect([progress().checkedCount, progress().total]).toEqual([0, 3]);
@@ -450,8 +450,8 @@ describe('UX-02 / S-17: sync-indicator altijd zichtbaar, tekst én icoon, in elk
     await advance(w, 1_000);
     expect(screen.queryByLabelText(new RegExp(`^${strings.status.offline(0)}`))).toBeTruthy();
     await act(async () => {
-      a.app.addItem(la, { text: 'melk' });
-      a.app.addItem(la, { text: 'brood' });
+      a.app.addItem(la, { text: 'Melk' });
+      a.app.addItem(la, { text: 'Brood' });
     });
     await advance(w, 1_000);
     expect(bar(strings.status.offline(2))).toBeTruthy();
@@ -465,7 +465,7 @@ describe('UX-02 / S-17: sync-indicator altijd zichtbaar, tekst én icoon, in elk
     render(<ListScreen />);
     await advance(w, 5_000);
     for (const r of w.hub.relays.values()) r.faults.latencyMs = 3_000; // trage relays: acks laten even op zich wachten
-    await act(async () => void a.app.addItem(la, { text: 'melk' }));
+    await act(async () => void a.app.addItem(la, { text: 'Melk' }));
     await advance(w, 1_500);
     expect(bar(strings.status.bezig)).toBeTruthy();
     await advance(w, 30_000);
@@ -477,7 +477,7 @@ describe('UX-02 / S-17: sync-indicator altijd zichtbaar, tekst én icoon, in elk
     render(<ListScreen />);
     await advance(w, 5_000);
     for (const r of w.hub.relays.values()) r.faults.refuse = 'blocked:';
-    await act(async () => void a.app.addItem(la, { text: 'melk' }));
+    await act(async () => void a.app.addItem(la, { text: 'Melk' }));
     await advance(w, 60_000);
     expect(bar(strings.status.fout)).toBeTruthy();
     expect(screen.getByText(strings.status.foutSub)).toBeTruthy();
@@ -515,7 +515,7 @@ describe('UX-02 / S-17: sync-indicator altijd zichtbaar, tekst én icoon, in elk
 describe('UX-09: toegankelijkheid van het lijstscherm', () => {
   it('ET-UX09-1: alle knoppen en regels hebben een accessibilityLabel', async () => {
     const { d, listId } = await local();
-    for (const n of ['melk', 'brood']) d.app.addItem(listId, { text: n });
+    for (const n of ['Melk', 'Brood']) d.app.addItem(listId, { text: n });
     render(<ListScreen />);
     await type('ka');
     const interactive = [...screen.getAllByRole('button'), ...screen.getAllByRole('checkbox')];
