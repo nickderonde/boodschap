@@ -1,11 +1,12 @@
 // Overzicht van lijsten (F-01, UX-10, UX-11). Swipe naar links → verwijderen, altijd met bevestiging (UX-16).
 import { useState } from 'react';
-import { FlatList, KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { FlatList, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUi, useUiState } from '../src/ui/AppContext';
 import { Button, EmptyState, IconButton, Snackbar } from '../src/ui/components/basics';
 import { Icon } from '../src/ui/components/Icon';
+import { KeyboardSafeView } from '../src/ui/components/KeyboardSafeView';
 import { SwipeGroupProvider, SwipeRow, useNewSwipeGroup, type SwipeHandle } from '../src/ui/components/SwipeRow';
 import { progressFraction, progressText } from '../src/ui/selectors';
 import { strings } from '../src/ui/strings.nl';
@@ -91,7 +92,7 @@ export default function ListsScreen() {
       </View>
       <Snackbar message={message} onUndo={ui.actions.undo} onClose={ui.actions.dismissMessage} />
       <Modal visible={creating} transparent animationType="fade" onRequestClose={() => setCreating(false)}>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.modalBg}>
+        <KeyboardSafeView style={styles.modalBg} testID="nieuwe-lijst-dialoog">
           <View style={[styles.dialog, { backgroundColor: t.surface }]}>
             <Text style={[styles.dialogTitle, { color: t.text }]}>{strings.newList}</Text>
             <TextInput
@@ -111,7 +112,7 @@ export default function ListsScreen() {
               <Button label={strings.create} onPress={create} disabled={!name.trim()} style={{ flex: 1 }} />
             </View>
           </View>
-        </KeyboardAvoidingView>
+        </KeyboardSafeView>
       </Modal>
     </View>
   );

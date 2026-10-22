@@ -13,6 +13,7 @@ import { createScanGate } from '../src/ui/scanGate';
 import { wallClock } from '../src/ui/platform/timers';
 import { strings } from '../src/ui/strings.nl';
 import { font, radius, space, touch, useTheme } from '../src/ui/theme';
+import { KeyboardSafeView } from '../src/ui/components/KeyboardSafeView';
 
 type Tab = 'scan' | 'paste';
 
@@ -69,71 +70,73 @@ export default function JoinScreen() {
   );
 
   return (
-    <ScrollView style={{ backgroundColor: t.bg }} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-      <View style={[styles.segments, { backgroundColor: t.surfaceAlt }]} accessibilityRole="tablist">
-        {segment('scan', strings.scanTab)}
-        {segment('paste', strings.pasteTab)}
-      </View>
+    <KeyboardSafeView ios="none" testID="koppelen-scherm">
+      <ScrollView style={{ backgroundColor: t.bg }} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+        <View style={[styles.segments, { backgroundColor: t.surfaceAlt }]} accessibilityRole="tablist">
+          {segment('scan', strings.scanTab)}
+          {segment('paste', strings.pasteTab)}
+        </View>
 
-      {tab === 'scan' ? (
-        !permission ? (
-          <ActivityIndicator color={t.accent} />
-        ) : permission.granted ? (
-          <View style={{ gap: space.m }}>
-            <View style={[styles.camera, { borderColor: t.border }]}>
-              <CameraView
-                style={StyleSheet.absoluteFill}
-                facing="back"
-                barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
-                onBarcodeScanned={({ data }) => {
-                  if (!gate.tryAcquire()) return;
-                  void join(data);
-                }}
-              />
+        {tab === 'scan' ? (
+          !permission ? (
+            <ActivityIndicator color={t.accent} />
+          ) : permission.granted ? (
+            <View style={{ gap: space.m }}>
+              <View style={[styles.camera, { borderColor: t.border }]}>
+                <CameraView
+                  style={StyleSheet.absoluteFill}
+                  facing="back"
+                  barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
+                  onBarcodeScanned={({ data }) => {
+                    if (!gate.tryAcquire()) return;
+                    void join(data);
+                  }}
+                />
+              </View>
+              <Text style={[styles.hint, { color: t.muted }]}>{strings.scanHint}</Text>
             </View>
-            <Text style={[styles.hint, { color: t.muted }]}>{strings.scanHint}</Text>
-          </View>
+          ) : (
+            <View style={[styles.card, { backgroundColor: t.surface }]}>
+              <Icon name="scan" color={t.accent} size={32} />
+              <Text style={[styles.cardText, { color: t.text }]}>{permission.canAskAgain ? strings.cameraNeeded : strings.cameraDenied}</Text>
+              {permission.canAskAgain ? <Button label={strings.allowCamera} onPress={() => void requestPermission()} /> : null}
+              <Button label={strings.usePaste} kind="secondary" icon="paste" onPress={() => setTab('paste')} />
+            </View>
+          )
         ) : (
-          <View style={[styles.card, { backgroundColor: t.surface }]}>
-            <Icon name="scan" color={t.accent} size={32} />
-            <Text style={[styles.cardText, { color: t.text }]}>{permission.canAskAgain ? strings.cameraNeeded : strings.cameraDenied}</Text>
-            {permission.canAskAgain ? <Button label={strings.allowCamera} onPress={() => void requestPermission()} /> : null}
-            <Button label={strings.usePaste} kind="secondary" icon="paste" onPress={() => setTab('paste')} />
-          </View>
-        )
-      ) : (
-        <View style={{ gap: space.m }}>
-          <TextInput
-            value={text}
-            onChangeText={setText}
-            placeholder={strings.pastePlaceholder}
-            placeholderTextColor={t.muted}
-            multiline
-            autoCapitalize="none"
-            autoCorrect={false}
-            accessibilityLabel={strings.pastePlaceholder}
-            style={[styles.paste, { color: t.text, backgroundColor: t.surface, borderColor: t.border }]}
-          />
-          <View style={{ flexDirection: 'row', gap: space.m }}>
-            <Button
-              label={strings.pasteFromClipboard}
-              icon="paste"
-              kind="secondary"
-              onPress={() => void Clipboard.getStringAsync().then((s) => setText(s))}
-              style={{ flex: 1 }}
+          <View style={{ gap: space.m }}>
+            <TextInput
+              value={text}
+              onChangeText={setText}
+              placeholder={strings.pastePlaceholder}
+              placeholderTextColor={t.muted}
+              multiline
+              autoCapitalize="none"
+              autoCorrect={false}
+              accessibilityLabel={strings.pastePlaceholder}
+              style={[styles.paste, { color: t.text, backgroundColor: t.surface, borderColor: t.border }]}
             />
-            <Button label={busy ? strings.joining : strings.join} onPress={() => void join(text)} disabled={!text.trim() || busy} style={{ flex: 1 }} />
+            <View style={{ flexDirection: 'row', gap: space.m }}>
+              <Button
+                label={strings.pasteFromClipboard}
+                icon="paste"
+                kind="secondary"
+                onPress={() => void Clipboard.getStringAsync().then((s) => setText(s))}
+                style={{ flex: 1 }}
+              />
+              <Button label={busy ? strings.joining : strings.join} onPress={() => void join(text)} disabled={!text.trim() || busy} style={{ flex: 1 }} />
+            </View>
           </View>
-        </View>
-      )}
+        )}
 
-      {error ? (
-        <View style={[styles.error, { borderColor: t.danger }]} accessibilityRole="alert">
-          <Icon name="warning" color={t.danger} size={20} />
-          <Text style={[styles.errorText, { color: t.text }]}>{error}</Text>
-        </View>
-      ) : null}
-    </ScrollView>
+        {error ? (
+          <View style={[styles.error, { borderColor: t.danger }]} accessibilityRole="alert">
+            <Icon name="warning" color={t.danger} size={20} />
+            <Text style={[styles.errorText, { color: t.text }]}>{error}</Text>
+          </View>
+        ) : null}
+      </ScrollView>
+    </KeyboardSafeView>
   );
 }
 

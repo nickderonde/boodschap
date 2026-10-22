@@ -10,6 +10,7 @@ import { strings } from '../src/ui/strings.nl';
 import { font, radius, space, touch, useTheme } from '../src/ui/theme';
 import { PRIVACY_URL, SOURCE_URL, SUPPORT_URL } from '../src/ui/links';
 import { Icon } from '../src/ui/components/Icon';
+import { KeyboardSafeView } from '../src/ui/components/KeyboardSafeView';
 
 const VALID = /^wss:\/\/[^\s/]+(\/[^\s]*)?$/;
 
@@ -50,72 +51,74 @@ export default function SettingsScreen() {
   };
 
   return (
-    <ScrollView style={{ backgroundColor: t.bg }} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-      <Text style={[styles.h, { color: t.text }]} accessibilityRole="header">
-        {strings.relaysTitle}
-      </Text>
-      <Text style={[styles.p, { color: t.muted }]}>{strings.relaysIntro}</Text>
-      <View style={[styles.card, { backgroundColor: t.surface, borderColor: t.border }]}>
-        {relays.map((r, i) => (
-          <View key={r} style={[styles.relayRow, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: t.border }]}>
-            <Text style={[styles.relay, { color: t.text }]} numberOfLines={1}>
-              {r}
-            </Text>
-            <IconButton icon="trash" label={strings.removeRelay(r)} color={t.danger} onPress={() => void apply(relays.filter((x) => x !== r))} />
-          </View>
-        ))}
-      </View>
-      <View style={{ flexDirection: 'row', gap: space.s }}>
-        <TextInput
-          value={draft}
-          onChangeText={setDraft}
-          placeholder={strings.relayPlaceholder}
-          placeholderTextColor={t.muted}
-          autoCapitalize="none"
-          autoCorrect={false}
-          keyboardType="url"
-          onSubmitEditing={add}
-          accessibilityLabel={strings.relayInputLabel}
-          style={[styles.input, { color: t.text, backgroundColor: t.surface, borderColor: t.border }]}
-        />
-        <Button label={strings.addRelay} onPress={add} disabled={!draft.trim()} />
-      </View>
-      {error ? <Text style={[styles.error, { color: t.danger }]}>{error}</Text> : null}
-      <Button label={strings.resetRelays} kind="ghost" onPress={() => void apply([...DEFAULT_CONFIG.defaultRelays])} />
+    <KeyboardSafeView ios="none" testID="instellingen-scherm">
+      <ScrollView style={{ backgroundColor: t.bg }} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+        <Text style={[styles.h, { color: t.text }]} accessibilityRole="header">
+          {strings.relaysTitle}
+        </Text>
+        <Text style={[styles.p, { color: t.muted }]}>{strings.relaysIntro}</Text>
+        <View style={[styles.card, { backgroundColor: t.surface, borderColor: t.border }]}>
+          {relays.map((r, i) => (
+            <View key={r} style={[styles.relayRow, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: t.border }]}>
+              <Text style={[styles.relay, { color: t.text }]} numberOfLines={1}>
+                {r}
+              </Text>
+              <IconButton icon="trash" label={strings.removeRelay(r)} color={t.danger} onPress={() => void apply(relays.filter((x) => x !== r))} />
+            </View>
+          ))}
+        </View>
+        <View style={{ flexDirection: 'row', gap: space.s }}>
+          <TextInput
+            value={draft}
+            onChangeText={setDraft}
+            placeholder={strings.relayPlaceholder}
+            placeholderTextColor={t.muted}
+            autoCapitalize="none"
+            autoCorrect={false}
+            keyboardType="url"
+            onSubmitEditing={add}
+            accessibilityLabel={strings.relayInputLabel}
+            style={[styles.input, { color: t.text, backgroundColor: t.surface, borderColor: t.border }]}
+          />
+          <Button label={strings.addRelay} onPress={add} disabled={!draft.trim()} />
+        </View>
+        {error ? <Text style={[styles.error, { color: t.danger }]}>{error}</Text> : null}
+        <Button label={strings.resetRelays} kind="ghost" onPress={() => void apply([...DEFAULT_CONFIG.defaultRelays])} />
 
-      <Text style={[styles.h, { color: t.text }]} accessibilityRole="header">
-        {strings.privacyTitle}
-      </Text>
-      <Text style={[styles.p, { color: t.text }]}>{strings.privacyBody}</Text>
-      <Text style={[styles.p, { color: t.text }]}>{strings.shareWarning}</Text>
+        <Text style={[styles.h, { color: t.text }]} accessibilityRole="header">
+          {strings.privacyTitle}
+        </Text>
+        <Text style={[styles.p, { color: t.text }]}>{strings.privacyBody}</Text>
+        <Text style={[styles.p, { color: t.text }]}>{strings.shareWarning}</Text>
 
-      <Text style={[styles.h, { color: t.text }]} accessibilityRole="header">
-        {strings.aboutTitle}
-      </Text>
-      <Text style={[styles.p, { color: t.muted }]}>{strings.aboutBody}</Text>
-      {/* ST-07: privacybeleid, support en licenties */}
-      <View style={[styles.card, { backgroundColor: t.surface, borderColor: t.border }]}>
-        {[
-          { label: strings.privacyPolicy, hint: strings.opensInBrowser, onPress: () => void Linking.openURL(PRIVACY_URL) },
-          { label: strings.support, hint: strings.opensInBrowser, onPress: () => void Linking.openURL(SUPPORT_URL) },
-          { label: strings.sourceCode, hint: strings.opensInBrowser, onPress: () => void Linking.openURL(SOURCE_URL) },
-          { label: strings.openSourceLicenses, hint: undefined, onPress: () => router.push('/licenties') },
-        ].map((l, i) => (
-          <Pressable
-            key={l.label}
-            onPress={l.onPress}
-            accessibilityRole={l.hint ? 'link' : 'button'}
-            accessibilityLabel={l.label}
-            accessibilityHint={l.hint}
-            style={({ pressed }) => [styles.linkRow, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: t.border }, { opacity: pressed ? 0.6 : 1 }]}
-          >
-            <Text style={[styles.relay, { color: t.text }]}>{l.label}</Text>
-            <Icon name="chevron" color={t.muted} size={18} />
-          </Pressable>
-        ))}
-      </View>
-      <Text style={[styles.p, { color: t.muted }]}>{strings.version(Constants.expoConfig?.version ?? '')}</Text>
-    </ScrollView>
+        <Text style={[styles.h, { color: t.text }]} accessibilityRole="header">
+          {strings.aboutTitle}
+        </Text>
+        <Text style={[styles.p, { color: t.muted }]}>{strings.aboutBody}</Text>
+        {/* ST-07: privacybeleid, support en licenties */}
+        <View style={[styles.card, { backgroundColor: t.surface, borderColor: t.border }]}>
+          {[
+            { label: strings.privacyPolicy, hint: strings.opensInBrowser, onPress: () => void Linking.openURL(PRIVACY_URL) },
+            { label: strings.support, hint: strings.opensInBrowser, onPress: () => void Linking.openURL(SUPPORT_URL) },
+            { label: strings.sourceCode, hint: strings.opensInBrowser, onPress: () => void Linking.openURL(SOURCE_URL) },
+            { label: strings.openSourceLicenses, hint: undefined, onPress: () => router.push('/licenties') },
+          ].map((l, i) => (
+            <Pressable
+              key={l.label}
+              onPress={l.onPress}
+              accessibilityRole={l.hint ? 'link' : 'button'}
+              accessibilityLabel={l.label}
+              accessibilityHint={l.hint}
+              style={({ pressed }) => [styles.linkRow, i > 0 && { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: t.border }, { opacity: pressed ? 0.6 : 1 }]}
+            >
+              <Text style={[styles.relay, { color: t.text }]}>{l.label}</Text>
+              <Icon name="chevron" color={t.muted} size={18} />
+            </Pressable>
+          ))}
+        </View>
+        <Text style={[styles.p, { color: t.muted }]}>{strings.version(Constants.expoConfig?.version ?? '')}</Text>
+      </ScrollView>
+    </KeyboardSafeView>
   );
 }
 

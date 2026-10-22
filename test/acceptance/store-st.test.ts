@@ -42,9 +42,9 @@ describe('ST-01 / ST-02 / ST-03: identiteit en versiebeheer', () => {
     expect(json('locales/en.json').ios.CFBundleDisplayName).toBe('BOODSCHAP!');
   });
 
-  it('ET-ST03-1: semver 1.0.0; EAS: appVersionSource remote en production autoIncrement; changelog NL+EN', () => {
+  it('ET-ST03-1: semver 1.0.1; EAS: appVersionSource remote en production autoIncrement; changelog NL+EN', () => {
     expect(appJson.version).toMatch(/^\d+\.\d+\.\d+$/);
-    expect(appJson.version).toBe('1.0.0');
+    expect(appJson.version).toBe('1.0.1'); // D-53: update voor D-52 (op aanwijzing van Nick)
     expect(pkg.version).toBe(appJson.version);
     expect(eas.cli.appVersionSource).toBe('remote');
     expect(eas.build.production.autoIncrement).toBe(true);

@@ -61,9 +61,9 @@ describe('ST-01 / ST-02 / ST-03: identiteit en versies', () => {
     expect(listing.fallbackName.length).toBeLessThanOrEqual(30);
   });
 
-  it('ST-03: semver 1.0.0, remote versiebron, automatisch ophogen in production, release-notities NL en EN', () => {
+  it('ST-03: semver 1.0.1, remote versiebron, automatisch ophogen in production, release-notities NL en EN', () => {
     expect(app.version).toMatch(/^\d+\.\d+\.\d+$/);
-    expect(app.version).toBe('1.0.0');
+    expect(app.version).toBe('1.0.1'); // D-53: update voor D-52
     expect(pkg.version).toBe(app.version);
     expect(eas.cli.appVersionSource).toBe('remote');
     expect(eas.build.production.autoIncrement).toBe(true);

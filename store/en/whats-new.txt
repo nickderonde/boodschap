@@ -1,1 +1,1 @@
-First release of BOODSCHAP!.
+On Android, the input field now stays above the keyboard, with gesture or three-button navigation.

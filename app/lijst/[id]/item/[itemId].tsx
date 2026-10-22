@@ -10,6 +10,7 @@ import { formatQuantity } from '../../../../src/ui/selectors';
 import { strings } from '../../../../src/ui/strings.nl';
 import { font, radius, space, touch, useTheme } from '../../../../src/ui/theme';
 import type { CategoryId } from '../../../../src/core/types';
+import { KeyboardSafeView } from '../../../../src/ui/components/KeyboardSafeView';
 
 export default function EditItemScreen() {
   const { id, itemId } = useLocalSearchParams<{ id: string; itemId: string }>();
@@ -53,46 +54,48 @@ export default function EditItemScreen() {
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: t.bg }}>
-      <ScrollView contentContainerStyle={{ padding: space.l, gap: space.l, paddingBottom: 140 }} keyboardShouldPersistTaps="handled">
-        {field(strings.name, name, setName, { maxLength: 80 })}
-        <View style={{ flexDirection: 'row', gap: space.m }}>
-          <View style={{ flex: 1 }}>{field(strings.quantity, qty, setQty, { keyboardType: 'decimal-pad', maxLength: 10 })}</View>
-          <View style={{ flex: 1 }}>{field(strings.unit, unit, setUnit, { maxLength: 20, autoCapitalize: 'none' })}</View>
-        </View>
-        <View style={styles.chips}>
-          {strings.units.map((u) => (
-            <Pressable key={u} onPress={() => setUnit(unit === u ? '' : u)} accessibilityRole="button" accessibilityState={{ selected: unit === u }} accessibilityLabel={`${strings.unit} ${u}`} style={[styles.chip, { backgroundColor: unit === u ? t.accent : t.surfaceAlt }]}>
-              <Text style={{ color: unit === u ? t.accentText : t.text, fontSize: font.body - 1 }}>{u}</Text>
-            </Pressable>
-          ))}
-        </View>
-        {field(strings.note, note, setNote, { maxLength: 200, multiline: true, placeholder: strings.notePlaceholder })}
-        <View style={styles.field}>
-          <Text style={[styles.label, { color: t.muted }]}>{strings.category}</Text>
+    <KeyboardSafeView ios="none" ownsBottomInset testID="bewerk-scherm">
+      <View style={{ flex: 1, backgroundColor: t.bg }}>
+        <ScrollView contentContainerStyle={{ padding: space.l, gap: space.l, paddingBottom: 140 }} keyboardShouldPersistTaps="handled">
+          {field(strings.name, name, setName, { maxLength: 80 })}
+          <View style={{ flexDirection: 'row', gap: space.m }}>
+            <View style={{ flex: 1 }}>{field(strings.quantity, qty, setQty, { keyboardType: 'decimal-pad', maxLength: 10 })}</View>
+            <View style={{ flex: 1 }}>{field(strings.unit, unit, setUnit, { maxLength: 20, autoCapitalize: 'none' })}</View>
+          </View>
           <View style={styles.chips}>
-            {CATEGORIES.map((c) => (
-              <Pressable key={c.id} onPress={() => setCategory(c.id)} accessibilityRole="radio" accessibilityState={{ selected: category === c.id }} accessibilityLabel={strings.categories[c.id]} style={[styles.chip, { backgroundColor: category === c.id ? t.accent : t.surfaceAlt }]}>
-                <Text style={{ color: category === c.id ? t.accentText : t.text, fontSize: font.body - 2 }}>{strings.categories[c.id]}</Text>
+            {strings.units.map((u) => (
+              <Pressable key={u} onPress={() => setUnit(unit === u ? '' : u)} accessibilityRole="button" accessibilityState={{ selected: unit === u }} accessibilityLabel={`${strings.unit} ${u}`} style={[styles.chip, { backgroundColor: unit === u ? t.accent : t.surfaceAlt }]}>
+                <Text style={{ color: unit === u ? t.accentText : t.text, fontSize: font.body - 1 }}>{u}</Text>
               </Pressable>
             ))}
           </View>
+          {field(strings.note, note, setNote, { maxLength: 200, multiline: true, placeholder: strings.notePlaceholder })}
+          <View style={styles.field}>
+            <Text style={[styles.label, { color: t.muted }]}>{strings.category}</Text>
+            <View style={styles.chips}>
+              {CATEGORIES.map((c) => (
+                <Pressable key={c.id} onPress={() => setCategory(c.id)} accessibilityRole="radio" accessibilityState={{ selected: category === c.id }} accessibilityLabel={strings.categories[c.id]} style={[styles.chip, { backgroundColor: category === c.id ? t.accent : t.surfaceAlt }]}>
+                  <Text style={{ color: category === c.id ? t.accentText : t.text, fontSize: font.body - 2 }}>{strings.categories[c.id]}</Text>
+                </Pressable>
+              ))}
+            </View>
+          </View>
+        </ScrollView>
+        <View style={[styles.bottom, { paddingBottom: Math.max(insets.bottom, space.l), backgroundColor: t.bg, borderTopColor: t.border }]}>
+          <Button
+            label={strings.deleteItem}
+            icon="trash"
+            kind="danger"
+            onPress={() => {
+              ui.actions.deleteItem(listId, item.id, item.name);
+              router.back();
+            }}
+            style={{ flex: 1 }}
+          />
+          <Button label={strings.save} onPress={save} style={{ flex: 1 }} />
         </View>
-      </ScrollView>
-      <View style={[styles.bottom, { paddingBottom: Math.max(insets.bottom, space.l), backgroundColor: t.bg, borderTopColor: t.border }]}>
-        <Button
-          label={strings.deleteItem}
-          icon="trash"
-          kind="danger"
-          onPress={() => {
-            ui.actions.deleteItem(listId, item.id, item.name);
-            router.back();
-          }}
-          style={{ flex: 1 }}
-        />
-        <Button label={strings.save} onPress={save} style={{ flex: 1 }} />
       </View>
-    </View>
+    </KeyboardSafeView>
   );
 }
 

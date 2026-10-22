@@ -1,13 +1,14 @@
 // Lijstscherm (F-02..F-12, F-17, UX-02..05, UX-07, UX-13): per categorie in supermarktvolgorde, afgevinkt onderaan,
 // altijd zichtbare sync-status, snel achter elkaar invoeren met suggesties, pull-to-refresh, undo-snackbar.
 import { useCallback, useMemo, useState } from 'react';
-import { KeyboardAvoidingView, Modal, Platform, Pressable, RefreshControl, SectionList, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Modal, Pressable, RefreshControl, SectionList, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useUi, useUiState } from '../../src/ui/AppContext';
 import { AddBar } from '../../src/ui/components/AddBar';
 import { Button, EmptyState, IconButton, Snackbar, SyncBar } from '../../src/ui/components/basics';
 import { ItemRow } from '../../src/ui/components/ItemRow';
+import { KeyboardSafeView } from '../../src/ui/components/KeyboardSafeView';
 import { SwipeGroupProvider, useNewSwipeGroup } from '../../src/ui/components/SwipeRow';
 import { nativeAlert } from '../../src/ui/AppContext';
 import { strings } from '../../src/ui/strings.nl';
@@ -83,7 +84,7 @@ export default function ListScreen() {
   const empty = view.sections.length === 0;
 
   return (
-    <KeyboardAvoidingView style={{ flex: 1, backgroundColor: t.bg }} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}>
+    <KeyboardSafeView style={{ flex: 1, backgroundColor: t.bg }} iosOffset={100} ownsBottomInset testID="lijst-scherm">
       <Stack.Screen
         options={{
           title: view.name,
@@ -136,7 +137,7 @@ export default function ListScreen() {
       </View>
       <AddBar suggest={suggest} onAdd={(text, extra) => ui.actions.addItem(listId, text, extra)} bottomInset={insets.bottom} />
       <Modal visible={renaming !== null} transparent animationType="fade" onRequestClose={() => setRenaming(null)}>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.modalBg}>
+        <KeyboardSafeView style={styles.modalBg} testID="hernoem-dialoog">
           <View style={[styles.dialog, { backgroundColor: t.surface }]}>
             <Text style={[styles.dialogTitle, { color: t.text }]}>{strings.rename}</Text>
             <TextInput
@@ -159,9 +160,9 @@ export default function ListScreen() {
               />
             </View>
           </View>
-        </KeyboardAvoidingView>
+        </KeyboardSafeView>
       </Modal>
-    </KeyboardAvoidingView>
+    </KeyboardSafeView>
   );
 }
 

@@ -1,1 +1,1 @@
-Eerste versie van BOODSCHAP!.
+Op Android blijft het invoerveld nu boven het toetsenbord, ook met gebaren of drie knoppen voor de navigatie.
